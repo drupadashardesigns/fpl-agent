@@ -3,6 +3,7 @@
     python -m engine snapshot            archive today's bootstrap + fixtures (nightly job)
     python -m engine run                 full weekly run for the entry in config.json
     python -m engine run --no-ownership  skip the rival sample (faster, for testing)
+    python -m engine appdata [--gw N]    rebuild data/runs/gwNN/app.json for the web app
 
 A run writes data/runs/gwNN/ with one file per stage, plus facts.json: the
 compact bundle the weekly editor reads to write the edition.
@@ -14,7 +15,7 @@ import datetime as dt
 import json
 from pathlib import Path
 
-from . import fpl_api, model, ownership, planner, prices
+from . import appdata, fpl_api, model, ownership, planner, prices
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = json.loads((ROOT / "config.json").read_text())
@@ -47,6 +48,27 @@ def last_gw_review(bs: dict, gw: int, squad_picks: dict) -> dict:
     }
 
 
+def player_history(summaries: dict) -> dict:
+    """Compact per-player gameweek rows for the app: points, minutes, opponent, xG + xA."""
+    out = {}
+    for e, s in summaries.items():
+        if not s:
+            continue
+        out[str(e)] = [[r["round"], r["total_points"], r["minutes"], r["opponent_team"], r["was_home"],
+                        round(float(r.get("expected_goal_involvements") or 0), 2)] for r in s.get("history", [])]
+    return out
+
+
+def snap_today(bs: dict, fx: list) -> bool:
+    """appdata reads the newest archived snapshot; make sure today's exists."""
+    day = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
+    out = ROOT / "data" / "archive" / day
+    if not (out / "bootstrap.json.gz").exists():
+        fpl_api.save_json(bs, out / "bootstrap.json", compress=True)
+        fpl_api.save_json(fx, out / "fixtures.json", compress=True)
+    return True
+
+
 HIT_MARGIN = 2.0  # a hit must beat the best no-hit plan by this much over the horizon
 
 
@@ -63,12 +85,14 @@ def run(entry_id: int, horizon: int, with_ownership: bool) -> Path:
     out = ROOT / "data" / "runs" / f"gw{nxt:02d}"
     ent, hist, trs = fpl_api.entry(entry_id), fpl_api.history(entry_id), fpl_api.transfers(entry_id)
     pk = fpl_api.picks(entry_id, cur)
+    fpl_api.save_json({"source": f"FPL entry/{entry_id}/history/", **hist}, out / "entry_history.json")
     state = planner.squad_state(bs, hist, trs, pk)
 
     ids = [p["id"] for p in bs["elements"] if p["minutes"] >= 90]
     summaries = fpl_api.element_summaries(ids)
     proj = model.project(bs, fx, summaries, nxt, min(38, nxt + 9))
     fpl_api.save_json(proj, out / "projections.json", compress=True)
+    fpl_api.save_json(player_history(summaries), out / "history.json", compress=True)
 
     pl = planner.Planner(proj, nxt, min(38, nxt + horizon - 1))
     options = pl.search(state)[:25]
@@ -115,6 +139,8 @@ def run(entry_id: int, horizon: int, with_ownership: bool) -> Path:
     }
     facts["recommended"] = recommend(facts["transfer_options"])
     fpl_api.save_json(facts, out / "facts.json")
+    if snap_today(bs, fx):
+        appdata.build(nxt)
     print(f"wrote {out} | GW{nxt} | FT {state.free_transfers} | bank £{state.bank}m | best: "
           f"{facts['transfer_options'][0]}")
     return out
@@ -124,6 +150,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(prog="engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("snapshot")
+    ad = sub.add_parser("appdata")
+    ad.add_argument("--gw", type=int)
     r = sub.add_parser("run")
     r.add_argument("--entry", type=int, default=CONFIG["entry_id"])
     r.add_argument("--horizon", type=int, default=CONFIG.get("horizon", 6))
@@ -131,6 +159,8 @@ def main() -> None:
     a = ap.parse_args()
     if a.cmd == "snapshot":
         snapshot()
+    elif a.cmd == "appdata":
+        appdata.build(a.gw)
     else:
         run(a.entry, a.horizon, not a.no_ownership)
 
