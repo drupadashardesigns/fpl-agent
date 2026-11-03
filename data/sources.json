@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-03T09:49:12+00:00",
+  "updated_at": "2026-11-03T10:04:17+00:00",
   "sources": {
     "fpl": {
       "name": "Official FPL API",
@@ -21,10 +21,15 @@
     },
     "fotmob": {
       "name": "FotMob",
-      "status": "pending",
-      "last_success": null,
+      "status": "healthy",
+      "last_success": "2026-11-03T10:04:17+00:00",
       "last_error": null,
-      "fills": "chances created, big chances created, dribbles, ground and aerial duels, touches in the box, interceptions, recoveries, dispossessed, xGOT, line-breaking passes, passes into the final third, distance, sprints, top speed, touch heatmaps; team big chances, box touches, set-piece goals, possession, xG conceded, distance"
+      "fills": "chances created, big chances created, dribbles, ground and aerial duels, touches in the box, interceptions, recoveries, dispossessed, xGOT, line-breaking passes, passes into the final third, distance, sprints, top speed, touch heatmaps; team big chances, box touches, set-piece goals, possession, xG conceded, distance",
+      "detail": "90 matches to 2026-11-02; id map 100.0%",
+      "data_to": "2026-11-02",
+      "season_id": 36781,
+      "finished": 90,
+      "new_matches": 0
     },
     "odds": {
       "name": "The Odds API",

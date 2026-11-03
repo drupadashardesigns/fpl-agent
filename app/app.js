@@ -73,7 +73,7 @@
   const pc = (x) => (x == null ? "–" : x + "%");
   const fmTable = (rows, cfg) => {
     // a FotMob-only table under an FPL or Understat one: same row order rules, its own columns and caption
-    const R = rows.filter((r) => r.fm && r.fm.s && r.fm.s.min > 0 && cfg.k(r.fm) != null).sort((a, b) => cfg.k(b.fm) - cfg.k(a.fm));
+    const R = rows.filter((r) => r.fm && r.fm.s && (cfg.team || r.fm.s.min > 0) && cfg.k(r.fm) != null).sort((a, b) => cfg.k(b.fm) - cfg.k(a.fm));
     const none = rows.filter((r) => !(r.fm && r.fm.s));
     return `<h2 class="t-h2" style="margin-top:8px">${cfg.title}</h2><p class="muted" style="font-size:15px">${esc(cfg.note)}</p>
       <div class="scrollx"><table class="tbl${cfg.full ? " tbl-full" : ""}"><thead><tr>${cfg.team ? `<th scope="col">#</th><th scope="col" class="l">Team</th>` : `<th scope="col">Player</th>`}${cfg.cols.map((c) => `<th scope="col">${c}</th>`).join("")}</tr></thead><tbody>
@@ -442,7 +442,7 @@
     table: { label: "Table", note: "Standings after GW" + "%LAST%" + ", with the last five results.", cols: ["Pts", "W-D-L", "GD", "Form"], key: 0, f: (r) => [r.pts, `${r.w}-${r.d}-${r.l}`, sg(r.gf - r.ga, 0).replace("−0", "0"), r.form], k: (r) => -r.pos, sortLabel: "league position" },
     attack: { label: "Attack", note: "Chance creation per game this season. Goals above xG tends to cool.", cols: ["xG", "Goals", "G − xG", "xG rank"], key: 0, f: (r) => [f2(r.xgf), r.gf, sg(r.gf - r.xg_total), ord(r.xgf_rank)], k: (r) => r.xgf, sortLabel: "xG per game", soon: true,
       us: { title: "Shots and xG, Understat", cols: ["xG", "npxG", "Shots", "Deep", "xG, last 4"], key: 0, f: (u) => [n2(u.s.xg_pg), n2(u.s.npxg_pg), n1(u.s.shots_pg), n1(u.s.deep_pg), u.l4 ? n2(u.l4.xg_pg) : "–"], k: (u) => u.s.xg_pg, note: "Per game. Deep is passes completed within about 20 metres of the opponent's goal, crosses excluded." },
-      fm: { team: true, full: true, title: "Big chances and the box, FotMob", note: "Per game this season, except set-piece goals, which are season totals (corners, free kicks and throw-ins; penalties not included).", cols: ["Big chances", "Box touches", "Possession", "Set-piece goals", "Big chances, last 4"], key: 0,
+      fm: { team: true, full: true, title: "Big chances and the box, FotMob", note: "Per game this season, except set-piece goals, which are season totals (corners, free kicks and throw-ins; penalties and own goals not included).", cols: ["Big chances", "Box touches", "Possession", "Set-piece goals", "Big chances, last 4"], key: 0,
         f: (u) => [n1(u.s.bc_pg), n1(u.s.tib_pg), pc(u.s.poss), u.s.spg, u.l4 ? n1(u.l4.bc_pg) : "–"], k: (u) => u.s.bc_pg, cap: "Last 4 is per game over each team's last four league matches." } },
     defence: { label: "Defence", note: "Chances given up per game. Low xG against plus clean sheets is where defenders and keepers come from.", cols: ["xG against", "Conceded", "Clean sheets", "Rank"], key: 0, f: (r) => [f2(r.xga), r.ga, r.cs, ord(r.xga_rank)], k: (r) => -r.xga, sortLabel: "xG against per game (lowest first)", soon: true,
       us: { title: "Shots and pressing, Understat", cols: ["xGA", "Shots against", "PPDA", "Deep allowed", "xGA, last 4"], key: 0, f: (u) => [n2(u.s.xga_pg), n1(u.s.shots_against_pg), n1(u.s.ppda), n1(u.s.deep_allowed_pg), u.l4 ? n2(u.l4.xga_pg) : "–"], k: (u) => -u.s.xga_pg, note: "Per game, lowest xGA first. PPDA is opponent passes allowed per defensive action in their half: lower means harder pressing." },
@@ -688,10 +688,12 @@
   const fmHead = (title, ok) => `<div class="phead-row" style="align-items:center"><h2 class="t-h2">${title}</h2>${ok ? `<span class="tag tag-green tag-sm">FotMob</span>` : `<span class="tag tag-blue tag-sm">${fmTitle() === "Connects in v1" ? "Connects in v1" : "FotMob offline"}</span>`}</div>`;
   const B36 = "0123456789abcdefghijklmnopqrstuvwxyz";
   function heatSvg(cells, gx, gy, label) {
-    const max = Math.max(1, ...cells);
+    // scale to the 95th percentile of touched cells so one busy cell does not wash out the rest
+    const nz = cells.filter((v) => v > 0).sort((a, b) => a - b);
+    const top = Math.max(1, nz.length ? nz[Math.floor(0.95 * (nz.length - 1))] : 1);
     const cw = 105 / gx, ch = 68 / gy;
-    const rects = cells.map((v, i) => v ? `<rect x="${((i % gx) * cw).toFixed(2)}" y="${(Math.floor(i / gx) * ch).toFixed(2)}" width="${cw.toFixed(2)}" height="${ch.toFixed(2)}" fill-opacity="${(0.12 + 0.88 * Math.pow(v / max, 0.75)).toFixed(2)}"/>` : "").join("");
-    return `<svg class="heat" viewBox="0 0 105 68" role="img" aria-label="${esc(label)}"><defs><filter id="hb" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2.2"/></filter></defs>
+    const rects = cells.map((v, i) => v ? `<rect x="${((i % gx) * cw).toFixed(2)}" y="${(Math.floor(i / gx) * ch).toFixed(2)}" width="${cw.toFixed(2)}" height="${ch.toFixed(2)}" fill-opacity="${Math.pow(Math.min(1, v / top), 1.4).toFixed(2)}"/>` : "").join("");
+    return `<svg class="heat" viewBox="0 0 105 68" role="img" aria-label="${esc(label)}"><defs><filter id="hb" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.8"/></filter></defs>
       <g class="cells" filter="url(#hb)">${rects}</g>
       <g class="lines"><rect x="0.5" y="0.5" width="104" height="67" rx="1"/><line x1="52.5" y1="0.5" x2="52.5" y2="67.5"/><circle cx="52.5" cy="34" r="9.15"/>
       <rect x="0.5" y="13.85" width="16.5" height="40.3"/><rect x="88" y="13.85" width="16.5" height="40.3"/><rect x="0.5" y="24.85" width="5.5" height="18.3"/><rect x="99" y="24.85" width="5.5" height="18.3"/></g>
@@ -808,9 +810,9 @@
       ["Touches in the opponent's box", n1(s.tib_pg), n1(l.tib_pg)], ["Touches allowed in their own box", n1(s.tiba_pg), n1(l.tiba_pg)], ["xG conceded", n2(s.xga_pg), n2(l.xga_pg)],
       ["Set-piece goals (total)", s.spg, l.spg], ["Set-piece goals conceded (total)", s.spga, l.spga], ["Distance covered, km", n1(s.dist_pg), n1(l.dist_pg)]];
     return `<section style="display:flex;flex-direction:column;gap:8px"><div class="phead-row" style="align-items:center"><h2 class="t-h2">Big chances, the box and running</h2><span class="tag tag-green tag-sm">FotMob</span></div>
-      <div class="scrollx"><table class="tbl tbl-full"><thead><tr><th scope="col">Per game</th><th scope="col">Season (${s.games})</th><th scope="col">Last four</th></tr></thead><tbody>
+      <div class="scrollx"><table class="tbl tbl-full" style="white-space:normal"><thead><tr><th scope="col">Per game</th><th scope="col">Season (${s.games})</th><th scope="col">Last four</th></tr></thead><tbody>
       ${R.map(([k, a, b]) => `<tr><td>${k}</td><td>${a}</td><td>${b}</td></tr>`).join("")}</tbody></table></div>
-      <span class="cap">${fmLabel()} Set pieces are corners, free kicks and throw-ins, not penalties. FotMob's xG comes from Opta through its own feed, so it is kept apart from the FPL and Understat figures above.</span></section>`;
+      <span class="cap">${fmLabel()} Set pieces are corners, free kicks and throw-ins; penalties and own goals are not counted. FotMob's xG comes from Opta through its own feed, so it is kept apart from the FPL and Understat figures above.</span></section>`;
   }
 
   // ---------- Free Hit story ----------

@@ -471,7 +471,7 @@ def derive(bs: dict, fixtures: list) -> dict:
         t = m["team"]
         own_goals = defaultdict(lambda: [0, 0])  # fotmob team -> [set-piece goals, ...]
         for sh in m["shots"]:
-            if sh[6] == "Goal" and sh[7] in SET_PIECE:
+            if sh[6] == "Goal" and sh[7] in SET_PIECE and not sh[8]:  # FotMob's tables leave own goals out
                 own_goals[sh[1]][0] += 1
         for side, i in (("home", 0), ("away", 1)):
             fpl = tmap.get(m[side]["id"])
