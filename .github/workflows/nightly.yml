@@ -24,6 +24,15 @@ jobs:
       # League data once, then only finished matches not already stored,
       # one request every 3 seconds. A failure is recorded in data/sources.json
       # and the app keeps showing the last good numbers with their date.
+      - name: TEMPORARY Understat reachability probe
+        continue-on-error: true
+        run: |
+          getent ahosts understat.com | head -4 || true
+          for u in https://understat.com/ https://understat.com/getLeagueData/EPL/2026; do
+            curl -sS -4 -o /tmp/out -m 25 -w "$u -> %{http_code} %{size_download}B %{time_total}s ip=%{remote_ip}\n" \
+              -H 'X-Requested-With: XMLHttpRequest' -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36' "$u" || echo "$u failed"
+            head -c 200 /tmp/out 2>/dev/null; echo
+          done
       - name: Understat (league + new finished matches)
         id: understat
         continue-on-error: true
