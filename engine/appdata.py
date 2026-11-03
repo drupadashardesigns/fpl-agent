@@ -378,6 +378,11 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
     hist = [{"gw": h["event"], "points": h["points"], "rank": h["overall_rank"], "gw_rank": h["rank"],
              "bench": h["points_on_bench"], "transfers": h["event_transfers"]} for h in (ehist or {}).get("current", [])]
 
+    # FPL's history feed can keep a stale rank for the latest gameweek after bonus
+    # is finalised; the entry summary is current, so it wins for that gameweek.
+    if hist and hist[-1]["gw"] == facts["last_gw"]["gw"]:
+        hist[-1]["rank"] = facts["manager"]["overall_rank"]
+
     events = [{"gw": ev["id"], "deadline": ev["deadline_time"]} for ev in bs["events"]]
     data = {
         "meta": {"gw": gw, "deadline_utc": facts["deadline_utc"], "pulled_at": facts["generated_at"],
