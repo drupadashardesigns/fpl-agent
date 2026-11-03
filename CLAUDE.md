@@ -45,8 +45,11 @@ engine/            Python, standard library only
   understat.py     Understat AJAX client (nightly in Actions), FPL-to-Understat ID map, derived player and team stats
   fotmob.py        FotMob client (nightly in Actions): league, stat tables, match details and heatmaps; ID map; derived stats
   idmap.py         shared team-plus-name matcher and data/id_map.json read/write, one section per source
+  predlog.py       prediction log: freeze each gameweek's projections before the deadline, score them and the
+                   edition's decisions afterwards, fill the edition's "grading"
   appdata.py       builds data/runs/gwNN/app.json, the app's data bundle (offline, from files on disk)
   cli.py           python -m engine snapshot | run | appdata | understat [--offline] | fotmob [--offline]
+                   | predlog [capture|score] [--gw N] [--offline]
 config.json        entry id, horizon, timezone
 data/archive/      nightly bootstrap + fixtures snapshots (GitHub Actions); bootstrap carries `fetched_at`
 data/runs/gwNN/    one weekly run: facts.json (editor input), projections, ownership,
@@ -62,6 +65,11 @@ data/fotmob/       league_47.json (fixtures, stat links), stats/<stat>.json (sea
 data/id_map.json   one section per source ("understat", "fotmob"): FPL element id -> that source's id;
                    reviewed pairs go under the section's "manual" and win. data/id_map_unmatched.json has the
                    same sections and lists who was not matched, with the reason
+data/predlog/      gwNN.json ("capture": every player's projected points, expected minutes, haul and blank
+                   chances, plus the decisions: the call, the plans, captain candidates, Free Hit advice; frozen
+                   at the deadline. "result": the scoring, refreshed until FPL's final check), actuals/gwNN.json
+                   (actual points and minutes for every player, Drupad's picks, transfers and score),
+                   summary.json (every scored week and the season record; the Model tab reads it)
 editions/gwNN.json the published edition (written by the editor, read by the app)
 editions/index.json list of editions; "current" is the one the app opens
 app/               the web app: index.html, app.css, app.js (no build step, hash routing)
@@ -71,7 +79,7 @@ design/mockups/    final screen mockups, click map, parameter list
 
 ### Where things run
 
-- **GitHub Actions, nightly** (`.github/workflows/nightly.yml`): archives the bootstrap and fixtures after the 00:00 UK price update, then tries Understat once (`python -m engine understat`, up to 3 attempts; a failure is recorded in `data/sources.json` and never fails the job), then FotMob (`python -m engine fotmob`, same rule), and rebuilds the newest run's `app.json`. Builds the history the backtest needs.
+- **GitHub Actions, nightly** (`.github/workflows/nightly.yml`): archives the bootstrap and fixtures after the 00:00 UK price update, then tries Understat once (`python -m engine understat`, up to 3 attempts; a failure is recorded in `data/sources.json` and never fails the job), then FotMob (`python -m engine fotmob`, same rule), then the prediction log (`python -m engine predlog`: capture the next gameweek if its run exists and the deadline has not passed, score every played gameweek, grade its edition), and rebuilds the newest run's `app.json`. Commits `data/` and `editions/`. Builds the history the backtest needs.
 - **Claude scheduled task, daily 08:39 IST** ("AlooSoul weekly editor"): if the next deadline is within 48 hours and no edition exists for it, run `python -m engine run`, write `editions/gwNN.json` from `facts.json` following the editorial rules, commit and push straight to main, and republish the app at the same artifact link. On deadline day it re-checks the edition (see the runbook). On other days, refresh price alerts only.
 - **The app** is published as a private Claude artifact: static HTML, CSS and JS with no build step, loading the edition and projections as data files. "Ask the agent" uses the artifact `sample` capability, so no API key or server is needed.
 
@@ -100,7 +108,7 @@ design/mockups/    final screen mockups, click map, parameter list
 
 Additive fields the app reads: `title` and `edition` at the top; `update` (`{at, text}`, set on deadline day when the call changes, shown as a flag at the top); `out_id`/`in_id`, `captain_id`, `vice_id`, `bank_after` in `call`; per headline a `tone` (review, decision, template, chip, fixtures, injury) and an `evidence` block `{src, facts: [{k, v}], action: {kind, label}}` for the data room Stories tab (action kinds: planner, captain, gw9, players-own, freehit, team). A data room entry with `bottom_line` (plus `intro`, `confidence`, `recommended`, `fallback`) renders as the Free Hit story page. A headline with no read shows Headline and Data room in its depth switch.
 
-`figure` objects: `{"type": "bar" | "line" | "table" | "heatmap", "title": "", "data": ...}`. `grading` is filled in the following week: recommended moves against what actually happened.
+`figure` objects: `{"type": "bar" | "line" | "table" | "heatmap", "title": "", "data": ...}`. `grading` is filled in by `engine/predlog.py` once the gameweek is played (provisional until FPL's `data_checked`, then `final: true`): `{gw, scored_at, final, summary, lines: [plain sentences], call, captain, captain_candidates, hits, free_hit, team, followed, model}`. The app shows `lines` at the top of a graded edition, and `editions/index.json` gets `graded: true` and `grade_summary` for the archive.
 
 ## FPL rules for 2026/27 (verified against the live feed, 3 Nov 2026)
 
@@ -159,7 +167,13 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 - **Daily 08:39 IST** (Claude scheduled task, the editor): when the next deadline is within 48 hours and no edition exists, run `python -m engine run`, read `facts.json`, write `editions/gwNN.json` following the edition contract and editorial rules, commit and push to main, republish the app. With a Friday or Saturday deadline this lands the morning before deadline day.
 - **Deadline day** (the daily run when the deadline is under 24 hours away and the edition exists): re-check injury news (status, chance of playing, news) for the squad and every player in the call, and the price feed. If the call changes, update the edition, set its `update` field (`{"at": ISO time, "text": "what changed and why, one or two sentences"}`, shown at the top of the edition), push to main and republish. If nothing changes, leave the edition alone.
 - **Price alerts:** freshness comes from `fetched_at` inside the snapshot's `bootstrap.json`, never from the archive folder's date. Rebuild alerts only when that time is newer than `meta.prices_fetched_at` in the current `app.json`.
-- **After the gameweek:** score last week's projections against actual points and append to the prediction log. The data room Model tab shows this record.
+- **Prediction log** (`engine/predlog.py`). Capture: the editor runs `python -m engine predlog capture` right after writing an edition and again after any deadline-day change; the nightly job also runs it. A capture refreshes until the deadline and is frozen after it, so the log holds exactly what was advised. Scoring: the nightly job (`python -m engine predlog`) fetches actual points once every fixture in the gameweek is at least provisionally finished, and refreshes until FPL marks it `data_checked`. What is scored:
+  - Every player whose team played and who had projected minutes or played: average miss, bias (projected minus actual; above zero means too high), RMSE and minutes miss, overall, by position and by price band (under £5m, £5m to £6.9m, £7m to £9.9m, £10m and up). Haul (10+) and blank (2 or fewer) chances against how often they happened, with Brier scores.
+  - The call and every alternative plan: points of players bought minus players sold, less the hit, over the horizon's gameweeks played so far. Bench and lineup effects are ignored, as in the projected gain.
+  - Captain: the pick against every candidate, the model's own pick (so overrides are judged) and the top 10k's most-captained player.
+  - Hits: each hit plan weighed against the best free plan. Free Hit: its eleven against the call's eleven in the week it was weighed.
+  - What Drupad did: his transfers, captain, chip and score against the call.
+  The data room Model tab shows the season record from `data/predlog/summary.json`.
 
 ## Roadmap
 
@@ -167,7 +181,7 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 2. Gaps the GW10 build could not fill (FPL API blocked from the sandbox; the run predates `history.json.gz`): minutes in the last four games, points by gameweek on the profile, home/away splits, and team last-four xG. The next `engine run` saves the per-player rows; team last-four splits come from diffing nightly snapshots once four weeks exist (GW13).
 3. Built 3 Nov, waiting on the first fetch: Understat client, player ID map, derived stats, and the app screens (players: Shots & chances group, profile card with shot map; teams: Attack and Defence tables, team profile). Understat is offline for everyone since about 2 Nov; the nightly job retries and the screens say so until `data/understat/derived.json` exists. When it lands: check the ID map's unmatched list and compare three players and two teams against the site. Not used by the model: that waits for the backtest.
    Done 3 Nov: FotMob (players: chances, duels, dribbles, box touches, xGOT, line-breaking passes, passes into the final third, running; teams: big chances, box touches, set-piece goals, possession, xG conceded, distance; touch heatmaps on the profile, season and per match). Sofascore dropped. Not used by the model. Next: odds.
-4. Prediction log and backtest.
+4. Done 3 Nov: prediction log (`engine/predlog.py`), GW10 captured on 3 Nov; first scoring after GW10. Next: the backtest, once a few weeks are logged, to tune the risk thresholds.
 5. Minutes model, then odds in team strength.
 6. Multi-week solver with chip planning (second-half set: forecast Blank GW30, Double GW32, Blank GW33, Double GW35/36).
 

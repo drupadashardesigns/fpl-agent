@@ -33,6 +33,13 @@ jobs:
         id: fotmob
         continue-on-error: true
         run: python -m engine fotmob
+      # Prediction log: freeze the next gameweek's projections (only before its
+      # deadline), then score every captured gameweek that has been played and
+      # fill that edition's "grading". Never fails the job.
+      - name: Prediction log (capture, then score finished gameweeks)
+        id: predlog
+        continue-on-error: true
+        run: python -m engine predlog
       - name: Rebuild the app bundle with the new data
         run: |
           if ls data/runs/gw*/facts.json >/dev/null 2>&1; then python -m engine appdata; fi
@@ -40,7 +47,7 @@ jobs:
         run: |
           git config user.name "fpl-agent-bot"
           git config user.email "fpl-agent-bot@users.noreply.github.com"
-          git add data/
+          git add data/ editions/
           if git diff --cached --quiet; then
             echo "No changes"
           else
