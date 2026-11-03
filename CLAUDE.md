@@ -43,8 +43,10 @@ engine/            Python, standard library only
   ownership.py     samples top 10k and managers around Drupad's rank
   prices.py        price alerts from the feed's own price-change projections
   understat.py     Understat AJAX client (nightly in Actions), FPL-to-Understat ID map, derived player and team stats
+  fotmob.py        FotMob client (nightly in Actions): league, stat tables, match details and heatmaps; ID map; derived stats
+  idmap.py         shared team-plus-name matcher and data/id_map.json read/write, one section per source
   appdata.py       builds data/runs/gwNN/app.json, the app's data bundle (offline, from files on disk)
-  cli.py           python -m engine snapshot | run | appdata | understat [--offline]
+  cli.py           python -m engine snapshot | run | appdata | understat [--offline] | fotmob [--offline]
 config.json        entry id, horizon, timezone
 data/archive/      nightly bootstrap + fixtures snapshots (GitHub Actions); bootstrap carries `fetched_at`
 data/runs/gwNN/    one weekly run: facts.json (editor input), projections, ownership,
@@ -54,8 +56,12 @@ data/sources.json  per-source health; a source flips from "pending" to "healthy"
                    failed, app shows the last good numbers with their date)
 data/understat/    league_EPL_2026.json (latest league payload), matches/<id>.json.gz (one per finished
                    match, fetched once), derived.json (stats keyed by FPL id; appdata merges it as "us")
-data/id_map.json   FPL element id -> Understat id; reviewed pairs go under "manual" and win.
-                   data/id_map_unmatched.json lists who was not matched, with the reason
+data/fotmob/       league_47.json (fixtures, stat links), stats/<stat>.json (season tables, for the check),
+                   matches/<id>.json.gz (one per finished match: player stats, team stats, shots, heatmap
+                   points; fetched once), derived.json (stats and heatmap grids keyed by FPL id; appdata merges it as "fm")
+data/id_map.json   one section per source ("understat", "fotmob"): FPL element id -> that source's id;
+                   reviewed pairs go under the section's "manual" and win. data/id_map_unmatched.json has the
+                   same sections and lists who was not matched, with the reason
 editions/gwNN.json the published edition (written by the editor, read by the app)
 editions/index.json list of editions; "current" is the one the app opens
 app/               the web app: index.html, app.css, app.js (no build step, hash routing)
@@ -65,7 +71,7 @@ design/mockups/    final screen mockups, click map, parameter list
 
 ### Where things run
 
-- **GitHub Actions, nightly** (`.github/workflows/nightly.yml`): archives the bootstrap and fixtures after the 00:00 UK price update, then tries Understat once (`python -m engine understat`, up to 3 attempts; a failure is recorded in `data/sources.json` and never fails the job) and rebuilds the newest run's `app.json`. Builds the history the backtest needs.
+- **GitHub Actions, nightly** (`.github/workflows/nightly.yml`): archives the bootstrap and fixtures after the 00:00 UK price update, then tries Understat once (`python -m engine understat`, up to 3 attempts; a failure is recorded in `data/sources.json` and never fails the job), then FotMob (`python -m engine fotmob`, same rule), and rebuilds the newest run's `app.json`. Builds the history the backtest needs.
 - **Claude scheduled task, daily 08:39 IST** ("AlooSoul weekly editor"): if the next deadline is within 48 hours and no edition exists for it, run `python -m engine run`, write `editions/gwNN.json` from `facts.json` following the editorial rules, commit and push straight to main, and republish the app at the same artifact link. On deadline day it re-checks the edition (see the runbook). On other days, refresh price alerts only.
 - **The app** is published as a private Claude artifact: static HTML, CSS and JS with no build step, loading the edition and projections as data files. "Ask the agent" uses the artifact `sample` capability, so no API key or server is needed.
 
@@ -123,16 +129,16 @@ Every stat in the app shows its source and when it was last updated. If a source
 |---|---|---|---|
 | Official FPL API | Live | Players (xG, xA, xGC, DefCon, CBI, tackles, recoveries, ICT, BPS, set-piece order, news, price-change progress), fixtures, managers, standings | `engine/fpl_api.py` |
 | Understat | Built 3 Nov 2026. **Offline since about 2 Nov 2026**, retrying nightly | Shots, shots on target, key passes, npxG, xGChain, xGBuildup (season, per 90, last four), shot maps; team xG, npxG, xGA, shots for and against, PPDA, deep completions (season and last four) | The pages no longer embed JSON (changed late 2025). Data comes from AJAX endpoints on `https://understat.com/`, sent with `X-Requested-With: XMLHttpRequest` and a browser User-Agent: `getLeagueData/EPL/{season}` (teams, players, dates), `getMatchData/{id}` (shots, rosters), `getPlayerData/{id}` (a player's shots and matches). Season is the start year (2026 = 2026/27, checked on every fetch). `engine/understat.py`, nightly in Actions. **Outage:** Understat has been down for everyone since about 2 Nov 2026 (GitHub runners, Apify residential proxies and a home connection all fail; other FPL projects report the same), so this is not a block on us. `sources.json` holds `status: "offline"` and `offline_since`; the app's Understat boxes say "Understat is offline since 2 Nov. Retrying nightly." until the first successful fetch flips it to healthy. Understat's xG is its own model: never put it in a column with FPL's (Opta) xG |
-| FotMob | v1, second | Chances created, big chances, dribbles attempted and completed, duels and aerial duels won, interceptions, touches in the box, dispossessed, xGOT | Unofficial match JSON, one request per finished match |
+| FotMob | **Live from 3 Nov 2026**, nightly | Players: chances created, big chances created, successful dribbles, ground and aerial duels won with totals, touches in the box, interceptions, recoveries, dispossessed, xGOT, line-breaking passes, passes into the final third, distance, sprints, top speed (season, per 90, last four); touch heatmaps, season (sum of matches) and per match. Teams: distance per match, xG conceded, big chances for and against, touches in the box, set-piece goals for and against, possession (season and last four) | Unofficial JSON, browser User-Agent, gzip, one request every 2 seconds. `www.fotmob.com/api/data/leagues?id=47` (fixtures, stat-table links), `data.fotmob.com/stats/47/season/<id>/<stat>.json` (season tables, used to check our sums), `www.fotmob.com/api/data/matchDetails?matchId=<id>` (player stats, team stats, shots, `heatmapUrl`), then the heatmap under `www.fotmob.com` (players keyed `p<Opta id>`, points on a 105 x 68 pitch, attacking left to right). Only finished matches not yet stored. `engine/fotmob.py`. Season numbers are summed from match data so season, per 90 and last four share one basis; `derived.json` records how many agree with FotMob's own tables. Always labelled "FotMob" with its date, never in a column with FPL's or Understat's numbers |
 | The Odds API | v1, third | Match odds and over/unders to calibrate team strength; EPL scorer props exist but only from US bookmakers | Official API, free plan 500 credits a month. Pull once per gameweek, never daily |
-| Sofascore | v1, last | Player touch heatmaps, season and per match | `LanusStats` (unofficial). Sofascore often blocks cloud IPs. If Actions is blocked, fall back to a local run on Drupad's Mac or a paid scraper (Apify is connected) |
+| Sofascore | Not needed | | Heatmaps, distance and sprints now come from FotMob, so Sofascore is dropped |
 | FBref | Not usable | | Advanced stats removed January 2026 after the Opta deal ended |
-| Distance covered, sprints | No free source | | 2026/27 figures in the press come from Gradient Sports (paid). Use PPDA as the team intensity ranking. Do not show distance until a feed exists |
-| Carries, through balls | No confirmed source | | Check Sofascore's stat list during the build; if absent, remove them from the screens |
+| Distance covered, sprints, top speed | FotMob | Players and teams | FotMob's match tracking data (`Physical metrics`). Per 90 uses only minutes with tracking data |
+| Carries, through balls | Replaced | | Not available. Replaced on every screen by FotMob's line-breaking passes and passes into the final third |
 
 Rules for the unofficial sources: one request every few seconds, cache everything, only fetch finished matches not yet stored, and keep a per-source health record in `data/sources.json` (last success, last error) that the app reads.
 
-**Player ID map.** Each source names players differently. Keep `data/id_map.json` linking FPL element ID to Understat, FotMob and Sofascore IDs. Built by team plus normalised name (accents stripped, full name, first plus last word, web name, word subsets with a minutes check); a match must be unique in both directions, otherwise the player goes to `data/id_map_unmatched.json` for manual review. Never guess: add reviewed pairs under `manual`. Rebuilt on every Understat run, so new players are picked up.
+**Player ID map.** Each source names players differently. Keep `data/id_map.json` linking FPL element ID to each source's ID, one section per source (`understat`, `fotmob`; `engine/idmap.py`). Built by team plus normalised name (accents stripped, full name, first plus last word, web name, word subsets with a minutes check); a match must be unique in both directions, otherwise the player goes to `data/id_map_unmatched.json` for manual review. FotMob also gives each player's Opta id, which FPL calls `code`: a name match whose Opta id disagrees is refused, and the Opta id on the same team matches players the names miss (tier 6, an exact shared key, not a guess). Never guess: add reviewed pairs under the source's `manual`. Rebuilt on every run of that source, so new players are picked up.
 
 **Historical:** `vaastav/Fantasy-Premier-League` has past seasons but stopped weekly updates after 2024/25, so our nightly archive is the record from now on.
 **Benchmarks:** `daniegr/OpenFPL` (needs retraining for DefCon) and `sertalpbilal/FPL-Optimization-Tools` (HiGHS solver taking a projections CSV).
@@ -149,7 +155,7 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 
 ## Weekly runbook
 
-- **Nightly 07:15 IST** (GitHub Actions): FPL snapshot, then Understat once (league data, then `getMatchData` only for finished matches not yet stored, one request every 3 seconds, up to 3 attempts; failure is recorded, never fatal), then rebuild `app.json`. Commit to `data/`. FotMob, odds and Sofascore join this job as they are built.
+- **Nightly 07:15 IST** (GitHub Actions): FPL snapshot, then Understat once (league data, then `getMatchData` only for finished matches not yet stored, one request every 3 seconds, up to 3 attempts; failure is recorded, never fatal), then FotMob (league file, stat tables, then `matchDetails` and the heatmap only for finished matches not yet stored, one request every 2 seconds; same failure rule), then rebuild `app.json`. Commit to `data/`. Odds join this job when built.
 - **Daily 08:39 IST** (Claude scheduled task, the editor): when the next deadline is within 48 hours and no edition exists, run `python -m engine run`, read `facts.json`, write `editions/gwNN.json` following the edition contract and editorial rules, commit and push to main, republish the app. With a Friday or Saturday deadline this lands the morning before deadline day.
 - **Deadline day** (the daily run when the deadline is under 24 hours away and the edition exists): re-check injury news (status, chance of playing, news) for the squad and every player in the call, and the price feed. If the call changes, update the edition, set its `update` field (`{"at": ISO time, "text": "what changed and why, one or two sentences"}`, shown at the top of the edition), push to main and republish. If nothing changes, leave the edition alone.
 - **Price alerts:** freshness comes from `fetched_at` inside the snapshot's `bootstrap.json`, never from the archive folder's date. Rebuild alerts only when that time is newer than `meta.prices_fetched_at` in the current `app.json`.
@@ -159,7 +165,8 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 
 1. Done 3 Nov: `app/` built from the mockups and published as a private artifact; `editions/gw10.json` written. Next: set up the scheduled task (after `engine run`, publish `app/` with `editions/`, `data/sources.json` and the run's `app.json`).
 2. Gaps the GW10 build could not fill (FPL API blocked from the sandbox; the run predates `history.json.gz`): minutes in the last four games, points by gameweek on the profile, home/away splits, and team last-four xG. The next `engine run` saves the per-player rows; team last-four splits come from diffing nightly snapshots once four weeks exist (GW13).
-3. Built 3 Nov, waiting on the first fetch: Understat client, player ID map, derived stats, and the app screens (players: Shots & chances group, profile card with shot map; teams: Attack and Defence tables, team profile). Understat is offline for everyone since about 2 Nov; the nightly job retries and the screens say so until `data/understat/derived.json` exists. When it lands: check the ID map's unmatched list and compare three players and two teams against the site. Not used by the model: that waits for the backtest. Next: FotMob, then odds, then Sofascore heatmaps.
+3. Built 3 Nov, waiting on the first fetch: Understat client, player ID map, derived stats, and the app screens (players: Shots & chances group, profile card with shot map; teams: Attack and Defence tables, team profile). Understat is offline for everyone since about 2 Nov; the nightly job retries and the screens say so until `data/understat/derived.json` exists. When it lands: check the ID map's unmatched list and compare three players and two teams against the site. Not used by the model: that waits for the backtest.
+   Done 3 Nov: FotMob (players: chances, duels, dribbles, box touches, xGOT, line-breaking passes, passes into the final third, running; teams: big chances, box touches, set-piece goals, possession, xG conceded, distance; touch heatmaps on the profile, season and per match). Sofascore dropped. Not used by the model. Next: odds.
 4. Prediction log and backtest.
 5. Minutes model, then odds in team strength.
 6. Multi-week solver with chip planning (second-half set: forecast Blank GW30, Double GW32, Blank GW33, Double GW35/36).
@@ -182,6 +189,8 @@ The design is final. Build from these, do not restyle:
 - Data room, six tabs: Stories, Players (8 metric groups), Teams (5 metric groups), Fixtures (20 x 10 heatmap), Ownership, Model.
 - Player profile, Team profile, Free Hit story, Ask, Alerts, Archive.
 
-**Placeholders:** any stat whose source is not live yet renders the "Connects in v1" box from the mockups, naming the source (for a source that is built but offline, the box title says so, for example "Understat is offline since 2 Nov. Retrying nightly."). It switches to real data automatically when `data/sources.json` reports that source healthy.
+**Placeholders:** any stat whose source is not live yet renders the "Connects in v1" box from the mockups, naming the source (for a source that is built but offline, the box title says so, for example "Understat is offline since 2 Nov. Retrying nightly."). It switches to real data automatically once the source's `derived.json` is in the run's `app.json`.
+
+**Sources on screen:** FotMob's numbers sit in their own tables and cards (data room: under Shots & chances, Defending and Minutes for players, Attack and Defence for teams; profile: Where he plays, Duels, dribbles and chances; team profile: Big chances, the box and running), each captioned "Source: FotMob, matches to <date>". Never in a column with FPL's or Understat's numbers.
 
 **Hosting:** a private Claude artifact page reading the repo's `data/` and `editions/`; Ask uses the artifact's `sample` capability. Interactions must be keyboard reachable with visible focus.

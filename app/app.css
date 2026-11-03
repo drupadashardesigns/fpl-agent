@@ -380,3 +380,12 @@ h1[tabindex="-1"]:focus, article[tabindex="-1"]:focus { outline: none; }
 .pitch .shot.g { background: var(--orange); border-color: var(--orange-tint-ink); }
 .sw-ring { background: var(--surface); border: 2px solid var(--ink-muted); }
 .sw-dot { border-radius: 50%; }
+
+/* FotMob touch heatmap: full pitch, attacking left to right */
+.heat { display: block; width: 100%; height: auto; aspect-ratio: 105 / 68; border-radius: 12px; background: var(--surface-sunken); border: 2px solid var(--chart-muted); }
+.heat .cells rect { fill: var(--orange); }
+.heat .lines * { fill: none; stroke: var(--chart-muted); stroke-width: 0.6; }
+.heat .dir { fill: none; stroke: var(--ink-subtle); stroke-width: 0.6; stroke-linecap: round; stroke-linejoin: round; }
+.scrollx-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.scrollx-chips .opt { flex: none; }
+.t-h3 { margin: 4px 0 0; font: 800 16px/1.3 var(--font-display); }

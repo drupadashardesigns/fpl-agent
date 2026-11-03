@@ -6,6 +6,8 @@
     python -m engine appdata [--gw N]    rebuild data/runs/gwNN/app.json for the web app
     python -m engine understat           fetch Understat (league + new finished matches), derive stats
     python -m engine understat --offline derive only, from data/understat/ on disk
+    python -m engine fotmob              fetch FotMob (league, stat tables, new finished matches + heatmaps), derive
+    python -m engine fotmob --offline    derive only, from data/fotmob/ on disk
 
 A run writes data/runs/gwNN/ with one file per stage, plus facts.json: the
 compact bundle the weekly editor reads to write the edition.
@@ -17,7 +19,7 @@ import datetime as dt
 import json
 from pathlib import Path
 
-from . import appdata, fpl_api, model, ownership, planner, prices, understat
+from . import appdata, fotmob, fpl_api, model, ownership, planner, prices, understat
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = json.loads((ROOT / "config.json").read_text())
@@ -162,6 +164,8 @@ def main() -> None:
     ad.add_argument("--gw", type=int)
     us = sub.add_parser("understat")
     us.add_argument("--offline", action="store_true")
+    fm = sub.add_parser("fotmob")
+    fm.add_argument("--offline", action="store_true")
     r = sub.add_parser("run")
     r.add_argument("--entry", type=int, default=CONFIG["entry_id"])
     r.add_argument("--horizon", type=int, default=CONFIG.get("horizon", 6))
@@ -173,6 +177,8 @@ def main() -> None:
         appdata.build(a.gw)
     elif a.cmd == "understat":
         understat.run(a.offline)
+    elif a.cmd == "fotmob":
+        fotmob.run(a.offline)
     else:
         run(a.entry, a.horizon, not a.no_ownership)
 

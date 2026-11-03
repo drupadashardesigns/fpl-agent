@@ -45,7 +45,6 @@
   const oppLabel = (fx) => fx.map(([o, h]) => (h ? o.toUpperCase() : o.toLowerCase())).join(" + ") || "none";
   const weekXp = (p, g) => (p.w[g] ? p.w[g][0] : 0);
   const heatCls = (x) => (x >= 5 ? "h-hot" : x >= 4 ? "h-warm" : "h-cool");
-  const live = (k) => SRC && SRC.sources && SRC.sources[k] && SRC.sources[k].status === "healthy";
   // Understat: a separate provider with its own xG model. Its numbers live under
   // "us" on players and teams and are always labelled, never mixed into FPL columns.
   const USM = () => D.meta.understat;
@@ -59,6 +58,27 @@
     if (!s || s.status === "healthy" || s.status === "pending") return "Connects in v1";
     const since = s.offline_since || (s.last_error && s.last_error.at);
     return since ? `Understat is offline since ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(since.slice(0, 10) + "T12:00:00Z"))}. Retrying nightly.` : "Understat is offline. Retrying nightly.";
+  };
+  // FotMob: a third provider. Its numbers live under "fm" on players and teams,
+  // always labelled "FotMob" with their date and never put in a column with FPL's or Understat's.
+  const FMM = () => D.meta.fotmob;
+  const dmy = (d) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(d + "T12:00:00Z"));
+  const fmLabel = () => { const m = FMM(); if (!m) return ""; const stale = m.status && m.status !== "healthy"; return `Source: FotMob, matches to ${m.data_to ? dmy(m.data_to) : "–"}${stale ? ". The latest fetch failed, so these are the last good numbers" : ""}.`; };
+  const fmTitle = () => {
+    const s = SRC && SRC.sources && SRC.sources.fotmob;
+    if (!s || s.status === "healthy" || s.status === "pending") return "Connects in v1";
+    const since = s.offline_since || (s.last_error && s.last_error.at);
+    return since ? `FotMob is offline since ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(since.slice(0, 10) + "T12:00:00Z"))}. Retrying nightly.` : "FotMob is offline. Retrying nightly.";
+  };
+  const pc = (x) => (x == null ? "–" : x + "%");
+  const fmTable = (rows, cfg) => {
+    // a FotMob-only table under an FPL or Understat one: same row order rules, its own columns and caption
+    const R = rows.filter((r) => r.fm && r.fm.s && (cfg.team || r.fm.s.min > 0) && cfg.k(r.fm) != null).sort((a, b) => cfg.k(b.fm) - cfg.k(a.fm));
+    const none = rows.filter((r) => !(r.fm && r.fm.s));
+    return `<h2 class="t-h2" style="margin-top:8px">${cfg.title}</h2><p class="muted" style="font-size:15px">${esc(cfg.note)}</p>
+      <div class="scrollx"><table class="tbl${cfg.full ? " tbl-full" : ""}"><thead><tr>${cfg.team ? `<th scope="col">#</th><th scope="col" class="l">Team</th>` : `<th scope="col">Player</th>`}${cfg.cols.map((c) => `<th scope="col">${c}</th>`).join("")}</tr></thead><tbody>
+      ${R.map((r, i) => `<tr>${cfg.team ? `<td>${i + 1}</td><td class="l"><a href="#team-${r.id}">${r.short}</a></td>` : `<td>${plink(r.id)}<br><span class="sub">${r.t} ${r.pos}${mine(r.id) ? " · yours" : ""}</span></td>`}${cfg.f(r.fm).map((v, j) => `<td class="${j === cfg.key ? (i < 3 ? "top3" : "key") : ""}">${v}</td>`).join("")}</tr>`).join("")}
+      </tbody></table></div><span class="cap">${fmLabel()} ${cfg.cap || ""}${!cfg.team && none.length ? ` Not listed, no FotMob match yet: ${none.map((r) => esc(r.n)).join(", ")} (see data/id_map_unmatched.json).` : ""}</span>`;
   };
   const mine = (id) => D.squad.ids.includes(Number(id));
   const sellsInCall = (id) => ED.call.transfers.some((t) => t.out_id === Number(id));
@@ -398,9 +418,14 @@
     create: { label: "Creating", note: "Expected assists and creativity. A minus xA far above zero usually means teammates finished well.", cols: ["xA", "Assists", "A − xA", "xA/90", "Creativity"], key: 3,
       f: (r) => [f2(r.xa), r.a, sg(r.a - r.xa), f2(r.min ? (r.xa * 90) / r.min : 0), Math.round(r.cre)], k: (r) => (r.min ? (r.xa * 90) / r.min : 0), sortLabel: "xA per 90" },
     defend: { label: "Defending", note: "Defensive contributions earn 2 points at 10 per game for defenders, 12 for midfielders and forwards (recoveries count for them).", cols: ["DefCon/90", "CBI", "Tackles", "Recoveries", "Clean sheets"], key: 0,
-      f: (r) => [f1(r.dc90), r.cbi, r.tck, r.rec, r.cs], k: (r) => r.dc90, sortLabel: "DefCon per 90", noGK: true },
+      f: (r) => [f1(r.dc90), r.cbi, r.tck, r.rec, r.cs], k: (r) => r.dc90, sortLabel: "DefCon per 90", noGK: true,
+      fm: { title: "Duels and ball winning, FotMob", note: "Per 90 this season, with the share of duels won. Last 4 is duels won per 90 in his last four games.", cols: ["Ground duels won/90", "Aerials won/90", "Interceptions/90", "Recoveries/90", "Dispossessed/90", "Duels won/90, last 4"], key: 0,
+        f: (u) => [`${n2(u.s.p90.gd)} (${pc(u.s.gd_pct)})`, `${n2(u.s.p90.ad)} (${pc(u.s.ad_pct)})`, n2(u.s.p90.int), n2(u.s.p90.rec), n2(u.s.p90.disp), n2(u.l4.min ? ((u.l4.gd[0] + u.l4.ad[0]) * 90) / u.l4.min : null)], k: (u) => u.s.p90.gd,
+        cap: "FotMob's recoveries are its own count, so they differ from the FPL column above." } },
     mins: { label: "Minutes", note: "Who actually plays. Expected minutes are the model's blend of recent games and injury flags; minutes in each of the last four games arrive with the next weekly run.", cols: ["Minutes", "Starts", "Per game", "Expected"], key: 3,
-      f: (r) => [r.min, r.starts, Math.round(r.min / Math.max(1, team(r.tid).gp)), Math.round(r.xm)], k: (r) => r.xm, sortLabel: "expected minutes next game" },
+      f: (r) => [r.min, r.starts, Math.round(r.min / Math.max(1, team(r.tid).gp)), Math.round(r.xm)], k: (r) => r.xm, sortLabel: "expected minutes next game",
+      fm: { title: "Running, FotMob", note: "Tracking data: distance and sprints per 90 this season, and his fastest speed in any game. Last 4 is distance per 90 in his last four games.", cols: ["Km/90", "Sprints/90", "Top speed km/h", "Total km", "Km/90, last 4"], key: 0,
+        f: (u) => [n1(u.s.p90.dist), n1(u.s.p90.spr), n1(u.s.top), n1(u.s.dist), n1(u.l4.p90.dist)], k: (u) => u.s.p90.dist } },
     bonus: { label: "Bonus & ICT", note: "BPS decides who gets the 3, 2 and 1 bonus. ICT combines influence, creativity and threat.", cols: ["Bonus", "BPS", "ICT", "Influence"], key: 1,
       f: (r) => [r.bonus, r.bps, f1(r.ict), Math.round(r.inf)], k: (r) => r.bps, sortLabel: "BPS" },
     form: { label: "Form & value", note: "Form is average points over the last four. Value is total points per £m.", cols: ["Points", "Per game", "Form", "Pts/£m", "xP 6 GW"], key: 4,
@@ -409,14 +434,20 @@
       f: (r) => [f1(r.cost), sg(r.chg), Math.round(r.o_top || 0) + "%", f1(r.sel) + "%", Math.round(r.tin / 1000) + "k", Math.round(r.tout / 1000) + "k"], k: (r) => r.o_top || 0, sortLabel: "top 10k ownership" },
     events: { label: "Shots & chances", us: true, note: "From Understat, not the FPL feed. npxG leaves out penalties. xGChain is the xG of every move a player touched; xGBuildup is the same without the shot and the final pass. All per 90 this season, plus shots in his last four games.", cols: ["Shots/90", "Key passes/90", "npxG/90", "xGChain/90", "xGBuildup/90", "Shots, last 4"], key: 2,
       f: (r) => r.us && r.us.s ? [n2(r.us.s.shots90), n2(r.us.s.kp90), n2(r.us.s.npxg90), n2(r.us.s.xgchain90), n2(r.us.s.xgbuildup90), r.us.l4 ? r.us.l4.shots : "–"] : ["–", "–", "–", "–", "–", "–"],
-      k: (r) => (r.us && r.us.s && r.us.s.npxg90 != null ? r.us.s.npxg90 : -1), sortLabel: "Understat npxG per 90" }
+      k: (r) => (r.us && r.us.s && r.us.s.npxg90 != null ? r.us.s.npxg90 : -1), sortLabel: "Understat npxG per 90",
+      fm: { title: "Chances, dribbles and passes, FotMob", note: "Per 90 this season. xGOT is the xG of his shots on target, after where they were placed. Line-breaking passes go through or past a line of the opponent's shape. Last 4 is chances created per 90 in his last four games.", cols: ["Chances/90", "Big chances", "Box touches/90", "Dribbles/90", "xGOT", "Line-breaking/90", "Final third/90", "Chances/90, last 4"], key: 0,
+        f: (u) => [n2(u.s.p90.cc), u.s.bcc, n2(u.s.p90.tib), `${n2(u.s.p90.drb)} (${pc(u.s.drb_pct)})`, n2(u.s.xgot), n2(u.s.p90.lbp), n2(u.s.p90.pf3), n2(u.l4.p90.cc)], k: (u) => u.s.p90.cc } }
   };
   const TG = {
     table: { label: "Table", note: "Standings after GW" + "%LAST%" + ", with the last five results.", cols: ["Pts", "W-D-L", "GD", "Form"], key: 0, f: (r) => [r.pts, `${r.w}-${r.d}-${r.l}`, sg(r.gf - r.ga, 0).replace("−0", "0"), r.form], k: (r) => -r.pos, sortLabel: "league position" },
     attack: { label: "Attack", note: "Chance creation per game this season. Goals above xG tends to cool.", cols: ["xG", "Goals", "G − xG", "xG rank"], key: 0, f: (r) => [f2(r.xgf), r.gf, sg(r.gf - r.xg_total), ord(r.xgf_rank)], k: (r) => r.xgf, sortLabel: "xG per game", soon: true,
-      us: { title: "Shots and xG, Understat", cols: ["xG", "npxG", "Shots", "Deep", "xG, last 4"], key: 0, f: (u) => [n2(u.s.xg_pg), n2(u.s.npxg_pg), n1(u.s.shots_pg), n1(u.s.deep_pg), u.l4 ? n2(u.l4.xg_pg) : "–"], k: (u) => u.s.xg_pg, note: "Per game. Deep is passes completed within about 20 metres of the opponent's goal, crosses excluded." } },
+      us: { title: "Shots and xG, Understat", cols: ["xG", "npxG", "Shots", "Deep", "xG, last 4"], key: 0, f: (u) => [n2(u.s.xg_pg), n2(u.s.npxg_pg), n1(u.s.shots_pg), n1(u.s.deep_pg), u.l4 ? n2(u.l4.xg_pg) : "–"], k: (u) => u.s.xg_pg, note: "Per game. Deep is passes completed within about 20 metres of the opponent's goal, crosses excluded." },
+      fm: { team: true, full: true, title: "Big chances and the box, FotMob", note: "Per game this season, except set-piece goals, which are season totals (corners, free kicks and throw-ins; penalties and own goals not included).", cols: ["Big chances", "Box touches", "Possession", "Set-piece goals", "Big chances, last 4"], key: 0,
+        f: (u) => [n1(u.s.bc_pg), n1(u.s.tib_pg), pc(u.s.poss), u.s.spg, u.l4 ? n1(u.l4.bc_pg) : "–"], k: (u) => u.s.bc_pg, cap: "Last 4 is per game over each team's last four league matches." } },
     defence: { label: "Defence", note: "Chances given up per game. Low xG against plus clean sheets is where defenders and keepers come from.", cols: ["xG against", "Conceded", "Clean sheets", "Rank"], key: 0, f: (r) => [f2(r.xga), r.ga, r.cs, ord(r.xga_rank)], k: (r) => -r.xga, sortLabel: "xG against per game (lowest first)", soon: true,
-      us: { title: "Shots and pressing, Understat", cols: ["xGA", "Shots against", "PPDA", "Deep allowed", "xGA, last 4"], key: 0, f: (u) => [n2(u.s.xga_pg), n1(u.s.shots_against_pg), n1(u.s.ppda), n1(u.s.deep_allowed_pg), u.l4 ? n2(u.l4.xga_pg) : "–"], k: (u) => -u.s.xga_pg, note: "Per game, lowest xGA first. PPDA is opponent passes allowed per defensive action in their half: lower means harder pressing." } },
+      us: { title: "Shots and pressing, Understat", cols: ["xGA", "Shots against", "PPDA", "Deep allowed", "xGA, last 4"], key: 0, f: (u) => [n2(u.s.xga_pg), n1(u.s.shots_against_pg), n1(u.s.ppda), n1(u.s.deep_allowed_pg), u.l4 ? n2(u.l4.xga_pg) : "–"], k: (u) => -u.s.xga_pg, note: "Per game, lowest xGA first. PPDA is opponent passes allowed per defensive action in their half: lower means harder pressing." },
+      fm: { team: true, full: true, title: "Chances conceded and running, FotMob", note: "Per game this season, lowest xG conceded first. FotMob's xG comes from Opta through its own feed, so it differs slightly from the FPL and Understat figures. Set-piece goals conceded are season totals. Distance is the whole team's running per match.", cols: ["xG conceded", "Big chances", "Box touches", "Set-piece goals", "Km per match", "xG conceded, last 4"], key: 0,
+        f: (u) => [n2(u.s.xga_pg), n1(u.s.bca_pg), n1(u.s.tiba_pg), u.s.spga, n1(u.s.dist_pg), u.l4 ? n2(u.l4.xga_pg) : "–"], k: (u) => -u.s.xga_pg, cap: "Last 4 is per game over each team's last four league matches." } },
     form: { label: "Form", note: "xG difference per game this season. Last-four splits of these FPL figures appear from GW13; Understat's last four is under Attack and Defence.", cols: ["xGD", "xG for", "xG against", "Pts"], key: 0, f: (r) => [sg(r.xgf - r.xga, 2), f2(r.xgf), f2(r.xga), r.pts], k: (r) => r.xgf - r.xga, sortLabel: "season xG difference per game" },
     venue: { label: "Home & away", note: "Points per game at home and away.", cols: ["Home", "Away", "Gap"], key: 0, f: (r) => [f2(r.hppg || 0), f2(r.appg || 0), sg((r.hppg || 0) - (r.appg || 0), 2)], k: (r) => r.hppg || 0, sortLabel: "home points per game" }
   };
@@ -465,14 +496,16 @@
         const rows = D.watch.map(P).filter((r) => !(g.noGK && r.pos === "GK")).sort((a, b) => g.k(b) - g.k(a));
         table = `<div class="scrollx"><table class="tbl"><thead><tr><th scope="col">Player</th>${g.cols.map((c) => `<th scope="col">${c}</th>`).join("")}</tr></thead><tbody>
         ${rows.map((r, i) => `<tr><td>${plink(r.id)}<br><span class="sub">${r.t} ${r.pos}${mine(r.id) ? " · yours" : ""}</span></td>${g.f(r).map((v, j) => `<td class="${j === g.key ? (i < 3 ? "top3" : "key") : ""}">${v}</td>`).join("")}</tr>`).join("")}
-        </tbody></table></div>${g.us ? `<span class="cap">${usLabel()} A dash means no Understat match for that player yet (see data/id_map_unmatched.json).</span>` + v1box("FotMob connects next", "Big chances created, successful dribbles and %, duels won and %, aerial duels won and %, touches in the box, interceptions, dispossessed and xG on target.") : ""}`;
+        </tbody></table></div>${g.us ? `<span class="cap">${usLabel()} A dash means no Understat match for that player yet (see data/id_map_unmatched.json).</span>` : ""}`;
       } else {
-        table = (g.us ? v1box(usTitle(), "Shots, shots on target, key passes, non-penalty xG, xGChain and xGBuildup, per 90 and over the last four games, with shot maps on the profile.", "From Understat.") : "") + v1box("Connects in v1", "Big chances created, successful dribbles and %, duels won and %, aerial duels won and %, touches in the box, interceptions, dispossessed and xG on target.", "From FotMob. Touch heatmaps from Sofascore.");
+        table = g.us ? v1box(usTitle(), "Shots, shots on target, key passes, non-penalty xG, xGChain and xGBuildup, per 90 and over the last four games, with shot maps on the profile.", "From Understat.") : "";
       }
+      const fmPart = !g.fm ? "" : FMM() ? fmTable(D.watch.map(P).filter((r) => !(g.noGK && r.pos === "GK")), g.fm)
+        : v1box(fmTitle(), "Chances and big chances created, successful dribbles, ground and aerial duels won, touches in the box, interceptions, recoveries, dispossessed, xG on target, line-breaking passes, passes into the final third, distance, sprints and top speed.", "From FotMob.");
       body = `<section class="gutter" style="padding-bottom:20px;display:flex;flex-direction:column;gap:12px">
         <div role="group" aria-label="Player metrics" class="row-wrap" style="gap:6px">${Object.keys(PG).map((id) => `<button type="button" class="opt" data-act="pgroup" data-id="${id}" aria-pressed="${S.pgroup === id}">${PG[id].label}</button>`).join("")}</div>
         <p class="muted" style="font-size:15px">${esc(g.note)}</p>${table}
-        <span class="cap">${g.soon ? "Understat numbers appear after its first successful fetch, FotMob's when it connects." : `Your squad, this week's targets and the template. Sorted by ${g.sortLabel}. Orange marks the top three. Tap a name for the full profile.`}</span></section>`;
+        <span class="cap">${g.soon ? "Understat numbers appear after its first successful fetch." : `Your squad, this week's targets and the template. Sorted by ${g.sortLabel}. Orange marks the top three. Tap a name for the full profile.`}</span>${fmPart}</section>`;
     } else if (S.tab === "teams") {
       const g = TG[S.tgroup];
       const rows = Object.values(D.teams).slice().sort((a, b) => g.k(b) - g.k(a));
@@ -485,7 +518,7 @@
         <span class="cap">Ranked by ${g.sortLabel}. xG figures per game, our calculation from FPL player data. Tap a team for its profile.</span>
         ${g.us && USM() ? usTeamTable(g.us) : ""}
         ${g.soon && !USM() ? v1box(usTitle(), "Understat's own xG, npxG and xG against, shots for and against, pressing (PPDA) and deep completions, season and last four.") : ""}
-        ${g.soon ? `<div class="note-blue" style="padding:14px 16px;font-size:15px">Shots in the box, big chances and set-piece goals connect in v1, from FotMob. Distance covered has no free source we can confirm.</div>` : ""}</section>`;
+        ${g.fm ? (FMM() ? fmTable(Object.values(D.teams), g.fm) : v1box(fmTitle(), "Big chances for and against, touches in the box, set-piece goals for and against, possession, xG conceded and distance covered per match, season and last four.", "From FotMob.")) : ""}</section>`;
     } else if (S.tab === "fixtures") {
       const att = S.tick === "att";
       const G = gws();
@@ -612,11 +645,8 @@
         <span class="cap">Source: official FPL data, read ${pulledShort()}.</span>
       </section>
       ${usPlayerCard(p)}
-      <section class="card card-16"><div class="phead-row" style="align-items:center"><h2 class="t-h2">Where he plays</h2>${live("sofascore") ? "" : `<span class="tag tag-blue tag-sm">Connects in v1</span>`}</div>
-        <div class="pitch" role="img" aria-label="Empty pitch: touch heatmap arrives in v1"><i class="mid"></i><i class="circ"></i><i class="boxl"></i><i class="boxr"></i><span class="txt">Season touch heatmap, attacking left to right</span></div>
-        <span class="cap">From Sofascore, season and per match.</span></section>
-      <section class="card card-16"><div class="phead-row" style="align-items:center"><h2 class="t-h2">Duels, dribbles and chances</h2>${live("fotmob") ? "" : `<span class="tag tag-blue tag-sm">Connects in v1</span>`}</div>
-        ${kv(events.map(([k, s]) => [k, s, true]))}</section>
+      ${fmWhere(p)}
+      ${fmDuels(p, events)}
       <section class="card card-16"><div style="display:flex;flex-direction:column"><h2 class="t-h2">Points by gameweek</h2><span class="cap">Orange bars are 8 points or more. Under each bar: opponent, then that game's xG plus xA.</span></div>${hist}</section>
       <section class="card card-16" style="gap:8px"><h2 class="t-h2">Next six</h2>
         <table class="tbl tbl-full" style="white-space:normal"><thead><tr><th scope="col">GW</th><th scope="col" class="l">Opp</th><th scope="col">Projected</th><th scope="col">${t.short} goals</th><th scope="col">Clean sheet</th></tr></thead><tbody>
@@ -653,6 +683,63 @@
     return `<section class="card card-16" style="gap:12px">${head}${kv(rows)}
       ${u.map && u.map.length ? shotMap(p) : u.map ? `<p class="muted">No shots this season.</p>` : ""}
       <span class="cap">${usLabel()} Understat's xG is its own model, kept apart from the FPL xG above, which comes from Opta. ${s.min} Understat minutes against ${p.min} in FPL.</span></section>`;
+  }
+  // ---------- FotMob on the profile ----------
+  const fmHead = (title, ok) => `<div class="phead-row" style="align-items:center"><h2 class="t-h2">${title}</h2>${ok ? `<span class="tag tag-green tag-sm">FotMob</span>` : `<span class="tag tag-blue tag-sm">${fmTitle() === "Connects in v1" ? "Connects in v1" : "FotMob offline"}</span>`}</div>`;
+  const B36 = "0123456789abcdefghijklmnopqrstuvwxyz";
+  function heatSvg(cells, gx, gy, label) {
+    // scale to the 95th percentile of touched cells so one busy cell does not wash out the rest
+    const nz = cells.filter((v) => v > 0).sort((a, b) => a - b);
+    const top = Math.max(1, nz.length ? nz[Math.floor(0.95 * (nz.length - 1))] : 1);
+    const cw = 105 / gx, ch = 68 / gy;
+    const rects = cells.map((v, i) => v ? `<rect x="${((i % gx) * cw).toFixed(2)}" y="${(Math.floor(i / gx) * ch).toFixed(2)}" width="${cw.toFixed(2)}" height="${ch.toFixed(2)}" fill-opacity="${Math.pow(Math.min(1, v / top), 1.4).toFixed(2)}"/>` : "").join("");
+    return `<svg class="heat" viewBox="0 0 105 68" role="img" aria-label="${esc(label)}"><defs><filter id="hb" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.8"/></filter></defs>
+      <g class="cells" filter="url(#hb)">${rects}</g>
+      <g class="lines"><rect x="0.5" y="0.5" width="104" height="67" rx="1"/><line x1="52.5" y1="0.5" x2="52.5" y2="67.5"/><circle cx="52.5" cy="34" r="9.15"/>
+      <rect x="0.5" y="13.85" width="16.5" height="40.3"/><rect x="88" y="13.85" width="16.5" height="40.3"/><rect x="0.5" y="24.85" width="5.5" height="18.3"/><rect x="99" y="24.85" width="5.5" height="18.3"/></g>
+      <path class="dir" d="M44 63.5h17m-3-2.5 3 2.5-3 2.5"/></svg>`;
+  }
+  function fmWhere(p) {
+    const u = p.fm;
+    if (!FMM()) return `<section class="card card-16">${fmHead("Where he plays", false)}
+      <div class="pitch" role="img" aria-label="Empty pitch: touch heatmap not loaded"><i class="mid"></i><i class="circ"></i><i class="boxl"></i><i class="boxr"></i><span class="txt">Season touch heatmap, attacking left to right</span></div>
+      <span class="cap">${esc(fmTitle() === "Connects in v1" ? "From FotMob, season and per match." : fmTitle())}</span></section>`;
+    if (!u || !u.s) return `<section class="card card-16">${fmHead("Where he plays", true)}<p class="muted">No FotMob match for ${esc(p.n)} yet, so no heatmap or running data. Unmatched players are listed for review rather than guessed.</p></section>`;
+    const s = u.s, l = u.l4;
+    const run = kv([["Distance per 90", s.p90.dist == null ? "–" : `${n1(s.p90.dist)} km (last 4: ${n1(l.p90.dist)} km)`], ["Total distance", s.dist == null ? "–" : `${n1(s.dist)} km in ${s.games} games`],
+      ["Sprints per 90", s.p90.spr == null ? "–" : `${n1(s.p90.spr)} (last 4: ${n1(l.p90.spr)})`], ["Top speed", s.top == null ? "–" : `${n1(s.top)} km/h`]]);
+    let map, picker = "", cap;
+    if (u.heat && u.heat.season) {
+      const [gx, gy] = u.heat.grid;
+      const ms = u.heat.matches.map((m, i) => ({ i, gw: m[0], opp: team(m[1]) ? team(m[1]).short : "?", home: m[2], min: m[3], date: m[4], g: m[5] })).reverse();
+      const sel = S.heat && S.heat.id === p.id ? S.heat.i : "s";
+      const m = sel === "s" ? null : ms.find((x) => String(x.i) === String(sel));
+      const cells = m ? Array.from(m.g, (c) => B36.indexOf(c)) : u.heat.season;
+      const what = m ? `GW${m.gw} ${m.home ? "at home to" : "away at"} ${m.opp}, ${m.min} minutes` : `this season, ${u.heat.season_games} games`;
+      map = heatSvg(cells, gx, gy, `Touch heatmap, ${what}, attacking left to right`);
+      picker = `<div class="scrollx-chips" role="group" aria-label="Heatmap: season or one match"><button type="button" class="opt opt-sm opt-sunk" data-act="heat" data-id="s" aria-pressed="${!m}">Season</button>${ms.map((x) => `<button type="button" class="opt opt-sm opt-sunk" data-act="heat" data-id="${x.i}" aria-pressed="${m && m.i === x.i}">GW${x.gw} ${x.home ? x.opp.toUpperCase() : x.opp.toLowerCase()}</button>`).join("")}</div>`;
+      cap = `${m ? `GW${m.gw}, ${m.home ? "home" : "away"} v ${m.opp}, ${dmy(m.date)}, ${m.min} minutes.` : `Every touch in ${u.heat.season_games} games, added up.`} Attacking left to right; darker means more touches. ${fmLabel()}`;
+    } else {
+      map = `<div class="pitch" role="img" aria-label="Empty pitch: no heatmap kept for this player"><i class="mid"></i><i class="circ"></i><i class="boxl"></i><i class="boxr"></i><span class="txt">Heatmaps are kept for your squad, this week's targets, the template and the top 60 projected</span></div>`;
+      cap = fmLabel();
+    }
+    return `<section class="card card-16" style="gap:12px">${fmHead("Where he plays", true)}${picker}${map}<span class="cap">${cap}</span>
+      <h3 class="t-h3">Running</h3>${run}<span class="cap">FotMob tracking data, over ${s.phys_min} tracked minutes.</span></section>`;
+  }
+  function fmDuels(p, events) {
+    const u = p.fm;
+    if (!FMM()) return `<section class="card card-16">${fmHead("Duels, dribbles and chances", false)}${kv(events.map(([k, s]) => [k, s, true]))}</section>`;
+    if (!u || !u.s) return `<section class="card card-16">${fmHead("Duels, dribbles and chances", true)}<p class="muted">No FotMob match for ${esc(p.n)} yet, so no numbers.</p></section>`;
+    const s = u.s, l = u.l4;
+    const fr = (k) => [`${s[k][0]} of ${s[k][1]}${s[k + "_pct"] != null ? ` (${s[k + "_pct"]}%)` : ""}`, n2(s.p90[k]), `${n2(l.p90[k])}${l[k + "_pct"] != null ? ` (${l[k + "_pct"]}%)` : ""}`];
+    const ct = (k) => [s[k], n2(s.p90[k]), n2(l.p90[k])];
+    const R = [["Chances created", ...ct("cc")], ["Big chances created", ...ct("bcc")], ["Successful dribbles", ...fr("drb")], ["Ground duels won", ...fr("gd")], ["Aerial duels won", ...fr("ad")],
+      ["Touches in the box", ...ct("tib")], ["Interceptions", ...ct("int")], ["Recoveries", ...ct("rec")], ["Dispossessed", ...ct("disp")], ["xG on target (xGOT)", n2(s.xgot), n2(s.p90.xgot), n2(l.p90.xgot)],
+      ["Line-breaking passes", ...ct("lbp")], ["Passes into the final third", ...ct("pf3")]];
+    return `<section class="card card-16" style="gap:8px">${fmHead("Duels, dribbles and chances", true)}
+      <div class="scrollx"><table class="tbl tbl-full" style="white-space:normal"><thead><tr><th scope="col" class="l">FotMob</th><th scope="col">Season</th><th scope="col">Per 90</th><th scope="col">Last 4, per 90</th></tr></thead><tbody>
+      ${R.map(([k, a, b, c]) => `<tr><td class="l">${k}</td><td>${a}</td><td class="key">${b}</td><td>${c}</td></tr>`).join("")}</tbody></table></div>
+      <span class="cap">${fmLabel()} ${s.min} FotMob minutes in ${s.games} games; last four: ${l.minutes.join(", ")} minutes. FotMob's counts are its own, so they can differ from the FPL figures above.</span></section>`;
   }
   function homeAway(h) {
     const hm = h.filter((r) => r[4] && r[2] > 0), aw = h.filter((r) => !r[4] && r[2] > 0);
@@ -698,13 +785,14 @@
         ${players.map((p) => `<tr><td>${plink(p.id)}${mine(p.id) ? ` <span class="sub">· yours</span>` : ""}</td><td>${f1(p.cost)}</td><td>${f2(p.xgi)}</td><td>${f1(p.dc90)}</td><td class="key">${f1(p.h6)}</td></tr>`).join("")}</tbody></table></div>
         <span class="cap">${cor ? `Set pieces: ${esc(cor.n)} takes corners${pen ? ` and ${esc(pen.n)} is first on penalties` : ""}. ` : ""}${dcMid ? `${esc(dcMid.n)} averages ${f1(dcMid.dc90)} defensive actions per 90, over the midfield DefCon line of 12, and expects ${Math.round(dcMid.xm)} minutes.` : ""}</span></section>
       ${usTeamCard(t)}
+      ${fmTeamCard(t)}
       <a href="#finder" class="btn btn-primary" data-act="finder-team">Find players to buy</a>
       <span class="foot">Model ${esc(D.meta.model.version)} · data pulled ${pulled()}</span>
     </div>`;
   }
 
   function usTeamCard(t) {
-    if (!USM() || !t.us || !t.us.s) return v1box(usTitle(), "Shots and shots conceded, Understat's xG and npxG for and against, pressing (PPDA) and deep completions, season and last four.") + v1box("Connects in v1", "Shots in the box, big chances and set-piece goals, from FotMob.");
+    if (!USM() || !t.us || !t.us.s) return v1box(usTitle(), "Shots and shots conceded, Understat's xG and npxG for and against, pressing (PPDA) and deep completions, season and last four.");
     const s = t.us.s, l = t.us.l4 || {};
     const R = [["xG for", n2(s.xg_pg), n2(l.xg_pg)], ["Non-penalty xG for", n2(s.npxg_pg), n2(l.npxg_pg)], ["xG against", n2(s.xga_pg), n2(l.xga_pg)],
       ["Shots", n1(s.shots_pg), n1(l.shots_pg)], ["Shots conceded", n1(s.shots_against_pg), n1(l.shots_against_pg)],
@@ -712,8 +800,19 @@
     return `<section style="display:flex;flex-direction:column;gap:8px"><div class="phead-row" style="align-items:center"><h2 class="t-h2">Shots and pressing</h2><span class="tag tag-green tag-sm">Understat</span></div>
       <div class="scrollx"><table class="tbl tbl-full"><thead><tr><th scope="col">Per game</th><th scope="col">Season (${s.games})</th><th scope="col">Last four</th></tr></thead><tbody>
       ${R.map(([k, a, b]) => `<tr><td>${k}</td><td>${a}</td><td>${b}</td></tr>`).join("")}</tbody></table></div>
-      <span class="cap">${usLabel()} Lower PPDA means harder pressing. Understat's xG is its own model, so it differs from the FPL xG in the table above.</span>
-      ${v1box("FotMob connects next", "Shots in the box, big chances and set-piece goals.")}</section>`;
+      <span class="cap">${usLabel()} Lower PPDA means harder pressing. Understat's xG is its own model, so it differs from the FPL xG in the table above.</span></section>`;
+  }
+  function fmTeamCard(t) {
+    if (!FMM()) return v1box(fmTitle(), "Big chances for and against, touches in the box, set-piece goals for and against, possession, xG conceded and distance covered per match, season and last four.", "From FotMob.");
+    if (!t.fm || !t.fm.s) return "";
+    const s = t.fm.s, l = t.fm.l4 || {};
+    const R = [["Possession", pc(s.poss), pc(l.poss)], ["Big chances", n1(s.bc_pg), n1(l.bc_pg)], ["Big chances conceded", n1(s.bca_pg), n1(l.bca_pg)],
+      ["Touches in the opponent's box", n1(s.tib_pg), n1(l.tib_pg)], ["Touches allowed in their own box", n1(s.tiba_pg), n1(l.tiba_pg)], ["xG conceded", n2(s.xga_pg), n2(l.xga_pg)],
+      ["Set-piece goals (total)", s.spg, l.spg], ["Set-piece goals conceded (total)", s.spga, l.spga], ["Distance covered, km", n1(s.dist_pg), n1(l.dist_pg)]];
+    return `<section style="display:flex;flex-direction:column;gap:8px"><div class="phead-row" style="align-items:center"><h2 class="t-h2">Big chances, the box and running</h2><span class="tag tag-green tag-sm">FotMob</span></div>
+      <div class="scrollx"><table class="tbl tbl-full" style="white-space:normal"><thead><tr><th scope="col">Per game</th><th scope="col">Season (${s.games})</th><th scope="col">Last four</th></tr></thead><tbody>
+      ${R.map(([k, a, b]) => `<tr><td>${k}</td><td>${a}</td><td>${b}</td></tr>`).join("")}</tbody></table></div>
+      <span class="cap">${fmLabel()} Set pieces are corners, free kicks and throw-ins; penalties and own goals are not counted. FotMob's xG comes from Opta through its own feed, so it is kept apart from the FPL and Understat figures above.</span></section>`;
   }
 
   // ---------- Free Hit story ----------
@@ -868,14 +967,16 @@
     return hits.map((p) => ({ id: p.id, name: p.n, full_name: p.first + " " + p.last, team: p.t, pos: p.pos, price: p.cost, status: p.status, news: p.news,
       season: { minutes: p.min, starts: p.starts, goals: p.g, assists: p.a, xg: p.xg, xa: p.xa, points: p.pts, bonus: p.bonus, defcon_per90: p.dc90, form: p.form },
       projections: gws().slice(0, 6).map((g) => ({ gw: g, opp: oppLabel(p.w[g] ? p.w[g][1] : []), xp: weekXp(p, g) })), proj_next6: p.h6, exp_mins: Math.round(p.xm),
-      haul_pct: p.haul, blank_pct: p.blank, own_top10k: p.o_top, own_near_rank: p.o_peer, eo_top10k: p.eo_top, price_progress_pct: Math.round(p.pcp), in_squad: mine(p.id) }));
+      haul_pct: p.haul, blank_pct: p.blank, own_top10k: p.o_top, own_near_rank: p.o_peer, eo_top10k: p.eo_top, price_progress_pct: Math.round(p.pcp), in_squad: mine(p.id),
+      fotmob: p.fm && p.fm.s ? { source: fmLabel(), season_per90: p.fm.s.p90, season_totals: { minutes: p.fm.s.min, chances_created: p.fm.s.cc, big_chances_created: p.fm.s.bcc, xgot: p.fm.s.xgot, distance_km: p.fm.s.dist, top_speed_kmh: p.fm.s.top }, last4_per90: p.fm.l4.p90 } : undefined }));
   }
   function findTeam(name) {
     const q = String(name || "").toLowerCase();
     const t = Object.values(D.teams).find((x) => x.short.toLowerCase() === q || x.name.toLowerCase().includes(q));
     if (!t) return { error: "No team matches " + name };
     return { name: t.name, short: t.short, position: t.pos, points: t.pts, record: `${t.w}-${t.d}-${t.l}`, xg_for_per_game: t.xgf, xg_against_per_game: t.xga, form: t.form,
-      next: gws().map((g) => ({ gw: g, fixtures: (t.next[g] || []).map((x) => ({ opp: x.opp, home: x.home, exp_goals: x.g, clean_sheet_pct: x.cs })) })) };
+      next: gws().map((g) => ({ gw: g, fixtures: (t.next[g] || []).map((x) => ({ opp: x.opp, home: x.home, exp_goals: x.g, clean_sheet_pct: x.cs })) })),
+      fotmob: t.fm && t.fm.s ? { source: fmLabel(), season: t.fm.s, last4: t.fm.l4 } : undefined };
   }
   async function ask(text) {
     const A = S.ask;
@@ -883,7 +984,7 @@
     if (!sample) { A.answer = { lead: "Asking your own questions needs the Claude app.", body: "Open this page in Claude to ask anything. The suggested questions above work everywhere.", src: "", link: null }; A.busy = false; render(); return; }
     askCtl = new AbortController();
     const prompt = `You are the AlooSoul FPL agent, answering the manager's question from this week's data only.
-Rules: plain, direct language, short sentences. Never use em dashes. Never say a player "will" score or rise; say "projects", "likely" or "the model expects". Label projections as projections. Give every number context (over how many gameweeks, against what). The v0 model underrates premium forwards' hauls and minutes are its weakest input; say so when it matters. If the data cannot answer, say what is missing. Use the lookup tools for any player or team not in the summary.
+Rules: plain, direct language, short sentences. Never use em dashes. Never say a player "will" score or rise; say "projects", "likely" or "the model expects". Label projections as projections. Give every number context (over how many gameweeks, against what). The v0 model underrates premium forwards' hauls and minutes are its weakest input; say so when it matters. If the data cannot answer, say what is missing. FotMob numbers (chances, duels, xGOT, running) come under "fotmob" with their date: name FotMob as the source and never add or compare them with FPL figures as if they were one measure. Use the lookup tools for any player or team not in the summary.
 Answer as JSON only: {"lead": "one-sentence answer, 15 words or fewer", "body": "2 to 4 sentences of reasoning with numbers", "src": "which data you used, a few words", "player_id": number or null}
 
 This week's data:
@@ -891,8 +992,8 @@ ${JSON.stringify(askContext())}
 
 Question: ${text}`;
     const tools = [
-      { name: "lookup_player", description: "Season stats, projections for the next six gameweeks, ownership and price progress for players matching a name.", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] }, execute: (i) => findPlayer(i.name) },
-      { name: "lookup_team", description: "League position, xG for and against, and the next ten fixtures for a team (name or three-letter code).", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] }, execute: (i) => findTeam(i.name) }
+      { name: "lookup_player", description: "Season stats, projections for the next six gameweeks, ownership and price progress for players matching a name, plus FotMob's chances, duels, dribbles, xGOT and running per 90 when matched.", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] }, execute: (i) => findPlayer(i.name) },
+      { name: "lookup_team", description: "League position, xG for and against, and the next ten fixtures for a team (name or three-letter code), plus FotMob's big chances, box touches, set-piece goals, possession and distance.", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] }, execute: (i) => findTeam(i.name) }
     ];
     try {
       const { text: out } = await sample(prompt, { tools, signal: askCtl.signal, cache: false, onText: () => { if (A.busyText !== "Writing the answer...") { A.busyText = "Writing the answer..."; render(); } } });
@@ -984,6 +1085,7 @@ Question: ${text}`;
       case "gw9": keep(() => (S.gw9 = !S.gw9)); break;
       case "to-own": S.tab = "players"; S.pgroup = "own"; history.replaceState(null, "", "#dataroom-players"); render(true); break;
       case "pmg": keep(() => (S.pmg = id)); break;
+      case "heat": keep(() => (S.heat = { id: Number(route().arg), i: id })); break;
       case "finder-team": break;
       case "ask-about": S.ask.draft = `Is ${nm(id)} worth it for my squad?`; S.ask.err = ""; break;
       case "ask-q": keep(() => { S.ask.q = id; S.ask.custom = null; S.ask.answer = null; S.ask.err = ""; }); break;
