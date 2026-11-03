@@ -39,13 +39,13 @@
      }},
     {"id": "h2", "kicker": "Gameweek 9", "tone": "review",
      "title": "74 points and a 127k jump in rank",
-     "dek": "Van Hecke scored 15, the top score of the whole gameweek. You beat the average of 44 by 30 and climbed from 225,500 to 98,013.",
+     "dek": "Van Hecke scored 15, the top score of the whole gameweek. You beat the average of 44 by 30, and your rank after GW9 is 98,216, up from 225,500.",
      "read": null,
      "evidence": {
        "src": "your FPL history and GW9 points",
        "facts": [
          {"k": "Your score / average", "v": "74 / 44"},
-         {"k": "Rank before and after", "v": "225,500 → 98,013"},
+         {"k": "Rank after GW8 / after GW9", "v": "225,500 / 98,216"},
          {"k": "Van Hecke, Konsa, De Cuyper", "v": "15 + 10 + 9 = 34"},
          {"k": "Haaland as captain", "v": "2 × 2 = 4"},
          {"k": "Points left on bench", "v": "21 (Verbruggen 11)"}
