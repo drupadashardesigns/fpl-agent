@@ -84,7 +84,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #1747B8;outline-offset:2p
         <div style="padding: 16px; border-radius: 16px; background: #DCEBFF; color: #0F3F8A; display: flex; flex-direction: column; gap: 8px;">
           <span style="font: 700 16px/1.3 'Plus Jakarta Sans', sans-serif;">Connects in v1</span>
           <span>Chances created, big chances created, successful dribbles and %, duels won and %, aerial duels won and %, touches in the box, interceptions, dispossessed, xG on target, shots and shots on target.</span>
-          <span style="font-size: 14px;">From Understat (shots, key passes) and FotMob (the rest). Touch heatmaps from Sofascore.</span>
+          <span style="font-size: 14px;">From Understat (shots, key passes) and FotMob (the rest).</span>
         </div>
       </sc-if>
       <span style="font-size: 14px; color: #4A5578;">Sorted by {{pg.sortLabel}}. Orange marks the top three. Tap a name for the full profile.</span>
@@ -112,7 +112,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #1747B8;outline-offset:2p
         </table>
       </div>
       <sc-if value="{{tg.soon}}" hint-placeholder-val="{{false}}">
-        <div style="padding: 14px 16px; border-radius: 16px; background: #DCEBFF; color: #0F3F8A; font-size: 15px;">Shots for and against, shots in the box, big chances, PPDA (pressing) and deep completions connect in v1 from Understat and FotMob. Distance covered has no free source we can confirm.</div>
+        <div style="padding: 14px 16px; border-radius: 16px; background: #DCEBFF; color: #0F3F8A; font-size: 15px;">Shots for and against, shots in the box, big chances, PPDA (pressing) and deep completions connect in v1 from Understat and FotMob, with distance covered per match from FotMob's tracking data.</div>
       </sc-if>
       <span style="font-size: 14px; color: #4A5578;">Ranked by {{tg.sortLabel}}. xG figures per game. Tap a team for its profile.</span>
     </section>

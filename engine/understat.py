@@ -22,8 +22,8 @@ Files:
     data/understat/league_EPL_<season>.json   latest league payload (overwritten each run)
     data/understat/matches/<id>.json.gz       one per finished match, fetched once
     data/understat/derived.json               player and team stats keyed by FPL id
-    data/id_map.json                          FPL element id -> Understat player id
-    data/id_map_unmatched.json                players we would not match (for review)
+    data/id_map.json                          "understat" section: FPL element id -> Understat player id
+    data/id_map_unmatched.json                "understat" section: players we would not match (for review)
     data/sources.json                         health record for "understat"
 
 Understat's xG is its own model. It is kept apart from FPL's xG (Opta) all
@@ -34,18 +34,16 @@ from __future__ import annotations
 import datetime as dt
 import gzip
 import json
-import re
 import time
-import unicodedata
 import urllib.request
 from collections import defaultdict
 from pathlib import Path
 
+from . import idmap
+
 ROOT = Path(__file__).resolve().parents[1]
 DIR = ROOT / "data" / "understat"
 SOURCES = ROOT / "data" / "sources.json"
-ID_MAP = ROOT / "data" / "id_map.json"
-UNMATCHED = ROOT / "data" / "id_map_unmatched.json"
 BASE = "https://understat.com/"
 LEAGUE = "EPL"
 SEASON = 2026  # start year: 2026 means 2026/27
@@ -152,147 +150,42 @@ def load_matches() -> list[dict]:
     return sorted((_load(p) for p in (DIR / "matches").glob("*.json.gz")), key=lambda m: m["datetime"])
 
 
-# ---- names and the ID map -----------------------------------------------------------
+# ---- the ID map (shared logic in engine/idmap.py) ------------------------------------
 
-def norm(s: str) -> str:
-    """Lower case, accents off, punctuation to spaces: 'Ødegaard' -> 'odegaard'."""
-    s = unicodedata.normalize("NFKD", s or "")
-    s = "".join(c for c in s if not unicodedata.combining(c))
-    s = s.replace("ø", "o").replace("Ø", "o").replace("ß", "ss").replace("ł", "l").replace("đ", "d").replace("æ", "ae")
-    s = re.sub(r"[^a-z0-9 ]+", " ", s.lower().replace("'", ""))
-    return re.sub(r"\s+", " ", s).strip()
-
-
-# Understat team titles that do not normalise to the FPL name or short name.
-TEAM_ALIASES = {
-    "manchester city": "man city", "manchester united": "man utd", "newcastle united": "newcastle",
-    "nottingham forest": "nottm forest", "tottenham": "spurs", "tottenham hotspur": "spurs",
-    "wolverhampton wanderers": "wolves", "west ham united": "west ham", "brighton and hove albion": "brighton",
-    "brighton hove albion": "brighton", "leeds united": "leeds", "leicester city": "leicester",
-    "afc bournemouth": "bournemouth", "coventry": "coventry city", "hull": "hull city", "ipswich": "ipswich town",
-    "sheffield united": "sheffield utd", "luton town": "luton", "norwich city": "norwich", "cardiff city": "cardiff",
-    "stoke city": "stoke", "swansea city": "swansea", "west bromwich albion": "west brom",
-}
-
-
-def team_map(bs: dict, league: dict) -> tuple[dict, list]:
-    """Understat team id -> FPL team id. Returns the map and any titles left over."""
-    fpl = {}
-    for t in bs["teams"]:
-        fpl[norm(t["name"])] = t["id"]
-        fpl[norm(t["short_name"])] = t["id"]
-    out, missing = {}, []
-    for uid, t in league["teams"].items():
-        n = norm(t["title"])
-        tid = fpl.get(n) or fpl.get(TEAM_ALIASES.get(n, ""))
-        if tid:
-            out[str(t["id"])] = tid
-        else:
-            missing.append(t["title"])
-    return out, missing
+norm = idmap.norm
 
 
 def build_id_map(bs: dict, league: dict) -> dict:
     """Map FPL element ids to Understat player ids by team plus normalised name.
-
-    Tiers, strongest first. A tier only matches when it finds exactly one
-    Understat player on the team, and that player is not claimed by another
-    FPL player at the same tier. Looser tiers also need the minutes to agree.
-    Anything else goes to the unmatched list: we never guess.
-      1 full name ("Bukayo Saka" = first + second name)
-      2 first word of first name + last word of second name
-      3 web name equals the Understat name ("Gabriel", "Rodri")
-      4 every Understat word appears in the FPL names (short forms of long names)
-      5 every web-name word appears in the Understat name ("Salah" in "Mohamed Salah")
-    """
-    tmap, missing_teams = team_map(bs, league)
+    Tiers and rules are in engine/idmap.py. Writes the "understat" section of
+    data/id_map.json and data/id_map_unmatched.json."""
+    tmap, missing_teams = idmap.team_map(bs, {t["id"]: t["title"] for t in league["teams"].values()})
     title_to_fpl = {t["title"]: tmap[str(t["id"])] for t in league["teams"].values() if str(t["id"]) in tmap}
-    manual = {}
-    if ID_MAP.exists():
-        manual = {int(k): str(v) for k, v in json.loads(ID_MAP.read_text()).get("manual", {}).items()}
-    us_by_team = defaultdict(list)
-    us_by_id = {}
+    manual = {int(k): str(v) for k, v in idmap.load("understat").get("manual", {}).items()}
+    pool = defaultdict(list)
     for u in league["players"]:
-        us_by_id[str(u["id"])] = u
         for title in u["team_title"].split(","):
             if title.strip() in title_to_fpl:
-                us_by_team[title_to_fpl[title.strip()]].append(u)
-
-    def keys(p):
-        first, second, web = norm(p["first_name"]), norm(p["second_name"]), norm(p["web_name"])
-        fw, sw = first.split(), second.split()
-        return {
-            1: f"{first} {second}",
-            2: f"{fw[0]} {sw[-1]}" if fw and sw else None,
-            3: web,
-        }, set(fw + sw + web.split()), set(web.split())
-
-    def minutes_ok(p, u):
-        a, b = p["minutes"], int(u["time"])
-        return abs(a - b) <= max(90, 0.15 * max(a, b))
-
-    candidates = {}  # fpl id -> (tier, us id)
+                pool[title_to_fpl[title.strip()]].append({"id": u["id"], "name": u["player_name"],
+                                                          "minutes": int(u["time"])})
+    mapping, tiers, unmatched = idmap.match_players(bs, pool, manual, "Understat")
     players = [p for p in bs["elements"] if p["minutes"] > 0]
-    for p in players:
-        if p["id"] in manual:
-            candidates[p["id"]] = (0, manual[p["id"]])
-            continue
-        exact, words, webw = keys(p)
-        pool = us_by_team.get(p["team"], [])
-        for tier in (1, 2, 3, 4, 5):
-            if tier <= 3:
-                hit = [u for u in pool if exact[tier] and norm(u["player_name"]) == exact[tier]]
-            elif tier == 4:
-                hit = [u for u in pool if set(norm(u["player_name"]).split()) <= words and minutes_ok(p, u)]
-            else:
-                hit = [u for u in pool if webw and webw <= set(norm(u["player_name"]).split()) and minutes_ok(p, u)]
-            if len(hit) == 1:
-                candidates[p["id"]] = (tier, str(hit[0]["id"]))
-                break
-            if len(hit) > 1:
-                candidates[p["id"]] = (tier, None, [u["player_name"] for u in hit])
-                break
-    # an Understat id claimed twice is ambiguous: keep it only for the single strongest claim
-    claims = defaultdict(list)
-    for e, c in candidates.items():
-        if c[1]:
-            claims[c[1]].append((c[0], e))
-    mapping, tiers, unmatched = {}, defaultdict(int), []
-    for uid, cl in claims.items():
-        cl.sort()
-        if len(cl) == 1 or cl[0][0] < cl[1][0]:
-            e = cl[0][1]
-            mapping[e] = uid
-            tiers[cl[0][0]] += 1
-    short = {t["id"]: t["short_name"] for t in bs["teams"]}
-    for p in players:
-        if p["id"] in mapping:
-            continue
-        c = candidates.get(p["id"])
-        reason = ("more than one Understat player fits: " + ", ".join(c[2])) if c and not c[1] else \
-                 "claimed by another FPL player" if c else "no Understat player on the team with a matching name"
-        unmatched.append({"id": p["id"], "web_name": p["web_name"], "name": f"{p['first_name']} {p['second_name']}",
-                          "team": short[p["team"]], "minutes": p["minutes"], "reason": reason})
     claimed = set(mapping.values())
     us_left = [{"id": u["id"], "name": u["player_name"], "team": u["team_title"], "minutes": int(u["time"])}
                for u in league["players"] if str(u["id"]) not in claimed and int(u["time"]) > 0]
     rate = round(100 * len(mapping) / max(1, len(players)), 1)
     doc = {
         "built_at": _now(), "season": SEASON,
-        "note": "FPL element id -> Understat player id. Built by engine/understat.py from team plus normalised name. "
-                "Add reviewed pairs under 'manual' (FPL id -> Understat id); they win over the automatic match.",
         "match_rate": {"matched": len(mapping), "of": len(players), "pct": rate,
-                       "basis": "FPL players with minutes this season", "by_tier": dict(sorted(tiers.items()))},
+                       "basis": "FPL players with minutes this season", "by_tier": tiers},
         "teams": {str(v): int(k) for k, v in tmap.items()},
         "manual": {str(k): v for k, v in manual.items()},
         "players": {str(k): int(v) for k, v in sorted(mapping.items())},
     }
-    ID_MAP.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n")
-    UNMATCHED.write_text(json.dumps({"built_at": doc["built_at"], "missing_teams": missing_teams,
-                                     "fpl_unmatched": sorted(unmatched, key=lambda r: -r["minutes"]),
-                                     "understat_unclaimed": sorted(us_left, key=lambda r: -r["minutes"])},
-                                    indent=1, ensure_ascii=False) + "\n")
-    print(f"id map: {len(mapping)}/{len(players)} matched ({rate}%), {len(unmatched)} unmatched, "
+    idmap.save("understat", doc, {"built_at": doc["built_at"], "missing_teams": missing_teams,
+                                  "fpl_unmatched": unmatched,
+                                  "understat_unclaimed": sorted(us_left, key=lambda r: -r["minutes"])})
+    print(f"id map (understat): {len(mapping)}/{len(players)} matched ({rate}%), {len(unmatched)} unmatched, "
           f"teams missing: {missing_teams or 'none'}")
     return doc
 

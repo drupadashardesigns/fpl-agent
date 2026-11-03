@@ -26,6 +26,13 @@ jobs:
         id: understat
         continue-on-error: true
         run: python -m engine understat
+      # FotMob: league file, the stat tables, then matchDetails and heatmaps only
+      # for finished matches not yet stored (one request every 2 seconds). Same
+      # rule as Understat: a failure is recorded and never fails the job.
+      - name: FotMob (league, stat tables, new finished matches)
+        id: fotmob
+        continue-on-error: true
+        run: python -m engine fotmob
       - name: Rebuild the app bundle with the new data
         run: |
           if ls data/runs/gw*/facts.json >/dev/null 2>&1; then python -m engine appdata; fi

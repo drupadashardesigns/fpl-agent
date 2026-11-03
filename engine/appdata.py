@@ -10,6 +10,8 @@ here is computed from inputs already on disk, so it runs without network:
   data/runs/gwNN/history.json.gz       (optional: per-player gameweek rows)
   data/understat/derived.json          (optional: Understat stats keyed by FPL id,
       from `python -m engine understat`; kept under "us" keys, never mixed with FPL's xG)
+  data/fotmob/derived.json             (optional: FotMob stats and heatmaps keyed by FPL id,
+      from `python -m engine fotmob`; kept under "fm" keys, never mixed with FPL or Understat)
 
     python -m engine appdata             newest run, newest snapshot
     python -m engine appdata --gw 10
@@ -383,9 +385,10 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
     # ---- Understat: a separate provider, kept under "us" --------------------------------
     us = _load(ROOT / "data" / "understat" / "derived.json")
     us_meta = None
+    src = _load(ROOT / "data" / "sources.json") or {}
+    top60 = sorted((k for k in players), key=lambda k: -players[k]["h6"])[:60]
+    maps = {str(e) for e in watch} | set(top60)  # squad, the call, plans, template, top 60
     if us:
-        top60 = sorted((k for k in players), key=lambda k: -players[k]["h6"])[:60]
-        maps = {str(e) for e in watch} | set(top60)  # squad, the call, plans, template, top 60
         for k, ur in us["players"].items():
             if k not in players:
                 continue
@@ -396,11 +399,30 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
         for k, ur in us["teams"].items():
             if k in teams:
                 teams[k]["us"] = {"s": ur["season"], "l4": ur["last4"], "l4_dates": ur.get("last4_dates")}
-        src = _load(ROOT / "data" / "sources.json") or {}
         h = (src.get("sources") or {}).get("understat", {})
         us_meta = {"data_to": us.get("data_to"), "fetched_at": us.get("league_fetched_at"), "matches": us.get("matches"),
                    "season": us.get("season"), "status": h.get("status"), "last_success": h.get("last_success"),
                    "id_map": us.get("id_map"), "shot_maps": len(maps & set(us["players"]))}
+
+    # ---- FotMob: a separate provider, kept under "fm" -----------------------------------
+    fm = _load(ROOT / "data" / "fotmob" / "derived.json")
+    fm_meta = None
+    if fm:
+        for k, fr in fm["players"].items():
+            if k not in players:
+                continue
+            row = {"s": fr["s"], "l4": fr["l4"]}
+            if k in maps and fr.get("heat", {}).get("season"):
+                row["heat"] = fr["heat"]
+            players[k]["fm"] = row
+        for k, fr in fm["teams"].items():
+            if k in teams:
+                teams[k]["fm"] = {"s": fr["s"], "l4": fr["l4"], "l4_dates": fr.get("l4_dates")}
+        h = (src.get("sources") or {}).get("fotmob", {})
+        fm_meta = {"data_to": fm.get("data_to"), "fetched_at": fm.get("league_fetched_at"), "matches": fm.get("matches"),
+                   "season": fm.get("season"), "status": h.get("status"), "last_success": h.get("last_success"),
+                   "id_map": fm.get("id_map"), "heatmaps": sum(1 for k in maps if (players.get(k) or {}).get("fm", {}).get("heat")),
+                   "heat_cols": fm.get("heat_cols")}
 
     # ---- price alerts ----------------------------------------------------------------
     alerts = []
@@ -430,7 +452,7 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
         "meta": {"gw": gw, "deadline_utc": facts["deadline_utc"], "pulled_at": facts["generated_at"],
                  "snapshot": snap.name, "prices_fetched_at": bs.get("fetched_at"), "model": facts["model"], "sims": SIMS, "built_from": run.name,
                  "history_source": (ehist or {}).get("source"), "player_history": bool(phist),
-                 "understat": us_meta},
+                 "understat": us_meta, "fotmob": fm_meta},
         "manager": {**facts["manager"], "history": hist, "chips_used": facts["state"]["chips_used"]},
         "cutoffs": facts["rank_cutoffs"],
         "state": facts["state"],

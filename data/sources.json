@@ -24,7 +24,7 @@
       "status": "pending",
       "last_success": null,
       "last_error": null,
-      "fills": "chances created, big chances, dribbles, duels, aerials, touches in the box, interceptions, dispossessed, xGOT"
+      "fills": "chances created, big chances created, dribbles, ground and aerial duels, touches in the box, interceptions, recoveries, dispossessed, xGOT, line-breaking passes, passes into the final third, distance, sprints, top speed, touch heatmaps; team big chances, box touches, set-piece goals, possession, xG conceded, distance"
     },
     "odds": {
       "name": "The Odds API",
@@ -32,13 +32,6 @@
       "last_success": null,
       "last_error": null,
       "fills": "match odds for team strength"
-    },
-    "sofascore": {
-      "name": "Sofascore",
-      "status": "pending",
-      "last_success": null,
-      "last_error": null,
-      "fills": "touch heatmaps"
     }
   }
 }

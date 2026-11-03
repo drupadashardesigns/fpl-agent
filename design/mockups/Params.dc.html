@@ -28,9 +28,9 @@ body{margin:0}
     </div>
     <div style="padding: 18px; border-radius: 18px; background: #0F1A3D; color: #F3F5FB; display: flex; flex-direction: column; gap: 6px;">
       <span style="font: 800 40px/1 'Plus Jakarta Sans', sans-serif;">{{count.live}}</span>
-      <span>parameters live from FPL data today</span>
+      <span>parameters live from FPL data and FotMob today</span>
       <span style="font: 800 40px/1 'Plus Jakarta Sans', sans-serif; margin-top: 10px; color: #FF9A4D;">{{count.v1}}</span>
-      <span>more arrive with Understat, FotMob and Sofascore</span>
+      <span>more arrive with Understat and the odds feed</span>
     </div>
   </aside>
 
@@ -58,7 +58,8 @@ class Component extends DCLogic {
       fpl: ['FPL feed', '#DDF3E8', '#0D5A3A', 'Official FPL data, live today.'],
       calc: ['Our model', '#FFE1C7', '#7A3A05', 'Computed by the app from FPL data, live today.'],
       us: ['Understat', '#DDF3E8', '#0D5A3A', 'Understat. Built, offline since 2 Nov 2026 (down for everyone); retrying nightly. Its own xG model, always labelled and kept apart from FPL\'s xG.'],
-      v1: ['v1 source', '#DCEBFF', '#0F3F8A', 'Arrives with FotMob or Sofascore.'],
+      fm: ['FotMob', '#DDF3E8', '#0D5A3A', 'FotMob, live from 3 Nov 2026: match stats, tracking data and touch heatmaps, nightly. Always labelled FotMob with its date and kept apart from FPL and Understat numbers.'],
+      v1: ['v1 source', '#DCEBFF', '#0F3F8A', 'Arrives with a v1 source (betting odds).'],
       none: ['No free source', '#FDE3E1', '#8A1C14', 'No free source we could confirm.']
     };
     const pill = (k) => "display: inline-block; font: 700 13px/1 'Atkinson Hyperlegible Next', sans-serif; padding: 6px 9px; border-radius: 999px; background: " + ST[k][1] + '; color: ' + ST[k][2] + ';';
@@ -66,10 +67,12 @@ class Component extends DCLogic {
       ['Player: scoring and creating', [
         ['Goals, assists, xG, xA, xGI, per 90', 'Data room players, profile', 'fpl'], ['Goals minus xG, assists minus xA', 'Data room players, profile', 'calc'], ['Threat, creativity, influence, ICT', 'Data room players, profile', 'fpl'], ['Penalty, corner and free-kick order', 'Profile, team profile', 'fpl'],
         ['Shots, shots on target, non-penalty xG: season, per 90, last four', 'Data room players (Shots & chances), profile', 'us'], ['Key passes, season, per 90, last four', 'Data room players (Shots & chances), profile', 'us'], ['xGChain and xGBuildup, per 90', 'Data room players (Shots & chances), profile', 'us'], ['Shot map (squad, the call, top 60 projected)', 'Profile', 'us'],
-        ['xG on target, big chances created', 'Profile (v1)', 'v1'], ['Through balls, progressive carries', 'Not shown', 'none']]],
+        ['Chances created and big chances created: season, per 90, last four', 'Data room players (Shots & chances), profile', 'fm'], ['xG on target (xGOT), touches in the box', 'Data room players (Shots & chances), profile', 'fm'],
+        ['Line-breaking passes, passes into the final third: season, per 90, last four', 'Data room players (Shots & chances), profile', 'fm']]],
       ['Player: defending, duels and movement', [
         ['DefCon per 90 against the 10 or 12 line', 'Squad, data room, profile', 'fpl'], ['Clearances, blocks, interceptions; tackles; recoveries', 'Data room players, profile', 'fpl'], ['Clean sheets, xG conceded per 90, saves per 90', 'Data room players, profile', 'fpl'],
-        ['Duels won and %, aerial duels won and %', 'Profile (v1)', 'v1'], ['Successful dribbles and %, dispossessed', 'Profile (v1)', 'v1'], ['Touches in the box, interceptions', 'Profile (v1)', 'v1'], ['Touch heatmap, season and per match', 'Profile (v1)', 'v1'], ['Distance covered, sprints', 'Not shown', 'none']]],
+        ['Ground duels won and %, aerial duels won and %, with totals', 'Data room players (Defending), profile', 'fm'], ['Successful dribbles and %, dispossessed', 'Data room players, profile', 'fm'], ['Interceptions and recoveries (FotMob count)', 'Data room players (Defending), profile', 'fm'],
+        ['Touch heatmap, season (sum of matches) and per match', 'Profile (Where he plays; squad, the call, plans, template, top 60 projected)', 'fm'], ['Distance covered, sprints and top speed: season, per 90, last four', 'Data room players (Minutes), profile', 'fm']]],
       ['Player: minutes, points and money', [
         ['Minutes, starts, minutes in the last four', 'Squad, data room, profile', 'fpl'], ['Expected minutes and minutes risk', 'Squad, finder, profile', 'calc'], ['Injury news and chance of playing', 'Alerts, squad', 'fpl'],
         ['Projected points per gameweek, next 6 and 10', 'Squad, heatmap, planner, finder, profile', 'calc'], ['Projection breakdown by source', 'Profile', 'calc'], ['Haul chance and blank chance', 'Captain, profile', 'calc'],
@@ -78,13 +81,14 @@ class Component extends DCLogic {
         ['Table: position, points, W-D-L, goal difference, last five', 'Data room teams, team profile', 'fpl'], ['xG for and against per game, season and last four', 'Data room teams, team profile', 'calc'], ['Goals minus xG', 'Data room teams', 'calc'], ['Clean sheets, home and away points', 'Data room teams, team profile', 'fpl'], ['xG difference trend', 'Data room teams', 'calc'],
         ['Projected goals and clean-sheet chance per fixture, 10 weeks', 'Fixtures heatmap, team profile', 'calc'], ['Easiest run over 3, 6 or 10 gameweeks', 'Fixtures heatmap', 'calc'],
         ['Understat xG, npxG and xG against per game, season and last four', 'Data room teams (Attack, Defence), team profile', 'us'], ['Shots and shots conceded per game, season and last four', 'Data room teams, team profile', 'us'], ['Pressing (PPDA), deep completions for and against', 'Data room teams, team profile', 'us'],
-        ['Shots in the box, big chances, set-piece goals', 'Data room teams (v1)', 'v1'], ['Betting odds for goals and clean sheets', 'Model (v1)', 'v1'], ['Distance covered', 'Not shown', 'none']]],
+        ['Big chances for and against, touches in the box for and against, per game, season and last four', 'Data room teams (Attack, Defence), team profile', 'fm'], ['Set-piece goals for and against', 'Data room teams (Attack, Defence), team profile', 'fm'],
+        ['Possession, xG conceded (FotMob), distance covered per match', 'Data room teams (Attack, Defence), team profile', 'fm'], ['Betting odds for goals and clean sheets', 'Model (v1)', 'v1']]],
       ['Ownership, rivals and planning', [
         ['Ownership: top 10k, near your rank, everyone', 'Data room, profile, finder', 'calc'], ['Effective ownership with captaincy', 'Captain, profile', 'calc'], ['Captaincy shares, chips played by rivals', 'Captain, data room', 'calc'], ['Rank, gap to top 10k and 50k, rank history', 'Edition, archive', 'fpl'],
         ['Free transfers, bank, hits, transfer plans', 'Planner', 'calc'], ['Captain comparison with swing scenarios', 'Captain', 'calc'], ['Chip calendar, blanks and doubles', 'Chips', 'calc'], ['Free Hit value by gameweek', 'Free Hit story', 'calc'], ['Mini-league rivals', 'Planned', 'v1'], ['Model track record', 'Data room, model', 'calc']]]
     ];
     let live = 0, v1 = 0;
-    const groups = G.map(([name, rows]) => ({ name, rows: rows.map(([p, w, k]) => { if (k === 'fpl' || k === 'calc') live++; if (k === 'v1' || k === 'us') v1++; return { p, w, src: ST[k][0], s: pill(k) }; }) }));
+    const groups = G.map(([name, rows]) => ({ name, rows: rows.map(([p, w, k]) => { if (k === 'fpl' || k === 'calc' || k === 'fm') live++; if (k === 'v1' || k === 'us') v1++; return { p, w, src: ST[k][0], s: pill(k) }; }) }));
     const legend = Object.keys(ST).map((k) => ({ k: ST[k][0], d: ST[k][3], s: pill(k) + ' align-self: flex-start;' }));
     return { groups, legend, count: { live, v1 } };
   }
