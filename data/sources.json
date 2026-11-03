@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-03T09:17:20+00:00",
+  "updated_at": "2026-11-03T09:20:14+00:00",
   "sources": {
     "fpl": {
       "name": "Official FPL API",
@@ -12,7 +12,7 @@
       "status": "error",
       "last_success": null,
       "last_error": {
-        "at": "2026-11-03T09:17:20+00:00",
+        "at": "2026-11-03T09:20:14+00:00",
         "message": "getLeagueData/EPL/2026: <urlopen error timed out>"
       },
       "fills": "shots, key passes, npxG, xGChain, xGBuildup, shot maps, PPDA, deep completions"
