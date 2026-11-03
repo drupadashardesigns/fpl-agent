@@ -1,0 +1,18 @@
+name: Probe FotMob
+on:
+  push:
+    branches: [probe/fotmob]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: FotMob reachability
+        run: |
+          UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0 Safari/537.36'
+          for u in "https://www.fotmob.com/api/data/leagues?id=47" \
+                   "https://data.fotmob.com/stats/47/season/36781/phys_tdc.json" \
+                   "https://www.fotmob.com/api/data/matchDetails?matchId=5795503" \
+                   "https://www.fotmob.com/api/data/heatmap/match/5795503/heatmaps?heatmapUrl=https%3A%2F%2Fpub.fotmob.com%2Fprod%2Fdb%2Fapi%2Fheatmap%2Fmatch%2F5795503"; do
+            curl -sS -m 25 --compressed -A "$UA" -o /tmp/out -w "RESULT %{http_code} %{size_download}B $u\n" "$u" || echo "RESULT FAILED $u"
+            head -c 120 /tmp/out; echo
+          done
