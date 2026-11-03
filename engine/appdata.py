@@ -8,6 +8,8 @@ here is computed from inputs already on disk, so it runs without network:
   data/runs/gwNN/facts.json, projections.json.gz, ownership.json   (weekly run)
   data/runs/gwNN/entry_history.json    (optional: rank history for the archive)
   data/runs/gwNN/history.json.gz       (optional: per-player gameweek rows)
+  data/understat/derived.json          (optional: Understat stats keyed by FPL id,
+      from `python -m engine understat`; kept under "us" keys, never mixed with FPL's xG)
 
     python -m engine appdata             newest run, newest snapshot
     python -m engine appdata --gw 10
@@ -378,6 +380,28 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
             if e in players:
                 players[e]["hist"] = rows
 
+    # ---- Understat: a separate provider, kept under "us" --------------------------------
+    us = _load(ROOT / "data" / "understat" / "derived.json")
+    us_meta = None
+    if us:
+        top60 = sorted((k for k in players), key=lambda k: -players[k]["h6"])[:60]
+        maps = {str(e) for e in watch} | set(top60)  # squad, the call, plans, template, top 60
+        for k, ur in us["players"].items():
+            if k not in players:
+                continue
+            row = {"s": ur.get("season"), "l4": ur.get("last4"), "sot": ur.get("shots_on_target")}
+            if k in maps and ur.get("shot_map"):
+                row["map"] = ur["shot_map"]
+            players[k]["us"] = row
+        for k, ur in us["teams"].items():
+            if k in teams:
+                teams[k]["us"] = {"s": ur["season"], "l4": ur["last4"], "l4_dates": ur.get("last4_dates")}
+        src = _load(ROOT / "data" / "sources.json") or {}
+        h = (src.get("sources") or {}).get("understat", {})
+        us_meta = {"data_to": us.get("data_to"), "fetched_at": us.get("league_fetched_at"), "matches": us.get("matches"),
+                   "season": us.get("season"), "status": h.get("status"), "last_success": h.get("last_success"),
+                   "id_map": us.get("id_map"), "shot_maps": len(maps & set(us["players"]))}
+
     # ---- price alerts ----------------------------------------------------------------
     alerts = []
     for e in sorted(watch, key=lambda e: -abs(players[str(e)]["pcp"])):
@@ -405,7 +429,8 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
     data = {
         "meta": {"gw": gw, "deadline_utc": facts["deadline_utc"], "pulled_at": facts["generated_at"],
                  "snapshot": snap.name, "prices_fetched_at": bs.get("fetched_at"), "model": facts["model"], "sims": SIMS, "built_from": run.name,
-                 "history_source": (ehist or {}).get("source"), "player_history": bool(phist)},
+                 "history_source": (ehist or {}).get("source"), "player_history": bool(phist),
+                 "understat": us_meta},
         "manager": {**facts["manager"], "history": hist, "chips_used": facts["state"]["chips_used"]},
         "cutoffs": facts["rank_cutoffs"],
         "state": facts["state"],

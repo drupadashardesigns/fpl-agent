@@ -371,3 +371,12 @@ a.chiptile:hover { color: var(--on-orange); }
 h1[tabindex="-1"]:focus, article[tabindex="-1"]:focus { outline: none; }
 .opt .cap { color: inherit; opacity: 0.8; }
 .flag { padding: 12px 14px; border-radius: var(--radius-md); background: var(--red-tint); color: var(--red-ink); line-height: 1.45; }
+
+/* Understat shot map: the attacking half, goal on the right */
+.pitch-half .pbox { right: 0; top: 20.5%; width: 31.4%; height: 59%; border-width: 2px 0 2px 2px; }
+.pitch-half .sbox { right: 0; top: 36.5%; width: 10.5%; height: 27%; border-width: 2px 0 2px 2px; }
+.pitch-half .arc { left: -28px; top: 50%; width: 56px; height: 56px; margin-top: -28px; border-radius: 50%; border-width: 2px; }
+.pitch .shot { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid var(--ink-muted); background: rgba(255, 255, 255, 0.6); }
+.pitch .shot.g { background: var(--orange); border-color: var(--orange-tint-ink); }
+.sw-ring { background: var(--surface); border: 2px solid var(--ink-muted); }
+.sw-dot { border-radius: 50%; }

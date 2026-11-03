@@ -1,10 +1,44 @@
 {
-  "updated_at": "2026-11-03T09:30:00Z",
+  "updated_at": "2026-11-03T09:49:12+00:00",
   "sources": {
-    "fpl": {"name": "Official FPL API", "status": "live", "last_success": "2026-11-03T07:18:30Z", "last_error": null},
-    "understat": {"name": "Understat", "status": "pending", "last_success": null, "last_error": null, "fills": "shots, key passes, npxG, xGChain, xGBuildup, shot maps, PPDA, deep completions"},
-    "fotmob": {"name": "FotMob", "status": "pending", "last_success": null, "last_error": null, "fills": "chances created, big chances, dribbles, duels, aerials, touches in the box, interceptions, dispossessed, xGOT"},
-    "odds": {"name": "The Odds API", "status": "pending", "last_success": null, "last_error": null, "fills": "match odds for team strength"},
-    "sofascore": {"name": "Sofascore", "status": "pending", "last_success": null, "last_error": null, "fills": "touch heatmaps"}
+    "fpl": {
+      "name": "Official FPL API",
+      "status": "live",
+      "last_success": "2026-11-03T07:18:30Z",
+      "last_error": null
+    },
+    "understat": {
+      "name": "Understat",
+      "status": "offline",
+      "last_success": null,
+      "last_error": {
+        "at": "2026-11-03T09:49:12+00:00",
+        "message": "getLeagueData/EPL/2026: <urlopen error [Errno 104] Connection reset by peer>"
+      },
+      "fills": "shots, key passes, npxG, xGChain, xGBuildup, shot maps, PPDA, deep completions",
+      "offline_since": "2026-11-02",
+      "note": "Understat has been down for everyone since about 2 Nov 2026 (not a block on us). Retrying nightly."
+    },
+    "fotmob": {
+      "name": "FotMob",
+      "status": "pending",
+      "last_success": null,
+      "last_error": null,
+      "fills": "chances created, big chances, dribbles, duels, aerials, touches in the box, interceptions, dispossessed, xGOT"
+    },
+    "odds": {
+      "name": "The Odds API",
+      "status": "pending",
+      "last_success": null,
+      "last_error": null,
+      "fills": "match odds for team strength"
+    },
+    "sofascore": {
+      "name": "Sofascore",
+      "status": "pending",
+      "last_success": null,
+      "last_error": null,
+      "fills": "touch heatmaps"
+    }
   }
 }

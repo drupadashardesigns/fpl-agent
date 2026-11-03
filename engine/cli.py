@@ -4,6 +4,8 @@
     python -m engine run                 full weekly run for the entry in config.json
     python -m engine run --no-ownership  skip the rival sample (faster, for testing)
     python -m engine appdata [--gw N]    rebuild data/runs/gwNN/app.json for the web app
+    python -m engine understat           fetch Understat (league + new finished matches), derive stats
+    python -m engine understat --offline derive only, from data/understat/ on disk
 
 A run writes data/runs/gwNN/ with one file per stage, plus facts.json: the
 compact bundle the weekly editor reads to write the edition.
@@ -15,7 +17,7 @@ import datetime as dt
 import json
 from pathlib import Path
 
-from . import appdata, fpl_api, model, ownership, planner, prices
+from . import appdata, fpl_api, model, ownership, planner, prices, understat
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = json.loads((ROOT / "config.json").read_text())
@@ -158,6 +160,8 @@ def main() -> None:
     sub.add_parser("snapshot")
     ad = sub.add_parser("appdata")
     ad.add_argument("--gw", type=int)
+    us = sub.add_parser("understat")
+    us.add_argument("--offline", action="store_true")
     r = sub.add_parser("run")
     r.add_argument("--entry", type=int, default=CONFIG["entry_id"])
     r.add_argument("--horizon", type=int, default=CONFIG.get("horizon", 6))
@@ -167,6 +171,8 @@ def main() -> None:
         snapshot()
     elif a.cmd == "appdata":
         appdata.build(a.gw)
+    elif a.cmd == "understat":
+        understat.run(a.offline)
     else:
         run(a.entry, a.horizon, not a.no_ownership)
 
