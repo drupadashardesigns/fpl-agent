@@ -42,12 +42,16 @@ engine/            Python, standard library only
   planner.py       squad state, free transfers, selling prices, transfer search, Free Hit curve
   ownership.py     samples top 10k and managers around Drupad's rank
   prices.py        price alerts from the feed's own price-change projections
-  cli.py           python -m engine snapshot | run
+  appdata.py       builds data/runs/gwNN/app.json, the app's data bundle (offline, from files on disk)
+  cli.py           python -m engine snapshot | run | appdata
 config.json        entry id, horizon, timezone
 data/archive/      nightly bootstrap + fixtures snapshots (GitHub Actions)
-data/runs/gwNN/    one weekly run: facts.json (editor input), projections, ownership
+data/runs/gwNN/    one weekly run: facts.json (editor input), projections, ownership,
+                   entry_history.json, history.json.gz (per-player match rows), app.json
+data/sources.json  per-source health; a source flips from "pending" to "healthy" to replace its "Connects in v1" box
 editions/gwNN.json the published edition (written by the editor, read by the app)
-app/               the web app (to build)
+editions/index.json list of editions; "current" is the one the app opens
+app/               the web app: index.html, app.css, app.js (no build step, hash routing)
 design/system/     design system: tokens, components, usage rules
 design/mockups/    final screen mockups, click map, parameter list
 ```
@@ -80,6 +84,8 @@ design/mockups/    final screen mockups, click map, parameter list
   "grading": null
 }
 ```
+
+Additive fields the app reads: `title` and `edition` at the top; `out_id`/`in_id`, `captain_id`, `vice_id`, `bank_after` in `call`; per headline a `tone` (review, decision, template, chip, fixtures, injury) and an `evidence` block `{src, facts: [{k, v}], action: {kind, label}}` for the data room Stories tab (action kinds: planner, captain, gw9, players-own, freehit, team). A data room entry with `bottom_line` (plus `intro`, `confidence`, `recommended`, `fallback`) renders as the Free Hit story page. A headline with no read shows Headline and Data room in its depth switch.
 
 `figure` objects: `{"type": "bar" | "line" | "table" | "heatmap", "title": "", "data": ...}`. `grading` is filled in the following week: recommended moves against what actually happened.
 
@@ -143,8 +149,8 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 
 ## Roadmap
 
-1. Build `app/` from the mockups in `design/` (see App design below).
-2. Write `editions/gw10.json` as the first edition, then set up the scheduled task.
+1. Done 3 Nov: `app/` built from the mockups and published as a private artifact; `editions/gw10.json` written. Next: set up the scheduled task (after `engine run`, publish `app/` with `editions/`, `data/sources.json` and the run's `app.json`).
+2. Gaps the GW10 build could not fill (FPL API blocked from the sandbox; the run predates `history.json.gz`): minutes in the last four games, points by gameweek on the profile, home/away splits, and team last-four xG. The next `engine run` saves the per-player rows; team last-four splits come from diffing nightly snapshots once four weeks exist (GW13).
 3. Understat layer and the player ID map, then FotMob, then odds, then Sofascore heatmaps.
 4. Prediction log and backtest.
 5. Minutes model, then odds in team strength.

@@ -1,0 +1,7 @@
+{
+  "current": 10,
+  "editions": [
+    {"gw": 10, "edition": 1, "title": "Two moves, Haaland captain, and the Free Hit waits.", "published_at": "2026-11-03T09:30:00Z",
+     "file": "editions/gw10.json", "data": "data/runs/gw10/app.json", "graded": false}
+  ]
+}

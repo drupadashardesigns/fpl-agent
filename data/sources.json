@@ -1,0 +1,10 @@
+{
+  "updated_at": "2026-11-03T09:30:00Z",
+  "sources": {
+    "fpl": {"name": "Official FPL API", "status": "live", "last_success": "2026-11-03T07:18:30Z", "last_error": null},
+    "understat": {"name": "Understat", "status": "pending", "last_success": null, "last_error": null, "fills": "shots, key passes, npxG, xGChain, xGBuildup, shot maps, PPDA, deep completions"},
+    "fotmob": {"name": "FotMob", "status": "pending", "last_success": null, "last_error": null, "fills": "chances created, big chances, dribbles, duels, aerials, touches in the box, interceptions, dispossessed, xGOT"},
+    "odds": {"name": "The Odds API", "status": "pending", "last_success": null, "last_error": null, "fills": "match odds for team strength"},
+    "sofascore": {"name": "Sofascore", "status": "pending", "last_success": null, "last_error": null, "fills": "touch heatmaps"}
+  }
+}
