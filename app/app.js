@@ -145,6 +145,7 @@
     return `
     <header class="ed-head gutter">
       <div class="ed-top"><span class="brand">AlooSoul</span><span class="deadline">${dl}</span></div>
+      ${ed.update ? `<div class="flag" role="status"><b>Updated ${ist(ed.update.at, { weekday: "short", day: "numeric", month: "short" })}, ${ist(ed.update.at, { hour: "2-digit", minute: "2-digit", hour12: false })} IST.</b> ${esc(ed.update.text)}</div>` : ""}
       <div style="display:flex;flex-direction:column;gap:8px">
         <div class="ed-meta"><span>Gameweek ${ed.gw} · Edition ${ed.edition || 1} · ${ist(pub, { day: "numeric", month: "short" })}</span><a href="#archive">Past editions</a></div>
         <h1 class="t-hero" tabindex="-1">${esc(ed.title)}</h1>
@@ -684,7 +685,7 @@
     const dl = new Date(ED.deadline_utc);
     return `<header class="phead gutter"><h1 class="t-h1" tabindex="-1">Alerts</h1><p class="lede">Prices change every night at 05:30 IST. Only players you own or plan to buy. Tap one for the profile.</p></header>
     <section class="gutter" style="padding-bottom:20px;display:flex;flex-direction:column;gap:10px"><h2 class="t-h2">Progress toward the next price change</h2>${rows || `<p class="muted">Nothing close to a change.</p>`}
-      <span class="cap">Progress figures come from the FPL feed, read ${pulledShort()}, and are provisional until we have logged a few weeks of real changes.</span></section>
+      <span class="cap">Progress figures come from the FPL feed, ${D.meta.prices_fetched_at ? "read " + ist(D.meta.prices_fetched_at, { day: "numeric", month: "short" }) + ", " + ist(D.meta.prices_fetched_at, { hour: "2-digit", minute: "2-digit", hour12: false }) + " IST" : "from the " + esc(D.meta.snapshot) + " snapshot (its fetch time was not recorded)"}, and are provisional until we have logged a few weeks of real changes.</span></section>
     <section class="gutter" style="padding-bottom:20px;display:flex;flex-direction:column;gap:10px"><h2 class="t-h2">Injuries and news</h2>
       ${flagged.length ? flagged.map((p) => `<a href="#player-${p.id}" class="strip red" style="margin:0"><span class="dot" aria-hidden="true"></span><span><b>${esc(p.n)}</b>: ${esc(p.news || "flagged")}</span></a>`).join("") : `<div class="note-green" style="padding:14px 16px">No injury or suspension flags in your squad right now.</div>`}</section>
     <section class="gutter" style="padding-bottom:20px;display:flex;flex-direction:column;gap:10px"><h2 class="t-h2">Deadline</h2>

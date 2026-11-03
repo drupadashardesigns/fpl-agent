@@ -21,10 +21,17 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = json.loads((ROOT / "config.json").read_text())
 
 
+def stamp(bs: dict) -> dict:
+    """Record when this bootstrap was fetched, inside the file itself. Price alerts
+    judge freshness by this, never by the archive folder's date."""
+    bs["fetched_at"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    return bs
+
+
 def snapshot() -> None:
     day = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
     out = ROOT / "data" / "archive" / day
-    fpl_api.save_json(fpl_api.bootstrap(), out / "bootstrap.json", compress=True)
+    fpl_api.save_json(stamp(fpl_api.bootstrap()), out / "bootstrap.json", compress=True)
     fpl_api.save_json(fpl_api.fixtures(), out / "fixtures.json", compress=True)
     print(f"archived {out}")
 
@@ -60,12 +67,11 @@ def player_history(summaries: dict) -> dict:
 
 
 def snap_today(bs: dict, fx: list) -> bool:
-    """appdata reads the newest archived snapshot; make sure today's exists."""
+    """Save the bootstrap this run used (stamped with its fetch time) so appdata reads exactly it."""
     day = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
     out = ROOT / "data" / "archive" / day
-    if not (out / "bootstrap.json.gz").exists():
-        fpl_api.save_json(bs, out / "bootstrap.json", compress=True)
-        fpl_api.save_json(fx, out / "fixtures.json", compress=True)
+    fpl_api.save_json(bs, out / "bootstrap.json", compress=True)
+    fpl_api.save_json(fx, out / "fixtures.json", compress=True)
     return True
 
 
@@ -80,7 +86,7 @@ def recommend(options: list[dict]) -> dict:
 
 
 def run(entry_id: int, horizon: int, with_ownership: bool) -> Path:
-    bs, fx = fpl_api.bootstrap(), fpl_api.fixtures()
+    bs, fx = stamp(fpl_api.bootstrap()), fpl_api.fixtures()
     cur, nxt = fpl_api.current_and_next_gw(bs)
     out = ROOT / "data" / "runs" / f"gw{nxt:02d}"
     ent, hist, trs = fpl_api.entry(entry_id), fpl_api.history(entry_id), fpl_api.transfers(entry_id)

@@ -45,7 +45,7 @@ engine/            Python, standard library only
   appdata.py       builds data/runs/gwNN/app.json, the app's data bundle (offline, from files on disk)
   cli.py           python -m engine snapshot | run | appdata
 config.json        entry id, horizon, timezone
-data/archive/      nightly bootstrap + fixtures snapshots (GitHub Actions)
+data/archive/      nightly bootstrap + fixtures snapshots (GitHub Actions); bootstrap carries `fetched_at`
 data/runs/gwNN/    one weekly run: facts.json (editor input), projections, ownership,
                    entry_history.json, history.json.gz (per-player match rows), app.json
 data/sources.json  per-source health; a source flips from "pending" to "healthy" to replace its "Connects in v1" box
@@ -59,7 +59,7 @@ design/mockups/    final screen mockups, click map, parameter list
 ### Where things run
 
 - **GitHub Actions, nightly** (`.github/workflows/nightly.yml`): archives the bootstrap and fixtures after the 00:00 UK price update. Builds the history the backtest needs.
-- **Claude scheduled task, daily 09:00 IST**: if the next deadline is within 36 hours and no edition exists for it, run `python -m engine run`, write `editions/gwNN.json` from `facts.json` following the editorial rules, commit, and republish the app. On other days, refresh price alerts only.
+- **Claude scheduled task, daily 08:39 IST** ("AlooSoul weekly editor"): if the next deadline is within 48 hours and no edition exists for it, run `python -m engine run`, write `editions/gwNN.json` from `facts.json` following the editorial rules, commit and push straight to main, and republish the app at the same artifact link. On deadline day it re-checks the edition (see the runbook). On other days, refresh price alerts only.
 - **The app** is published as a private Claude artifact: static HTML, CSS and JS with no build step, loading the edition and projections as data files. "Ask the agent" uses the artifact `sample` capability, so no API key or server is needed.
 
 ### Edition contract (`editions/gwNN.json`)
@@ -85,7 +85,7 @@ design/mockups/    final screen mockups, click map, parameter list
 }
 ```
 
-Additive fields the app reads: `title` and `edition` at the top; `out_id`/`in_id`, `captain_id`, `vice_id`, `bank_after` in `call`; per headline a `tone` (review, decision, template, chip, fixtures, injury) and an `evidence` block `{src, facts: [{k, v}], action: {kind, label}}` for the data room Stories tab (action kinds: planner, captain, gw9, players-own, freehit, team). A data room entry with `bottom_line` (plus `intro`, `confidence`, `recommended`, `fallback`) renders as the Free Hit story page. A headline with no read shows Headline and Data room in its depth switch.
+Additive fields the app reads: `title` and `edition` at the top; `update` (`{at, text}`, set on deadline day when the call changes, shown as a flag at the top); `out_id`/`in_id`, `captain_id`, `vice_id`, `bank_after` in `call`; per headline a `tone` (review, decision, template, chip, fixtures, injury) and an `evidence` block `{src, facts: [{k, v}], action: {kind, label}}` for the data room Stories tab (action kinds: planner, captain, gw9, players-own, freehit, team). A data room entry with `bottom_line` (plus `intro`, `confidence`, `recommended`, `fallback`) renders as the Free Hit story page. A headline with no read shows Headline and Data room in its depth switch.
 
 `figure` objects: `{"type": "bar" | "line" | "table" | "heatmap", "title": "", "data": ...}`. `grading` is filled in the following week: recommended moves against what actually happened.
 
@@ -143,8 +143,9 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 ## Weekly runbook
 
 - **Nightly 07:15 IST** (GitHub Actions): FPL snapshot, then the v1 sources for newly finished matches, then projections and price alerts. Commit to `data/`.
-- **Daily 09:00 IST** (Claude scheduled task, the editor): when the next deadline is within 36 hours and no edition exists, run `python -m engine run`, read `facts.json`, write `editions/gwNN.json` following the edition contract and editorial rules, commit. Otherwise refresh price alerts only.
-- **Deadline minus 3 hours:** re-check injury news and price alerts; if a recommendation changes, update the edition and flag the change at the top.
+- **Daily 08:39 IST** (Claude scheduled task, the editor): when the next deadline is within 48 hours and no edition exists, run `python -m engine run`, read `facts.json`, write `editions/gwNN.json` following the edition contract and editorial rules, commit and push to main, republish the app. With a Friday or Saturday deadline this lands the morning before deadline day.
+- **Deadline day** (the daily run when the deadline is under 24 hours away and the edition exists): re-check injury news (status, chance of playing, news) for the squad and every player in the call, and the price feed. If the call changes, update the edition, set its `update` field (`{"at": ISO time, "text": "what changed and why, one or two sentences"}`, shown at the top of the edition), push to main and republish. If nothing changes, leave the edition alone.
+- **Price alerts:** freshness comes from `fetched_at` inside the snapshot's `bootstrap.json`, never from the archive folder's date. Rebuild alerts only when that time is newer than `meta.prices_fetched_at` in the current `app.json`.
 - **After the gameweek:** score last week's projections against actual points and append to the prediction log. The data room Model tab shows this record.
 
 ## Roadmap

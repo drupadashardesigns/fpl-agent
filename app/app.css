@@ -370,3 +370,4 @@ a.chiptile:hover { color: var(--on-orange); }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 h1[tabindex="-1"]:focus, article[tabindex="-1"]:focus { outline: none; }
 .opt .cap { color: inherit; opacity: 0.8; }
+.flag { padding: 12px 14px; border-radius: var(--radius-md); background: var(--red-tint); color: var(--red-ink); line-height: 1.45; }

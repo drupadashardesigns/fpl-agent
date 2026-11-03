@@ -3,7 +3,8 @@
 The app is static HTML that reads this file plus editions/gwNN.json. Everything
 here is computed from inputs already on disk, so it runs without network:
 
-  data/archive/<date>/bootstrap.json.gz, fixtures.json.gz   (nightly snapshot)
+  data/archive/<date>/bootstrap.json.gz, fixtures.json.gz   (nightly snapshot;
+      bootstrap carries "fetched_at", the time it was read from FPL)
   data/runs/gwNN/facts.json, projections.json.gz, ownership.json   (weekly run)
   data/runs/gwNN/entry_history.json    (optional: rank history for the archive)
   data/runs/gwNN/history.json.gz       (optional: per-player gameweek rows)
@@ -186,13 +187,30 @@ def team_fixtures(bs, fixtures, att, dfn, league, short, g0, g1) -> dict:
     return out
 
 
+def newest_snapshot(look_back: int = 4):
+    """The freshest snapshot by the fetch time stamped inside bootstrap.json, not by
+    folder name. Snapshots from before the stamp existed sort last among equals
+    and report no fetch time rather than a guessed one."""
+    folders = sorted((ROOT / "data" / "archive").glob("20*"))[-look_back:]
+    best = None
+    for f in folders:
+        b = _load(f / "bootstrap.json.gz")
+        if b is None:
+            continue
+        key = (b.get("fetched_at") or "", f.name)
+        if best is None or key > best[0]:
+            best = (key, f, b)
+    return best[1], best[2]
+
+
 def build(gw: int | None = None, snapshot: str | None = None) -> Path:
     runs = sorted((ROOT / "data" / "runs").glob("gw*"))
     run = ROOT / "data" / "runs" / f"gw{gw:02d}" if gw else runs[-1]
-    snaps = sorted((ROOT / "data" / "archive").glob("20*"))
-    snap = ROOT / "data" / "archive" / snapshot if snapshot else snaps[-1]
-
-    bs = _load(snap / "bootstrap.json.gz")
+    if snapshot:
+        snap = ROOT / "data" / "archive" / snapshot
+        bs = _load(snap / "bootstrap.json.gz")
+    else:
+        snap, bs = newest_snapshot()
     fx = _load(snap / "fixtures.json.gz")
     facts = _load(run / "facts.json")
     proj = _load(run / "projections.json.gz")
@@ -386,7 +404,7 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
     events = [{"gw": ev["id"], "deadline": ev["deadline_time"]} for ev in bs["events"]]
     data = {
         "meta": {"gw": gw, "deadline_utc": facts["deadline_utc"], "pulled_at": facts["generated_at"],
-                 "snapshot": snap.name, "model": facts["model"], "sims": SIMS, "built_from": run.name,
+                 "snapshot": snap.name, "prices_fetched_at": bs.get("fetched_at"), "model": facts["model"], "sims": SIMS, "built_from": run.name,
                  "history_source": (ehist or {}).get("source"), "player_history": bool(phist)},
         "manager": {**facts["manager"], "history": hist, "chips_used": facts["state"]["chips_used"]},
         "cutoffs": facts["rank_cutoffs"],
