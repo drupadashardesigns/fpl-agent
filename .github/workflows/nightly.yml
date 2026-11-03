@@ -12,17 +12,28 @@ jobs:
   snapshot:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Archive bootstrap and fixtures
         run: python -m engine snapshot
+      # Understat is blocked from Claude's sandbox, so it is fetched here.
+      # League data once, then only finished matches not already stored,
+      # one request every 3 seconds. A failure is recorded in data/sources.json
+      # and the app keeps showing the last good numbers with their date.
+      - name: Understat (league + new finished matches)
+        id: understat
+        continue-on-error: true
+        run: python -m engine understat
+      - name: Rebuild the app bundle with the new data
+        run: |
+          if ls data/runs/gw*/facts.json >/dev/null 2>&1; then python -m engine appdata; fi
       - name: Commit snapshot
         run: |
           git config user.name "fpl-agent-bot"
           git config user.email "fpl-agent-bot@users.noreply.github.com"
-          git add data/archive
+          git add data/
           if git diff --cached --quiet; then
             echo "No changes"
           else
