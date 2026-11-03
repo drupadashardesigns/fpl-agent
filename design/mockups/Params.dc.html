@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Every parameter</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+.map{border-collapse:collapse;width:100%;font-size:15px;line-height:1.45}
+.map th{text-align:left;font-weight:700;color:#4A5578;padding:10px 14px;border-bottom:2px solid #0F1A3D}
+.map td{padding:9px 14px;border-bottom:1px solid #E1E6F2;vertical-align:top}
+</style>
+</helmet>
+<div style="width: 1200px; min-height: 3000px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; padding: 48px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 40px; align-items: start;">
+
+  <aside style="display: flex; flex-direction: column; gap: 16px;">
+    <h1 style="margin: 0; font: 800 34px/1.15 'Plus Jakarta Sans', sans-serif;">Every parameter</h1>
+    <p style="margin: 0; color: #36426A;">What the app measures, where you see it, and where the data comes from.</p>
+    <div style="padding: 18px; border-radius: 18px; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px;">
+      <sc-for list="{{legend}}" as="l" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 4px;"><span style="{{l.s}}">{{l.k}}</span><span style="font-size: 14px; color: #36426A;">{{l.d}}</span></div>
+      </sc-for>
+    </div>
+    <div style="padding: 18px; border-radius: 18px; background: #0F1A3D; color: #F3F5FB; display: flex; flex-direction: column; gap: 6px;">
+      <span style="font: 800 40px/1 'Plus Jakarta Sans', sans-serif;">{{count.live}}</span>
+      <span>parameters live from FPL data today</span>
+      <span style="font: 800 40px/1 'Plus Jakarta Sans', sans-serif; margin-top: 10px; color: #FF9A4D;">{{count.v1}}</span>
+      <span>more arrive with v1 sources</span>
+    </div>
+  </aside>
+
+  <section style="display: flex; flex-direction: column; gap: 20px;">
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+      <div style="border-radius: 18px; background: #FFFFFF; overflow: hidden;">
+        <h2 style="margin: 0; padding: 14px 14px 4px; font: 800 20px/1.3 'Plus Jakarta Sans', sans-serif;">{{g.name}}</h2>
+        <table class="map">
+          <thead><tr><th scope="col" style="width: 42%;">Parameter</th><th scope="col">Where you see it</th><th scope="col" style="width: 22%;">Source</th></tr></thead>
+          <tbody>
+            <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="8">
+              <tr><td style="font-weight: 700;">{{r.p}}</td><td style="color: #36426A;">{{r.w}}</td><td><span style="{{r.s}}">{{r.src}}</span></td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </sc-for>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const ST = {
+      fpl: ['FPL feed', '#DDF3E8', '#0D5A3A', 'Official FPL data, live today.'],
+      calc: ['Our model', '#FFE1C7', '#7A3A05', 'Computed by the app from FPL data, live today.'],
+      v1: ['v1 source', '#DCEBFF', '#0F3F8A', 'Arrives with Understat, FotMob or Sofascore.'],
+      none: ['No free source', '#FDE3E1', '#8A1C14', 'No free source we could confirm.']
+    };
+    const pill = (k) => "display: inline-block; font: 700 13px/1 'Atkinson Hyperlegible Next', sans-serif; padding: 6px 9px; border-radius: 999px; background: " + ST[k][1] + '; color: ' + ST[k][2] + ';';
+    const G = [
+      ['Player: scoring and creating', [
+        ['Goals, assists, xG, xA, xGI, per 90', 'Data room players, profile', 'fpl'], ['Goals minus xG, assists minus xA', 'Data room players, profile', 'calc'], ['Threat, creativity, influence, ICT', 'Data room players, profile', 'fpl'], ['Penalty, corner and free-kick order', 'Profile, team profile', 'fpl'],
+        ['Shots, shots on target, non-penalty xG, xG on target', 'Profile (v1)', 'v1'], ['Key passes and chances created, big chances created', 'Profile (v1)', 'v1'], ['xGChain and xGBuildup', 'Profile (v1)', 'v1'], ['Shot map', 'Profile (v1)', 'v1'], ['Through balls, progressive carries', 'Not shown', 'none']]],
+      ['Player: defending, duels and movement', [
+        ['DefCon per 90 against the 10 or 12 line', 'Squad, data room, profile', 'fpl'], ['Clearances, blocks, interceptions; tackles; recoveries', 'Data room players, profile', 'fpl'], ['Clean sheets, xG conceded per 90, saves per 90', 'Data room players, profile', 'fpl'],
+        ['Duels won and %, aerial duels won and %', 'Profile (v1)', 'v1'], ['Successful dribbles and %, dispossessed', 'Profile (v1)', 'v1'], ['Touches in the box, interceptions', 'Profile (v1)', 'v1'], ['Touch heatmap, season and per match', 'Profile (v1)', 'v1'], ['Distance covered, sprints', 'Not shown', 'none']]],
+      ['Player: minutes, points and money', [
+        ['Minutes, starts, minutes in the last four', 'Squad, data room, profile', 'fpl'], ['Expected minutes and minutes risk', 'Squad, finder, profile', 'calc'], ['Injury news and chance of playing', 'Alerts, squad', 'fpl'],
+        ['Projected points per gameweek, next 6 and 10', 'Squad, heatmap, planner, finder, profile', 'calc'], ['Projection breakdown by source', 'Profile', 'calc'], ['Haul chance and blank chance', 'Captain, profile', 'calc'],
+        ['Points, points per game, form, bonus, BPS', 'Data room players, profile', 'fpl'], ['Points per £m, home and away split', 'Data room players, profile', 'calc'], ['Price, selling price, change since GW1', 'Planner, profile', 'fpl'], ['Price-change progress', 'Alerts, finder, profile', 'fpl'], ['Transfers in and out this gameweek', 'Data room players, profile', 'fpl']]],
+      ['Teams', [
+        ['Table: position, points, W-D-L, goal difference, last five', 'Data room teams, team profile', 'fpl'], ['xG for and against per game, season and last four', 'Data room teams, team profile', 'calc'], ['Goals minus xG', 'Data room teams', 'calc'], ['Clean sheets, home and away points', 'Data room teams, team profile', 'fpl'], ['xG difference trend', 'Data room teams', 'calc'],
+        ['Projected goals and clean-sheet chance per fixture, 10 weeks', 'Fixtures heatmap, team profile', 'calc'], ['Easiest run over 3, 6 or 10 gameweeks', 'Fixtures heatmap', 'calc'],
+        ['Shots and shots conceded, shots in the box, big chances', 'Data room teams (v1)', 'v1'], ['Pressing (PPDA), deep completions, set-piece goals', 'Data room teams (v1)', 'v1'], ['Betting odds for goals and clean sheets', 'Model (v1)', 'v1'], ['Distance covered', 'Not shown', 'none']]],
+      ['Ownership, rivals and planning', [
+        ['Ownership: top 10k, near your rank, everyone', 'Data room, profile, finder', 'calc'], ['Effective ownership with captaincy', 'Captain, profile', 'calc'], ['Captaincy shares, chips played by rivals', 'Captain, data room', 'calc'], ['Rank, gap to top 10k and 50k, rank history', 'Edition, archive', 'fpl'],
+        ['Free transfers, bank, hits, transfer plans', 'Planner', 'calc'], ['Captain comparison with swing scenarios', 'Captain', 'calc'], ['Chip calendar, blanks and doubles', 'Chips', 'calc'], ['Free Hit value by gameweek', 'Free Hit story', 'calc'], ['Mini-league rivals', 'Planned', 'v1'], ['Model track record', 'Data room, model', 'calc']]]
+    ];
+    let live = 0, v1 = 0;
+    const groups = G.map(([name, rows]) => ({ name, rows: rows.map(([p, w, k]) => { if (k === 'fpl' || k === 'calc') live++; if (k === 'v1') v1++; return { p, w, src: ST[k][0], s: pill(k) }; }) }));
+    const legend = Object.keys(ST).map((k) => ({ k: ST[k][0], d: ST[k][3], s: pill(k) + ' align-self: flex-start;' }));
+    return { groups, legend, count: { live, v1 } };
+  }
+}
+</script>
+</body>
+</html>

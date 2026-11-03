@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Planner</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1747B8}a:hover{color:#0F2F7A}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1240px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column;">
+
+  <header style="padding: 24px 20px 16px; display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font: 800 28px/1.2 'Plus Jakarta Sans', sans-serif;">Planner</h1>
+    <p style="margin: 0; font-size: 16px; color: #36426A;">Pick a plan to see what it does to the next six gameweeks. Gains are projections against making no transfers.</p>
+  </header>
+
+  <nav aria-label="Planner sections" style="margin: 0 20px 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: #E4E9F4;">
+    <a href="Planner.dc.html" aria-current="page" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #0F1A3D; color: #FFFFFF; text-decoration: none; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Transfers</a>
+    <a href="Captain.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Captain</a>
+    <a href="Chips.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Chips</a>
+    <a href="Finder.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Finder</a>
+  </nav>
+
+  <section style="margin: 0 20px; padding: 20px; border-radius: 20px; background: #0F1A3D; color: #F3F5FB; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+      <h2 style="margin: 0; font: 800 20px/1.25 'Plus Jakarta Sans', sans-serif;">{{sel.name}}</h2>
+      <span style="font: 800 24px/1 'Plus Jakarta Sans', sans-serif; color: #FF9A4D; flex: none;">{{sel.gainText}}</span>
+    </div>
+    <sc-for list="{{sel.moves}}" as="m" hint-placeholder-count="2">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: #1B2856;">
+        <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 14px; color: #B8C2E0;">Out</span><span style="font: 500 17px/1.3 'Atkinson Hyperlegible Next', sans-serif;">{{m.o}}</span></span>
+        <span aria-hidden="true" style="font-size: 20px; color: #FF9A4D;">→</span>
+        <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 14px; color: #B8C2E0;">In</span><span style="font: 700 17px/1.3 'Atkinson Hyperlegible Next', sans-serif;">{{m.i}}</span></span>
+      </div>
+    </sc-for>
+    <sc-if value="{{sel.isRoll}}" hint-placeholder-val="{{false}}">
+      <p style="margin: 0; padding: 12px 14px; border-radius: 14px; background: #1B2856;">No transfers this week. Both free transfers roll over.</p>
+    </sc-if>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+      <div style="padding: 10px 12px; border-radius: 14px; background: #1B2856; display: flex; flex-direction: column;"><span style="font: 700 18px/1.3 'Plus Jakarta Sans', sans-serif;">{{sel.hit}}</span><span style="font-size: 14px; color: #B8C2E0;">Hit</span></div>
+      <div style="padding: 10px 12px; border-radius: 14px; background: #1B2856; display: flex; flex-direction: column;"><span style="font: 700 18px/1.3 'Plus Jakarta Sans', sans-serif;">£{{sel.bank}}m</span><span style="font-size: 14px; color: #B8C2E0;">Bank after</span></div>
+      <div style="padding: 10px 12px; border-radius: 14px; background: #1B2856; display: flex; flex-direction: column;"><span style="font: 700 18px/1.3 'Plus Jakarta Sans', sans-serif;">{{sel.ftNext}}</span><span style="font-size: 14px; color: #B8C2E0;">FT in GW11</span></div>
+    </div>
+    <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #D3DAEE;">{{sel.verdict}}</p>
+    <a href="https://fantasy.premierleague.com/transfers" style="min-height: 50px; border-radius: 14px; background: #FF8A2B; color: #1A1208; text-decoration: none; display: flex; align-items: center; justify-content: center; font: 700 16px/1 'Plus Jakarta Sans', sans-serif;">Make these moves in FPL ↗</a>
+    <span style="font-size: 14px; color: #B8C2E0;">The app plans. You confirm transfers on the FPL site.</span>
+  </section>
+
+  <section style="padding: 24px 20px 8px; display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Plans to compare</h2>
+    <sc-for list="{{plans}}" as="p" hint-placeholder-count="5">
+      <button type="button" onClick="{{p.pick}}" aria-pressed="{{p.on}}" style="{{p.style}}">
+        <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; width: 100%;">
+          <span style="font: 700 17px/1.3 'Atkinson Hyperlegible Next', sans-serif; text-align: left;">{{p.name}}</span>
+          <span style="font: 800 18px/1.2 'Plus Jakarta Sans', sans-serif; flex: none;">{{p.gainText}}</span>
+        </span>
+        <span style="font-size: 14px; line-height: 1.4; color: #4A5578; text-align: left;">{{p.summary}}</span>
+      </button>
+    </sc-for>
+    <button type="button" onClick="{{b.toggle}}" aria-expanded="{{b.open}}" style="margin-top: 6px; min-height: 50px; border: 2px solid #C9D3EA; border-radius: 14px; background: transparent; color: #0F1A3D; font: 700 16px/1 'Plus Jakarta Sans', sans-serif;">{{b.label}}</button>
+    <sc-if value="{{b.open}}" hint-placeholder-val="{{false}}">
+      <div style="padding: 16px; border-radius: 16px; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">1. Who goes out</span>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{b.outs}}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button></sc-for>
+        </div>
+        <span style="font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">2. Who comes in</span>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{b.ins}}" as="i" hint-placeholder-count="3"><button type="button" onClick="{{i.pick}}" aria-pressed="{{i.on}}" style="{{i.style}}">{{i.label}}</button></sc-for>
+        </div>
+        <div style="padding: 12px 14px; border-radius: 14px; background: #F2F5FB; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+          <span style="font-size: 15px; line-height: 1.45; color: #36426A;">{{b.result}}</span>
+          <span style="font: 800 22px/1 'Plus Jakarta Sans', sans-serif; flex: none;">{{b.gain}}</span>
+        </div>
+      </div>
+    </sc-if>
+  </section>
+
+  <nav aria-label="Main" style="margin: auto 12px 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px; border-radius: 22px; background: #0F1A3D;">
+    <a href="Day.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Edition</a>
+    <a href="Squad.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Squad</a>
+    <a href="Planner.dc.html" aria-current="page" style="min-height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #1A1208; background: #FF8A2B; text-decoration: none;">Planner</a>
+    <a href="Ask.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Ask</a>
+    <a href="Alerts.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Alerts</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { pick: 'call', build: false, bOut: 'Calafiori', bIn: 'Gabriel' }; }
+  renderVals() {
+    const plans = [
+      { id: 'call', name: 'The call', gain: 14.4, hit: 0, bank: '2.1', ftNext: 1,
+        moves: [{ o: 'Calafiori', i: 'Gabriel' }, { o: 'Szoboszlai', i: 'Tavernier' }],
+        summary: 'Gabriel and Tavernier. No hit, £2.1m left.',
+        verdict: 'Best plan that costs no hit. Sells the two players with the worst minutes in your squad.' },
+      { id: 'hit', name: 'Add Mbeumo for -4', gain: 14.7, hit: -4, bank: '0.4', ftNext: 1,
+        moves: [{ o: 'Calafiori', i: 'Gabriel' }, { o: 'Szoboszlai', i: 'Tavernier' }, { o: 'Schade', i: 'Mbeumo' }],
+        summary: 'The call plus Schade to Mbeumo, paid with a hit.',
+        verdict: 'Gains only 0.2 more than the call after the -4. A hit needs to clear the best free plan by 2 points to be worth it, so this one does not.' },
+      { id: 'mbeumo', name: 'Mbeumo instead of Tavernier', gain: 13.8, hit: 0, bank: '0.8', ftNext: 1,
+        moves: [{ o: 'Calafiori', i: 'Gabriel' }, { o: 'Szoboszlai', i: 'Mbeumo' }],
+        summary: 'Gabriel and Mbeumo. No hit, £0.8m left.',
+        verdict: 'Close to the call, 0.7 behind. Mbeumo is falling in price and owned by fewer rivals, so it is the more differential version.' },
+      { id: 'one', name: 'Gabriel only, roll one', gain: 7.7, hit: 0, bank: '2.0', ftNext: 2,
+        moves: [{ o: 'Calafiori', i: 'Gabriel' }],
+        summary: 'One move now, two free transfers for GW11.',
+        verdict: 'Keeps a transfer for injury news after the international break, but keeps Szoboszlai, who has played 63 minutes in four weeks, for another week.' },
+      { id: 'roll', name: 'Roll both', gain: 0, hit: 0, bank: '4.3', ftNext: 3,
+        moves: [],
+        summary: 'No moves. Three free transfers for GW11.',
+        verdict: 'Gives up about 14 projected points over six weeks for flexibility you do not need yet.' }
+    ];
+    const sel0 = plans.find((p) => p.id === this.state.pick);
+    const fmt = (g) => (g > 0 ? '+' : '') + g.toFixed(1);
+    const base = "display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 16px; color: #0F1A3D; min-height: 44px;";
+    const OUTS = { Calafiori: 'DEF', Szoboszlai: 'MID', Schade: 'MID', King: 'MID' };
+    const INS = { DEF: ['Gabriel', 'Hill', 'Murillo'], MID: ['Tavernier', 'Mbeumo', 'Rogers'] };
+    const G = { 'Calafiori>Gabriel': [7.7, '2.0'], 'Calafiori>Hill': [5.2, '4.5'], 'Calafiori>Murillo': [4.5, '4.5'], 'Szoboszlai>Tavernier': [7.4, '4.4'], 'Szoboszlai>Mbeumo': [6.7, '3.1'], 'Szoboszlai>Rogers': [4.3, '2.9'], 'Schade>Tavernier': [6.7, '3.9'], 'Schade>Mbeumo': [6.1, '2.6'], 'Schade>Rogers': [3.7, '2.4'], 'King>Tavernier': [6.4, '3.2'], 'King>Mbeumo': [5.7, '1.9'], 'King>Rogers': [3.3, '1.7'] };
+    const st = this.state;
+    const pos = OUTS[st.bOut];
+    const bIn = INS[pos].includes(st.bIn) ? st.bIn : INS[pos][0];
+    const [bg, bk] = G[st.bOut + '>' + bIn];
+    const chipS = (on) => on ? "min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #0F1A3D; color: #FFFFFF; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;" : "min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #EEF1F8; color: #0F1A3D; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;";
+    const b = { open: st.build, label: st.build ? 'Close my own plan' : 'Build my own plan', toggle: () => this.setState({ build: !st.build }),
+      outs: Object.keys(OUTS).map((n) => ({ label: n, on: n === st.bOut, style: chipS(n === st.bOut), pick: () => this.setState({ bOut: n }) })),
+      ins: INS[pos].map((n) => ({ label: n, on: n === bIn, style: chipS(n === bIn), pick: () => this.setState({ bIn: n }) })),
+      result: st.bOut + ' to ' + bIn + '. Uses 1 of 2 free transfers, £' + bk + 'm left. Projected over 6 GWs:', gain: '+' + bg.toFixed(1) };
+    return {
+      b,
+      sel: { ...sel0, gainText: fmt(sel0.gain), hit: sel0.hit === 0 ? 'None' : sel0.hit, isRoll: sel0.moves.length === 0 },
+      plans: plans.map((p) => {
+        const on = p.id === this.state.pick;
+        return { ...p, on, gainText: fmt(p.gain), pick: () => this.setState({ pick: p.id }),
+          style: base + (on ? 'border: 2px solid #FF8A2B; background: #FFF1E3;' : 'border: 2px solid transparent; background: #FFFFFF;') };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

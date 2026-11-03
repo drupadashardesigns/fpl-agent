@@ -1,0 +1,39 @@
+<!-- @dsCard height=320 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&family=Atkinson+Hyperlegible+Next:wght@400&display=swap">
+<style>
+.cv{position:relative;width:960px;height:320px;background:var(--ground);overflow:hidden}
+.cv svg{position:absolute;left:0;top:0}
+.b-orange{fill:var(--orange)}.b-ink{fill:var(--ink)}.b-blue{fill:var(--blue-tint)}.b-green{fill:var(--green-tint)}.b-otint{fill:var(--orange-tint)}
+.p-tint{fill:var(--orange-tint)}.p-raised{fill:var(--navy-raised)}.p-on{fill:var(--surface)}
+.pill{rx:14px}
+.nm{position:absolute;left:40px;top:140px;max-width:880px;margin:0;font-family:var(--font-display);font-weight:800;font-size:64px;line-height:.95;letter-spacing:-0.6px;color:var(--ink)}
+.tg{position:absolute;left:40px;top:274px;margin:0;font-family:var(--font-text);font-size:14px;color:var(--ink-subtle)}
+</style>
+<div class="cv">
+  <!--
+    blocks: orange 430x112, ink 220x112, blue-tint 120x112, green-tint 100x112, orange-tint 90x112
+    arrangement: a strip of unequal bands across the top, the name beneath (name too wide for the side zone)
+    pattern: pills, from radius-pill and the friendly large radii the README asks for; the depth switch as three pills on navy
+    scales: pills 28px tall (2 x radius-md), gaps space-3 and space-5, band 112px
+  -->
+  <svg width="960" height="112" viewBox="0 0 960 112" aria-hidden="true">
+    <rect class="b-orange" x="0" y="0" width="430" height="112"/>
+    <rect class="b-ink" x="430" y="0" width="220" height="112"/>
+    <rect class="b-blue" x="650" y="0" width="120" height="112"/>
+    <rect class="b-green" x="770" y="0" width="100" height="112"/>
+    <rect class="b-otint" x="870" y="0" width="90" height="112"/>
+    <rect class="p-tint pill" x="20" y="22" width="84" height="28"/>
+    <rect class="p-tint pill" x="124" y="22" width="84" height="28"/>
+    <rect class="p-tint pill" x="228" y="22" width="84" height="28"/>
+    <rect class="p-tint pill" x="332" y="22" width="84" height="28"/>
+    <rect class="p-tint pill" x="72" y="62" width="84" height="28"/>
+    <rect class="p-tint pill" x="176" y="62" width="84" height="28"/>
+    <rect class="p-tint pill" x="280" y="62" width="84" height="28"/>
+    <rect class="p-raised pill" x="450" y="42" width="56" height="28"/>
+    <rect class="p-on pill" x="512" y="42" width="56" height="28"/>
+    <rect class="p-raised pill" x="574" y="42" width="56" height="28"/>
+  </svg>
+  <h1 class="nm">AlooSoul<br>Floodlight Day</h1>
+  <p class="tg">Bright, friendly and easy on the eyes. Read the week in a minute, go deeper when you want.</p>
+</div>
+<script></script>

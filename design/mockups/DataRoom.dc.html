@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data room</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1747B8}a:hover{color:#0F2F7A}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+.tbl{border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl th{font-weight:700;color:#4A5578;text-align:right;padding:8px 8px;border-bottom:1px solid #E1E6F2;background:#FFFFFF}
+.tbl th:first-child,.tbl td:first-child{text-align:left;position:sticky;left:0;background:#FFFFFF;z-index:1}
+.tbl td{text-align:right;padding:9px 8px;border-bottom:1px solid #EEF1F8}
+.scroll{overflow-x:auto;border-radius:16px;background:#FFFFFF}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1900px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column;">
+
+  <header style="padding: 24px 20px 14px; display: flex; flex-direction: column; gap: 6px;">
+    <span style="font-size: 14px; color: #4A5578;">GW10 · data pulled 3 Nov, 12:10 IST</span>
+    <h1 style="margin: 0; font: 800 28px/1.2 'Plus Jakarta Sans', sans-serif;">Data room</h1>
+    <p style="margin: 0; color: #36426A;">Every number behind this week's edition, so you can check the call yourself.</p>
+  </header>
+
+  <div role="tablist" aria-label="Data room sections" style="margin: 0 20px 16px; display: flex; gap: 6px; flex-wrap: wrap;">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="6">
+      <button type="button" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{is.stories}}" hint-placeholder-val="{{true}}">
+    <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px;">
+      <p style="margin: 0; font-size: 15px; color: #36426A;">The evidence for each headline, in the order they appear in the edition.</p>
+      <sc-for list="{{stories}}" as="s" hint-placeholder-count="4">
+        <article style="padding: 16px; border-radius: 18px; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px;">
+          <span style="{{s.chip}}">{{s.kicker}}</span>
+          <h2 style="margin: 0; font: 700 19px/1.3 'Plus Jakarta Sans', sans-serif;">{{s.title}}</h2>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{s.facts}}" as="f" hint-placeholder-count="4">
+              <div style="display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #EEF1F8; font-size: 15px;">
+                <span style="color: #36426A;">{{f.k}}</span><span style="font-weight: 700; text-align: right; font-variant-numeric: tabular-nums;">{{f.v}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <span style="font-size: 14px; color: #4A5578;">Source: {{s.src}}</span>
+          <sc-if value="{{s.isLink}}" hint-placeholder-val="{{false}}"><a href="{{s.href}}" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">{{s.cta}} →</a></sc-if>
+          <sc-if value="{{s.isAction}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{s.go}}" style="align-self: flex-start; min-height: 44px; padding: 0; border: 0; background: transparent; color: #1747B8; text-decoration: underline; font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">{{s.cta}}</button></sc-if>
+        </article>
+      </sc-for>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{is.players}}" hint-placeholder-val="{{false}}">
+    <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px;">
+      <div role="group" aria-label="Player metrics" style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <sc-for list="{{pgroups}}" as="o" hint-placeholder-count="8">
+          <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 15px; color: #36426A;">{{pg.note}}</p>
+      <sc-if value="{{pg.live}}" hint-placeholder-val="{{true}}">
+        <div class="scroll">
+          <table class="tbl">
+            <thead><tr><th scope="col">Player</th><sc-for list="{{pg.cols}}" as="c" hint-placeholder-count="5"><th scope="col">{{c}}</th></sc-for></tr></thead>
+            <tbody>
+              <sc-for list="{{pg.rows}}" as="p" hint-placeholder-count="12">
+                <tr>
+                  <td><a href="PlayerProfile.dc.html" style="font-weight: 700; color: #1747B8;">{{p.n}}</a><br><span style="color: #4A5578;">{{p.t}} {{p.pos}}{{p.mine}}</span></td>
+                  <sc-for list="{{p.v}}" as="x" hint-placeholder-count="5"><td style="{{x.s}}">{{x.v}}</td></sc-for>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </sc-if>
+      <sc-if value="{{pg.soon}}" hint-placeholder-val="{{false}}">
+        <div style="padding: 16px; border-radius: 16px; background: #DCEBFF; color: #0F3F8A; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font: 700 16px/1.3 'Plus Jakarta Sans', sans-serif;">Connects in v1</span>
+          <span>Chances created, big chances created, successful dribbles and %, duels won and %, aerial duels won and %, touches in the box, interceptions, dispossessed, xG on target, shots and shots on target.</span>
+          <span style="font-size: 14px;">From Understat (shots, key passes) and FotMob (the rest). Touch heatmaps from Sofascore.</span>
+        </div>
+      </sc-if>
+      <span style="font-size: 14px; color: #4A5578;">Sorted by {{pg.sortLabel}}. Orange marks the top three. Tap a name for the full profile.</span>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{is.teams}}" hint-placeholder-val="{{false}}">
+    <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px;">
+      <div role="group" aria-label="Team metrics" style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <sc-for list="{{tgroups}}" as="o" hint-placeholder-count="5">
+          <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 15px; color: #36426A;">{{tg.note}}</p>
+      <div class="scroll">
+        <table class="tbl" style="width: 100%;">
+          <thead><tr><th scope="col">#</th><th scope="col" style="text-align: left;">Team</th><sc-for list="{{tg.cols}}" as="c" hint-placeholder-count="5"><th scope="col">{{c}}</th></sc-for></tr></thead>
+          <tbody>
+            <sc-for list="{{tg.rows}}" as="r" hint-placeholder-count="20">
+              <tr><td>{{r.rank}}</td><td style="text-align: left;"><a href="{{r.href}}" style="font-weight: 700; color: #1747B8;">{{r.t}}</a></td>
+                <sc-for list="{{r.v}}" as="x" hint-placeholder-count="5"><td style="{{x.s}}">{{x.v}}</td></sc-for>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <sc-if value="{{tg.soon}}" hint-placeholder-val="{{false}}">
+        <div style="padding: 14px 16px; border-radius: 16px; background: #DCEBFF; color: #0F3F8A; font-size: 15px;">Shots for and against, shots in the box, big chances, PPDA (pressing) and deep completions connect in v1 from Understat and FotMob. Distance covered has no free source we can confirm.</div>
+      </sc-if>
+      <span style="font-size: 14px; color: #4A5578;">Ranked by {{tg.sortLabel}}. xG figures per game. Tap a team for its profile.</span>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{is.fixtures}}" hint-placeholder-val="{{false}}">
+    <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px;">
+      <div role="group" aria-label="Fixture view" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: #E4E9F4;">
+        <button type="button" onClick="{{fx.att}}" aria-pressed="{{fx.isAtt}}" style="{{fx.attS}}">Goals expected</button>
+        <button type="button" onClick="{{fx.def}}" aria-pressed="{{fx.isDef}}" style="{{fx.defS}}">Clean sheet chance</button>
+      </div>
+      <div role="group" aria-label="Rank by run" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <span style="font-size: 14px; color: #4A5578;">Easiest run, next</span>
+        <sc-for list="{{fx.runs}}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button></sc-for>
+      </div>
+      <div class="scroll">
+        <table class="tbl">
+          <thead><tr><th scope="col">Team</th><th scope="col">Avg</th><sc-for list="{{fx.gws}}" as="g" hint-placeholder-count="10"><th scope="col" style="text-align: center;">{{g}}</th></sc-for></tr></thead>
+          <tbody>
+            <sc-for list="{{fx.rows}}" as="r" hint-placeholder-count="20">
+              <tr><td><a href="{{r.href}}" style="font-weight: 700; color: #1747B8;">{{r.t}}</a></td><td style="font-weight: 700;">{{r.avg}}</td>
+                <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="10"><td style="{{c.style}}">{{c.opp}}<br><b>{{c.v}}</b></td></sc-for>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; color: #4A5578;">
+        <span style="display: flex; gap: 6px; align-items: center;"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: #FF8A2B;"></span>Best</span>
+        <span style="display: flex; gap: 6px; align-items: center;"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: #FFE1C7;"></span>Good</span>
+        <span style="display: flex; gap: 6px; align-items: center;"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: #FFFFFF; border: 1px solid #E1E6F2;"></span>Harder</span>
+        <span>Capitals are home games</span>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{is.own}}" hint-placeholder-val="{{false}}">
+    <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 14px;">
+      <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Who your rivals own</h2>
+      <div class="scroll">
+        <table class="tbl" style="width: 100%;">
+          <thead><tr><th scope="col">Player</th><th scope="col">Top 10k</th><th scope="col">Near you</th><th scope="col">Everyone</th><th scope="col">You</th></tr></thead>
+          <tbody>
+            <sc-for list="{{own}}" as="o" hint-placeholder-count="10">
+              <tr><td><a href="PlayerProfile.dc.html" style="font-weight: 700; color: #1747B8;">{{o.n}}</a></td><td>{{o.top}}%</td><td>{{o.peer}}%</td><td>{{o.all}}%</td><td style="font-weight: 700; color: {{o.youColor}};">{{o.you}}</td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding: 16px; border-radius: 16px; background: #FFFFFF; display: flex; flex-direction: column; gap: 8px;">
+        <h3 style="margin: 0; font: 700 17px/1.3 'Plus Jakarta Sans', sans-serif;">Captaincy in the top 10k, GW9</h3>
+        <sc-for list="{{caps}}" as="c" hint-placeholder-count="3">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 15px;">
+            <span style="width: 82px; flex: none;">{{c.n}}</span>
+            <span style="flex: 1; height: 12px; border-radius: 999px; background: #EEF1F8; overflow: hidden;"><span style="{{c.bar}}"></span></span>
+            <span style="width: 40px; text-align: right; font-weight: 700;">{{c.v}}%</span>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-size: 14px; color: #4A5578;">Sample: 600 teams from the top 10k and 600 ranked 95k to 105k, read on 3 Nov. In GW9, 12% of the top 10k played their Free Hit.</span>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{is.model}}" hint-placeholder-val="{{false}}">
+    <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="padding: 16px; border-radius: 16px; background: #FFFFFF; display: flex; flex-direction: column; gap: 8px;">
+        <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">What the projections use</h2>
+        <p style="margin: 0;">Team attack from total xG, team defence from xG conceded, each player's xG, xA, bonus and saves per 90, defensive contributions for the DefCon bonus, and expected minutes from recent games and injury flags. All from the official FPL data for now.</p>
+      </div>
+      <div style="padding: 16px; border-radius: 16px; background: #FFE1C7; color: #4A2A0C; display: flex; flex-direction: column; gap: 8px;">
+        <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Known weak spots</h2>
+        <p style="margin: 0;">No rotation model yet, no betting odds, and it underrates big hauls from premium forwards. That is why captaincy and close calls get a human check in the edition.</p>
+      </div>
+      <div style="padding: 16px; border-radius: 16px; background: #DDF3E8; color: #0D5A3A; display: flex; flex-direction: column; gap: 8px;">
+        <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Track record</h2>
+        <p style="margin: 0;">Starts this week. After each gameweek, every projection is scored against real points and shown here.</p>
+      </div>
+    </section>
+  </sc-if>
+
+  <nav aria-label="Main" style="margin: auto 12px 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px; border-radius: 22px; background: #0F1A3D;">
+    <a href="Day.dc.html" aria-current="page" style="min-height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #1A1208; background: #FF8A2B; text-decoration: none;">Edition</a>
+    <a href="Squad.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Squad</a>
+    <a href="Planner.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Planner</a>
+    <a href="Ask.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Ask</a>
+    <a href="Alerts.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Alerts</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'stories', pgroup: 'attack', tgroup: 'table', tick: 'att', run: 6, gw9: false }; }
+  renderVals() {
+    const S = this.state;
+    const pill = (on) => on ? "min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #0F1A3D; color: #FFFFFF; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif; white-space: nowrap;" : "min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #FFFFFF; color: #0F1A3D; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif; white-space: nowrap;";
+    const chip = (bg, fg) => "align-self: flex-start; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; padding: 7px 10px; border-radius: 999px; background: " + bg + "; color: " + fg + ";";
+    const tabs = [['stories', 'Stories'], ['players', 'Players'], ['teams', 'Teams'], ['fixtures', 'Fixtures'], ['own', 'Ownership'], ['model', 'Model']]
+      .map(([id, label]) => ({ label, on: S.tab === id, style: pill(S.tab === id), pick: () => this.setState({ tab: id }) }));
+
+    const stories = [
+      { kicker: 'Gameweek 9', chip: chip('#DDF3E8', '#0D5A3A'), title: '74 points and a 127k jump in rank', src: 'your FPL history and GW9 live points',
+        facts: [{ k: 'Your score / average', v: '74 / 44' }, { k: 'Rank before and after', v: '225,500 → 98,013' }, { k: 'Van Hecke, Barry, Silva', v: '15 + 9 + 8 = 32' }, { k: 'Haaland as captain', v: '2 × 2 = 4' }, { k: 'Points left on bench', v: '21 (Verbruggen 11)' }] },
+      { kicker: 'The template', chip: chip('#FFE1C7', '#7A3A05'), title: 'Rogers is in 90% of top 10k teams', src: 'rival sample and v0 projections',
+        facts: [{ k: 'Owned: top 10k / near you / all', v: '90% / 83% / 52%' }, { k: 'Projected, GW10 to 15', v: '25.6 pts' }, { k: 'Mbeumo / Tavernier, same span', v: '28.6 / 29.2' }, { k: 'xG + xA per 90', v: '0.32 + 0.16' }, { k: 'Price progress', v: '101%, rising tonight' }] },
+      { kicker: 'Free Hit', chip: chip('#FFE1C7', '#7A3A05'), title: 'Save it for the festive triple-header', src: 'planner Free Hit curve, v0 projections',
+        facts: [{ k: 'Best projected weeks', v: 'GW14 7.1, GW18 6.3, GW19 6.0' }, { k: 'Blank gameweeks before GW19', v: 'None' }, { k: 'Festive deadlines', v: '26 Dec, 29 Dec, 1 Jan' }, { k: 'First set expires', v: 'GW19, 1 Jan 18:30 UK' }] },
+      { kicker: 'Fixtures', chip: chip('#DCEBFF', '#0F3F8A'), title: 'Bournemouth defenders are the quiet buy', src: 'team metrics and fixture heatmap',
+        facts: [{ k: 'BOU xG per game, last 4', v: '2.12 for, 0.73 against' }, { k: 'BOU xG against, season', v: '1.12, 4th best' }, { k: 'DefCon per 90: Silva / Hill', v: '10.3 / 11.2 (line: 10)' }, { k: 'Next 5', v: 'ips, NFO, ful, BHA, HUL' }, { k: 'Projected, 6 GWs: Silva / Hill', v: '28.5 / 27.9' }] }
+    ];
+    const gw9all = [{ k: 'Van Hecke', v: '15' }, { k: 'Konsa', v: '10' }, { k: 'De Cuyper', v: '9' }, { k: 'Barry', v: '9' }, { k: 'Silva', v: '8' }, { k: 'Palmer', v: '8' }, { k: 'Raya', v: '5' }, { k: 'Haaland (captain)', v: '2 × 2' }, { k: 'Groß', v: '2' }, { k: 'King', v: '2' }, { k: 'Calvert-Lewin', v: '2' }, { k: 'Bench: Verbruggen', v: '11' }, { k: 'Bench: Calafiori', v: '6' }, { k: 'Bench: Schade', v: '3' }, { k: 'Bench: Szoboszlai', v: '1' }];
+    const acts = [
+      { isLink: false, cta: S.gw9 ? 'Show the summary' : 'Show all 15 players', go: () => this.setState({ gw9: !S.gw9 }) },
+      { isLink: false, cta: 'Compare in the players table', go: () => this.setState({ tab: 'players', pgroup: 'own' }) },
+      { isLink: true, href: 'StoryFreeHit.dc.html', cta: 'Open the full Free Hit analysis' },
+      { isLink: true, href: 'TeamProfile.dc.html', cta: 'Open the Bournemouth profile' }
+    ];
+    stories.forEach((s, i) => Object.assign(s, acts[i], { isAction: !acts[i].isLink }));
+    if (S.gw9) stories[0].facts = gw9all;
+
+    // n, team, pos, yours, mins, starts, last4, g, xg, a, xa, thr, cre, inf, ict, cbi, tck, rec, dc90, cs, bonus, bps, pts, ppg, form, cost, cchg, own, top, tin, tout, h6
+    const PD = [
+      ['Haaland','MCI','FWD',1,799,9,'79 90 90 90',9,6.56,0,0.85,389,55,339,78.3,14,1,17,3.6,3,14,309,68,7.6,7.2,15.8,0.3,79.0,100,24485,8867,31.4],
+      ['Gabriel','ARS','DEF',0,810,9,'90 90 90 90',1,1.47,0,0.25,167,42,209,41.8,68,13,25,9.0,6,5,197,58,6.4,8.2,8.0,0.0,24.4,16,70243,7523,29.9],
+      ['Tavernier','BOU','MID',0,750,9,'72 78 86 90',5,3.71,0,1.36,215,232,247,69.5,9,13,44,7.9,3,12,243,55,6.1,6.0,6.6,0.6,27.3,69,232187,9350,29.2],
+      ['Van Hecke','TOT','DEF',1,810,9,'90 90 90 90',2,1.63,0,0.69,76,104,256,43.5,59,16,33,8.3,4,6,172,53,5.9,7.2,5.0,0.0,11.0,48,170261,3098,28.9],
+      ['Barry','EVE','FWD',1,761,9,'85 90 90 79',4,6.37,0,0.38,369,91,161,62.1,15,2,12,3.4,4,5,160,39,4.3,4.8,5.6,0.1,7.5,22,23278,14768,28.7],
+      ['Mbeumo','MUN','MID',0,810,9,'90 90 90 90',4,4.24,1,1.27,270,206,204,68.1,10,8,20,4.2,0,5,190,44,4.9,4.8,7.9,-0.1,20.5,20,10851,85443,28.6],
+      ['Silva','BOU','DEF',1,810,9,'90 90 90 90',0,1.30,0,0.36,74,28,188,28.9,82,11,32,10.3,3,3,97,37,4.1,6.0,5.0,0.0,2.4,24,43125,1399,28.5],
+      ['Hill','BOU','DEF',0,810,9,'90 90 90 90',0,0.05,0,0.92,16,85,219,31.9,78,23,29,11.2,3,4,144,38,4.2,6.5,5.5,0.0,2.5,7,28531,3786,27.9],
+      ['Konsa','ARS','DEF',1,641,7,'90 90 90 90',1,0.61,0,0.03,63,17,124,20.4,40,15,26,7.7,4,7,157,49,6.1,9.2,4.7,0.2,22.8,76,122020,4345,27.0],
+      ['N.Jackson','AVL','FWD',0,637,8,'90 90 81 90',5,2.16,0,0.88,206,99,166,46.9,4,3,18,3.5,2,10,203,43,5.4,8.2,7.0,0.5,25.6,80,292319,9302,26.5],
+      ['De Cuyper','BHA','DEF',1,741,9,'67 90 90 71',2,2.09,4,1.08,91,266,170,52.8,16,15,32,3.8,6,9,233,69,7.7,7.8,5.4,0.9,44.8,72,141080,3792,25.9],
+      ['Rogers','CHE','MID',0,790,9,'83 90 90 90',5,2.78,1,1.44,183,188,222,59.3,11,14,44,7.9,2,3,230,50,5.6,5.2,8.1,0.6,52.3,90,153353,5603,25.6],
+      ['Groß','BHA','MID',1,790,9,'90 70 90 90',3,2.16,6,1.57,109,339,259,70.5,21,13,20,6.2,6,9,225,60,6.7,3.2,6.2,0.7,46.9,80,60840,33646,25.5],
+      ['Calvert-Lewin','LEE','FWD',1,773,9,'90 90 84 90',3,3.91,1,0.14,190,51,139,37.4,12,1,17,3.5,4,7,118,37,4.1,3.8,6.1,0.1,20.9,30,21106,62450,25.0],
+      ['Raya','ARS','GK',1,810,9,'90 90 90 90',0,0,0,0.01,0,0,165,16.7,12,1,110,0,6,6,201,54,6.0,6.0,6.2,0.2,46.5,56,44304,9529,24.0],
+      ['Palmer','CHE','MID',1,788,9,'87 90 79 90',3,2.51,4,1.11,200,234,183,61.7,8,12,36,6.4,2,3,239,45,5.0,4.2,9.8,0.3,28.0,74,95070,14679,23.6],
+      ['King','FUL','MID',1,735,9,'75 77 80 78',2,1.86,1,1.34,255,169,151,57.5,8,10,26,5.4,5,3,174,36,4.0,3.0,5.5,0.0,3.7,7,2291,18646,21.2],
+      ['Calafiori','ARS','DEF',1,699,8,'81 90 22 90',1,1.22,2,1.00,128,87,124,34.0,23,13,22,4.6,5,3,146,51,5.7,5.5,5.9,0.4,47.9,70,33675,71222,21.1],
+      ['Schade','BRE','MID',1,687,8,'51 45 61 83',3,2.12,2,0.34,199,51,155,40.4,11,13,32,7.3,3,6,161,45,5.0,1.5,6.2,0.2,14.4,16,10065,56282,18.2],
+      ['Szoboszlai','LIV','MID',1,503,6,'0 31 0 32',1,1.52,0,1.11,58,183,110,35.2,15,8,31,9.7,3,1,116,22,3.1,0.5,6.7,-0.3,13.5,2,6436,24577,10.4]
+    ];
+    const f1 = (x) => (Math.round(x * 10) / 10).toFixed(1), f2 = (x) => x.toFixed(2), sg = (x) => (x > 0 ? '+' : '') + f1(x);
+    const G = {
+      attack: { label: 'Attack', note: 'Goals and the chances behind them. G minus xG above zero means finishing better than the chances, which tends to cool.', cols: ['xG', 'Goals', 'G − xG', 'xG/90', 'Threat'], key: 3,
+        f: (r) => [f2(r[8]), r[7], sg(r[7] - r[8]), f2(r[8] * 90 / r[4]), r[11]] , k: (r) => r[8] * 90 / r[4], sortLabel: 'xG per 90' },
+      create: { label: 'Creating', note: 'Expected assists and creativity. A minus xA far above zero usually means teammates finished well.', cols: ['xA', 'Assists', 'A − xA', 'xA/90', 'Creativity'], key: 3,
+        f: (r) => [f2(r[10]), r[9], sg(r[9] - r[10]), f2(r[10] * 90 / r[4]), r[12]], k: (r) => r[10] * 90 / r[4], sortLabel: 'xA per 90' },
+      defend: { label: 'Defending', note: 'Defensive contributions earn 2 points at 10 per game for defenders, 12 for midfielders and forwards (recoveries count for them).', cols: ['DefCon/90', 'CBI', 'Tackles', 'Recoveries', 'Clean sheets'], key: 0,
+        f: (r) => [f1(r[18]), r[15], r[16], r[17], r[19]], k: (r) => r[18], sortLabel: 'DefCon per 90' },
+      mins: { label: 'Minutes', note: 'Who actually plays. Minutes in the last four games are the best early warning of rotation.', cols: ['Minutes', 'Starts', 'Last 4', 'Per game'], key: 3,
+        f: (r) => [r[4], r[5], r[6], Math.round(r[4] / 9)], k: (r) => r[6].split(' ').reduce((a, b) => a + +b, 0), sortLabel: 'minutes in the last four' },
+      bonus: { label: 'Bonus & ICT', note: 'BPS decides who gets the 3, 2 and 1 bonus. ICT combines influence, creativity and threat.', cols: ['Bonus', 'BPS', 'ICT', 'Influence'], key: 1,
+        f: (r) => [r[20], r[21], f1(r[14]), r[13]], k: (r) => r[21], sortLabel: 'BPS' },
+      form: { label: 'Form & value', note: 'Form is average points over the last four. Value is total points per £m.', cols: ['Points', 'Per game', 'Form', 'Pts/£m', 'xP 6 GW'], key: 4,
+        f: (r) => [r[22], f1(r[23]), f1(r[24]), f1(r[22] / r[25]), f1(r[31])], k: (r) => r[31], sortLabel: 'projected points, next 6' },
+      own: { label: 'Price & ownership', note: 'Ownership near your rank matters more than overall. Transfers are this gameweek so far.', cols: ['£m', 'Since GW1', 'Top 10k', 'Everyone', 'In', 'Out'], key: 2,
+        f: (r) => [f1(r[25]), sg(r[26]), r[28] + '%', f1(r[27]) + '%', (r[29] / 1000).toFixed(0) + 'k', (r[30] / 1000).toFixed(0) + 'k'], k: (r) => r[28], sortLabel: 'top 10k ownership' },
+      events: { label: 'Duels & dribbles', soon: true, note: 'Event data that the FPL feed does not carry.', sortLabel: 'nothing yet' }
+    };
+    const g = G[S.pgroup];
+    let pg = { note: g.note, sortLabel: g.sortLabel, live: !g.soon, soon: !!g.soon, cols: g.cols || [], rows: [] };
+    if (!g.soon) {
+      const sorted = PD.filter((r) => S.pgroup !== 'defend' || r[2] !== 'GK').slice().sort((a, b) => g.k(b) - g.k(a));
+      pg.rows = sorted.map((r, i) => ({ n: r[0], t: r[1], pos: r[2], mine: r[3] ? ' · yours' : '',
+        v: g.f(r).map((v, j) => ({ v, s: j === g.key && i < 3 ? 'font-weight: 700; background: #FFE1C7; color: #7A3A05;' : (j === g.key ? 'font-weight: 700;' : '') })) }));
+    }
+    const pgroups = Object.keys(G).map((id) => ({ label: G[id].label, on: S.pgroup === id, style: pill(S.pgroup === id), pick: () => this.setState({ pgroup: id }) }));
+
+    // t, pos, pts, w, d, l, gf, ga, cs, form, hppg, appg, xgf, xga, l4f, l4a
+    const TD = [['ARS',1,24,8,0,1,14,5,6,'LWWWW',3.0,2.4,1.65,0.77,1.60,0.79],['MCI',2,21,7,0,2,20,10,3,'WWWLL',2.4,2.25,2.05,1.29,1.96,1.10],['BHA',3,19,6,1,2,24,7,6,'WWWLW',2.5,1.8,1.85,1.48,1.47,1.08],['CHE',4,16,5,1,3,19,15,2,'LWWLW',2.0,1.5,1.49,1.38,1.51,0.92],['LIV',5,15,4,3,2,11,9,4,'WLWWL',1.0,2.5,1.47,1.17,1.21,1.11],['BRE',6,14,3,5,1,16,9,3,'WDLDW',2.0,1.0,1.53,1.33,1.02,1.53],['EVE',7,13,3,4,2,9,9,4,'WDLLW',1.75,1.2,1.33,1.39,1.28,1.51],['BOU',8,12,3,3,3,14,13,3,'LLWWW',1.6,1.0,1.67,1.12,2.12,0.73],['TOT',9,12,3,3,3,10,10,4,'LDWWW',1.4,1.25,1.25,1.10,1.65,0.52],['AVL',10,12,3,3,3,10,13,2,'WDWWD',1.0,1.75,1.20,1.69,1.57,1.48],['HUL',11,11,2,5,2,11,10,3,'LDLDD',1.4,1.0,0.95,1.46,0.96,1.45],['LEE',12,11,2,5,2,9,8,3,'DLDDL',1.5,1.0,1.23,1.23,0.79,1.21],['NEW',13,11,3,2,4,12,15,2,'WLLWL',1.0,1.5,1.15,1.78,1.27,1.73],['IPS',14,11,3,2,4,14,18,0,'LWLDD',1.75,0.8,1.35,1.89,1.10,2.00],['FUL',15,9,2,3,4,9,11,3,'DLWWD',1.0,1.0,1.46,1.36,1.46,0.87],['COV',16,9,3,0,6,9,16,1,'WWLLW',1.2,0.75,0.93,1.43,0.85,1.22],['MUN',17,7,1,4,4,10,15,0,'DDDLL',1.0,0.6,1.53,1.66,0.96,2.04],['CRY',18,7,2,1,6,9,21,1,'DWLLL',0.75,0.8,1.19,2.08,1.23,2.50],['NFO',19,6,1,3,5,6,12,1,'LLLDL',0.25,1.0,1.61,1.04,1.75,1.16],['SUN',20,5,1,2,6,7,17,2,'LLLDL',1.0,0.2,1.43,1.67,0.81,1.61]];
+    const TG = {
+      table: { label: 'Table', note: 'Standings after GW9, with the last five results.', cols: ['Pts', 'W-D-L', 'GD', 'Form'], key: 0, f: (r) => [r[2], r[3] + '-' + r[4] + '-' + r[5], sg(r[6] - r[7]).replace('.0', ''), r[9]], k: (r) => -r[1], sortLabel: 'league position' },
+      attack: { label: 'Attack', note: 'Chance creation. Last 4 against season shows who is heating up.', cols: ['xG', 'Goals', 'G − xG', 'Last 4 xG'], key: 0, f: (r) => [f2(r[12]), r[6], sg(r[6] - r[12] * 9), f2(r[14])], k: (r) => r[12], sortLabel: 'xG per game', soon: true },
+      defence: { label: 'Defence', note: 'Chances given up. Low xG against plus clean sheets is where defenders and keepers come from.', cols: ['xG against', 'Conceded', 'Clean sheets', 'Last 4 xGA'], key: 0, f: (r) => [f2(r[13]), r[7], r[8], f2(r[15])], k: (r) => -r[13], sortLabel: 'xG against per game (lowest first)', soon: true },
+      form: { label: 'Form', note: 'xG difference over the last four games against the whole season. Rising teams are worth buying into early.', cols: ['Last 4 xGD', 'Season xGD', 'Change'], key: 0, f: (r) => [sg(r[14] - r[15]), sg(r[12] - r[13]), sg((r[14] - r[15]) - (r[12] - r[13]))], k: (r) => r[14] - r[15], sortLabel: 'xG difference, last four' },
+      venue: { label: 'Home & away', note: 'Points per game at home and away.', cols: ['Home', 'Away', 'Gap'], key: 0, f: (r) => [f2(r[10]), f2(r[11]), sg(r[10] - r[11])], k: (r) => r[10], sortLabel: 'home points per game' }
+    };
+    const tgd = TG[S.tgroup];
+    const tsorted = TD.slice().sort((a, b) => tgd.k(b) - tgd.k(a));
+    const tg = { note: tgd.note, cols: tgd.cols, sortLabel: tgd.sortLabel, soon: !!tgd.soon,
+      rows: tsorted.map((r, i) => ({ rank: i + 1, t: r[0], href: r[0] === 'BOU' ? 'TeamProfile.dc.html' : 'TeamProfile.dc.html',
+        v: tgd.f(r).map((v, j) => ({ v, s: j === tgd.key && i < 3 ? 'font-weight: 700; background: #FFE1C7; color: #7A3A05;' : (j === tgd.key ? 'font-weight: 700;' : '') })) })) };
+    const tgroups = Object.keys(TG).map((id) => ({ label: TG[id].label, on: S.tgroup === id, style: pill(S.tgroup === id), pick: () => this.setState({ tgroup: id }) }));
+
+    const HM = {"ARS":[["HUL",1.86,46],["new",1.69,35],["MCI",1.72,29],["bre",1.45,28],["tot",1.24,32],["BOU",1.58,33],["MUN",2.02,36],["cry",1.91,34],["ful",1.45,28],["IPS",2.22,40]],"AVL":[["mun",1.32,14],["SUN",1.72,22],["ips",1.45,17],["EVE",1.5,24],["CRY",1.96,26],["cov",1.24,24],["che",1.17,15],["LEE",1.42,26],["LIV",1.32,22],["bou",1.03,12]],"BOU":[["ips",1.85,25],["NFO",1.57,28],["ful",1.52,22],["BHA",1.93,24],["HUL",1.95,40],["ars",1.1,21],["COV",1.99,42],["tot",1.3,26],["cry",2.0,27],["AVL",2.11,36]],"BRE":[["bha",1.43,13],["EVE",1.79,28],["mun",1.57,17],["ARS",1.28,23],["MCI",1.67,18],["ful",1.41,18],["NEW",2.06,32],["ips",1.72,20],["cov",1.47,28],["CRY",2.33,30]],"BHA":[["BRE",2.05,24],["hul",1.67,26],["NEW",2.39,31],["bou",1.42,15],["nfo",1.35,16],["EVE",2.08,27],["IPS",2.51,27],["ful",1.64,17],["tot",1.4,21],["MUN",2.28,24]],"CHE":[["sun",1.57,19],["LEE",1.63,30],["nfo",1.12,17],["CRY",2.25,31],["LIV",1.52,26],["mci",1.28,12],["AVL",1.89,31],["cov",1.42,28],["ips",1.66,20],["NEW",1.98,32]],"COV":[["eve",1.02,19],["CRY",1.67,29],["lee",0.97,20],["IPS",1.55,26],["mun",1.12,15],["AVL",1.41,29],["bou",0.88,14],["CHE",1.26,24],["BRE",1.27,23],["liv",0.9,17]],"CRY":[["LIV",1.34,17],["cov",1.25,19],["HUL",1.54,25],["che",1.19,11],["avl",1.33,14],["MUN",1.67,15],["sun",1.38,11],["ARS",1.09,15],["BOU",1.31,14],["bre",1.2,10]],"EVE":[["COV",1.67,36],["bre",1.28,17],["LIV",1.43,26],["avl",1.42,22],["FUL",1.6,25],["bha",1.29,13],["nfo",1.05,16],["SUN",1.85,26],["MCI",1.52,18],["lee",1.22,21]],"FUL":[["NEW",2.02,32],["mci",1.31,12],["BOU",1.51,22],["tot",1.19,21],["eve",1.4,20],["BRE",1.74,24],["lee",1.32,22],["BHA",1.76,19],["ARS",1.26,23],["nfo",1.14,16]],"HUL":[["ars",0.77,16],["BHA",1.35,19],["cry",1.4,22],["NFO",1.1,23],["bou",0.92,14],["TOT",1.15,28],["mci",1.01,11],["LIV",1.19,25],["LEE",1.28,29],["sun",1.23,18]],"IPS":[["BOU",1.39,16],["tot",1.1,15],["AVL",1.78,24],["cov",1.33,21],["lee",1.22,15],["NEW",1.87,25],["bha",1.29,8],["BRE",1.6,18],["CHE",1.59,19],["ars",0.93,11]],"LEE":[["TOT",1.32,31],["che",1.21,20],["COV",1.6,38],["mci",1.16,13],["IPS",1.87,29],["liv",1.09,20],["FUL",1.54,27],["avl",1.36,24],["hul",1.25,28],["EVE",1.55,29]],"LIV":[["cry",1.77,26],["MUN",1.87,28],["eve",1.36,24],["SUN",1.95,30],["che",1.33,22],["LEE",1.61,34],["TOT",1.45,33],["hul",1.37,30],["avl",1.49,27],["COV",1.76,41]],"MCI":[["nfo",1.4,18],["FUL",2.14,27],["ars",1.24,18],["LEE",2.04,31],["bre",1.7,19],["CHE",2.11,28],["HUL",2.19,37],["new",1.99,26],["eve",1.72,22],["TOT",1.83,31]],"MUN":[["AVL",1.98,27],["liv",1.27,15],["BRE",1.79,21],["new",1.66,20],["COV",1.87,33],["cry",1.88,19],["ars",1.03,13],["NFO",1.47,20],["SUN",2.06,22],["bha",1.44,10]],"NEW":[["ful",1.15,13],["ARS",1.04,18],["bha",1.16,9],["MUN",1.59,19],["SUN",1.66,21],["ips",1.4,15],["bre",1.15,13],["MCI",1.36,14],["NFO",1.18,18],["che",1.13,14]],"NFO":[["MCI",1.72,25],["bou",1.26,21],["CHE",1.8,33],["hul",1.48,33],["BHA",1.84,26],["sun",1.67,25],["EVE",1.84,35],["mun",1.61,23],["new",1.69,31],["FUL",1.82,32]],"TOT":[["lee",1.18,27],["IPS",1.89,33],["sun",1.43,24],["FUL",1.55,31],["ARS",1.13,29],["hul",1.27,32],["liv",1.1,24],["BOU",1.35,27],["BHA",1.57,25],["mci",1.17,16]],"SUN":[["CHE",1.67,21],["avl",1.49,18],["TOT",1.45,24],["liv",1.2,14],["new",1.57,19],["NFO",1.39,19],["CRY",2.22,25],["eve",1.36,16],["mun",1.49,13],["HUL",1.72,29]]};
+    const att = S.tick === 'att';
+    const shade = (x, lo, hi) => { const t = Math.max(0, Math.min(1, (x - lo) / (hi - lo))); return t > 0.66 ? ['#FF8A2B', '#1A1208'] : t > 0.33 ? ['#FFE1C7', '#7A3A05'] : ['#FFFFFF', '#36426A']; };
+    const N = S.run;
+    const fxRows = Object.keys(HM).map((t) => {
+      const cells = HM[t].map(([o, gx, cs]) => { const [bg, fg] = att ? shade(gx, 1.1, 2.1) : shade(cs, 15, 38); return { opp: o, v: att ? gx.toFixed(1) : cs + '%', style: 'text-align: center; background: ' + bg + '; color: ' + fg + ';' }; });
+      const avg = HM[t].slice(0, N).reduce((s, c) => s + (att ? c[1] : c[2]), 0) / N;
+      return { t, href: 'TeamProfile.dc.html', cells, avgNum: avg, avg: att ? avg.toFixed(2) : Math.round(avg) + '%' };
+    }).sort((a, b) => b.avgNum - a.avgNum);
+    const seg = (on) => on ? "min-height: 42px; border: 0; border-radius: 10px; background: #0F1A3D; color: #FFFFFF; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;" : "min-height: 42px; border: 0; border-radius: 10px; background: transparent; color: #4A5578; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;";
+    const fx = { rows: fxRows, gws: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], isAtt: att, isDef: !att, attS: seg(att), defS: seg(!att),
+      att: () => this.setState({ tick: 'att' }), def: () => this.setState({ tick: 'def' }),
+      runs: [3, 6, 10].map((n) => ({ label: n + ' GWs', on: N === n, style: pill(N === n), pick: () => this.setState({ run: n }) })) };
+
+    const OW = [['Haaland',100,100,79.0,'Yes'],['Rogers',90,83,52.3,'No'],['Groß',80,76,46.9,'Yes'],['N.Jackson',80,76,25.6,'No'],['Konsa',76,71,22.8,'Yes'],['Palmer',74,61,28.0,'Yes'],['De Cuyper',72,68,44.8,'Yes'],['Calafiori',70,70,47.9,'Selling'],['Tavernier',69,60,27.3,'Buying'],['Raya',56,47,46.5,'Yes'],['Van Hecke',48,36,11.0,'Yes'],['Barry',22,11,7.5,'Yes'],['Silva',24,16,2.4,'Yes'],['Gabriel',16,14,24.4,'Buying']];
+    const own = OW.map(([n, a, b, c, y]) => ({ n, top: a, peer: b, all: c.toFixed(1), you: y, youColor: y === 'No' ? '#8A1C14' : y === 'Yes' ? '#0D5A3A' : '#7A3A05' }));
+    const caps = [['Haaland', 88], ['N.Jackson', 7], ['Palmer', 3]].map(([n, v]) => ({ n, v, bar: 'display: block; height: 100%; border-radius: 999px; width: ' + v + '%; background: #FF8A2B;' }));
+    return { tabs, stories, pgroups, pg, tgroups, tg, fx, own, caps,
+      is: { stories: S.tab === 'stories', players: S.tab === 'players', teams: S.tab === 'teams', fixtures: S.tab === 'fixtures', own: S.tab === 'own', model: S.tab === 'model' } };
+  }
+}
+</script>
+</body>
+</html>

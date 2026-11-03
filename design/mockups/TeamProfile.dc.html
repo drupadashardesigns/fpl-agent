@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Team profile: Bournemouth</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1747B8}a:hover{color:#0F2F7A}
+a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+.tbl{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.tbl th{font-weight:700;color:#4A5578;text-align:right;padding:8px 6px;border-bottom:1px solid #E1E6F2}
+.tbl td{text-align:right;padding:9px 6px;border-bottom:1px solid #EEF1F8}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1800px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column; gap: 18px; padding: 20px 20px 32px;">
+
+  <a href="DataRoom.dc.html" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">← Data room</a>
+
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <span style="font-size: 14px; color: #4A5578;">8th · 12 points · won 3, drawn 3, lost 3</span>
+    <h1 style="margin: 0; font: 800 32px/1.15 'Plus Jakarta Sans', sans-serif;">Bournemouth</h1>
+    <div style="display: flex; gap: 6px; align-items: center;" aria-label="Last five results: lost, lost, won, won, won">
+      <span style="font-size: 14px; color: #4A5578; margin-right: 4px;">Last five</span>
+      <sc-for list="{{form}}" as="f" hint-placeholder-count="5"><span style="{{f.s}}">{{f.r}}</span></sc-for>
+    </div>
+  </header>
+
+  <section style="padding: 16px; border-radius: 18px; background: #0F1A3D; color: #F3F5FB; display: flex; flex-direction: column; gap: 6px;">
+    <span style="font: 700 14px/1.3 'Atkinson Hyperlegible Next', sans-serif; color: #FF9A4D;">What the numbers say</span>
+    <p style="margin: 0;">Much better than 8th place suggests. Over the last four games they created 2.12 xG and allowed 0.73 a game, the best xG difference in the league in that span. Their attackers and defenders both look like buys.</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 8px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Season against last four</h2>
+    <div style="border-radius: 16px; background: #FFFFFF; overflow: hidden;">
+      <table class="tbl">
+        <thead><tr><th scope="col">Per game</th><th scope="col">Season</th><th scope="col">Last 4</th><th scope="col">League rank</th></tr></thead>
+        <tbody>
+          <tr><td>xG for</td><td>1.67</td><td style="font-weight: 700; color: #0D5A3A;">2.12</td><td>3rd</td></tr>
+          <tr><td>xG against</td><td>1.12</td><td style="font-weight: 700; color: #0D5A3A;">0.73</td><td>4th</td></tr>
+          <tr><td>Goals for</td><td>1.56</td><td>-</td><td>14 total</td></tr>
+          <tr><td>Goals against</td><td>1.44</td><td>-</td><td>13 total</td></tr>
+          <tr><td>Clean sheets</td><td>3 of 9</td><td>-</td><td>-</td></tr>
+          <tr><td>Points, home / away</td><td>1.60 / 1.00</td><td>-</td><td>-</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <span style="font-size: 14px; color: #4A5578;">Green means better than their season average.</span>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 8px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Next ten</h2>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px;">
+      <sc-for list="{{next}}" as="n" hint-placeholder-count="10">
+        <div style="{{n.s}}"><span style="font-size: 12px;">GW{{n.gw}}</span><span style="font-weight: 700;">{{n.opp}}</span><span style="font-size: 13px;">{{n.g}} · {{n.cs}}%</span></div>
+      </sc-for>
+    </div>
+    <span style="font-size: 14px; color: #4A5578;">Each box: their expected goals · clean-sheet chance. Darker is better.</span>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 8px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Who to own</h2>
+    <div style="border-radius: 16px; background: #FFFFFF; overflow: hidden;">
+      <table class="tbl">
+        <thead><tr><th scope="col">Player</th><th scope="col">£m</th><th scope="col">xGI</th><th scope="col">DefCon/90</th><th scope="col">xP 6 GW</th></tr></thead>
+        <tbody>
+          <tr><td><a href="PlayerProfile.dc.html" style="font-weight: 700;">Tavernier</a></td><td>6.6</td><td>5.07</td><td>7.9</td><td style="font-weight: 700;">29.2</td></tr>
+          <tr><td><a href="PlayerProfile.dc.html" style="font-weight: 700;">Silva</a> <span style="color: #4A5578;">· yours</span></td><td>5.0</td><td>1.66</td><td>10.3</td><td style="font-weight: 700;">28.5</td></tr>
+          <tr><td><a href="PlayerProfile.dc.html" style="font-weight: 700;">Hill</a></td><td>5.5</td><td>0.97</td><td>11.2</td><td style="font-weight: 700;">27.9</td></tr>
+          <tr><td><a href="PlayerProfile.dc.html" style="font-weight: 700;">Evanilson</a></td><td>6.4</td><td>4.61</td><td>6.7</td><td style="font-weight: 700;">25.4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <span style="font-size: 14px; color: #4A5578;">Set pieces: Tavernier takes corners and free kicks. Christie averages 15.9 defensive actions per 90, well over the midfield DefCon line of 12, but plays about 38 minutes a game.</span>
+  </section>
+
+  <section style="padding: 14px 16px; border-radius: 16px; background: #DCEBFF; color: #0F3F8A; display: flex; flex-direction: column; gap: 4px;">
+    <span style="font: 700 16px/1.3 'Plus Jakarta Sans', sans-serif;">Connects in v1</span>
+    <span>Shots and shots conceded, shots in the box, big chances, pressing (PPDA), deep completions and set-piece goals, from Understat and FotMob.</span>
+  </section>
+
+  <a href="Finder.dc.html" style="min-height: 50px; border-radius: 14px; background: #FF8A2B; color: #1A1208; text-decoration: none; display: flex; align-items: center; justify-content: center; font: 700 16px/1 'Plus Jakarta Sans', sans-serif;">Find players to buy</a>
+  <span style="font-size: 14px; color: #4A5578;">Model v0 · data pulled 3 Nov 2026, 12:10 IST</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const col = { W: ['#DDF3E8', '#0D5A3A'], D: ['#EEF1F8', '#36426A'], L: ['#FDE3E1', '#8A1C14'] };
+    const form = 'LLWWW'.split('').map((r) => ({ r, s: "width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; background: " + col[r][0] + '; color: ' + col[r][1] + ';' }));
+    const B = [['ips',1.85,25],['NFO',1.57,28],['ful',1.52,22],['BHA',1.93,24],['HUL',1.95,40],['ars',1.1,21],['COV',1.99,42],['tot',1.3,26],['cry',2.0,27],['AVL',2.11,36]];
+    const next = B.map(([opp, g, cs], i) => {
+      const t = (g - 1.1) / 1.0;
+      const [bg, fg] = t > 0.66 ? ['#FF8A2B', '#1A1208'] : t > 0.33 ? ['#FFE1C7', '#7A3A05'] : ['#FFFFFF', '#36426A'];
+      return { gw: 10 + i, opp, g: g.toFixed(1), cs, s: 'display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border-radius: 12px; background: ' + bg + '; color: ' + fg + ';' };
+    });
+    return { form, next };
+  }
+}
+</script>
+</body>
+</html>

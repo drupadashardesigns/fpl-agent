@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Planner: chips</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1747B8}a:hover{color:#0F2F7A}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1500px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column;">
+
+  <header style="padding: 24px 20px 14px; display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font: 800 28px/1.2 'Plus Jakarta Sans', sans-serif;">Planner</h1>
+    <p style="margin: 0; color: #36426A;">Where each chip earns the most this season.</p>
+  </header>
+
+  <nav aria-label="Planner sections" style="margin: 0 20px 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: #E4E9F4;">
+    <a href="Planner.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Transfers</a>
+    <a href="Captain.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Captain</a>
+    <a href="Chips.dc.html" aria-current="page" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #0F1A3D; color: #FFFFFF; text-decoration: none; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Chips</a>
+    <a href="Finder.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Finder</a>
+  </nav>
+
+  <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">First set, until GW19</h2>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+      <div style="padding: 12px 14px; border-radius: 14px; background: #FFFFFF; display: flex; flex-direction: column;"><b>Bench Boost</b><span style="font-size: 14px; color: #4A5578;">Used GW1</span></div>
+      <div style="padding: 12px 14px; border-radius: 14px; background: #FFFFFF; display: flex; flex-direction: column;"><b>Wildcard</b><span style="font-size: 14px; color: #4A5578;">Used GW3</span></div>
+      <div style="padding: 12px 14px; border-radius: 14px; background: #FFFFFF; display: flex; flex-direction: column;"><b>Triple Captain</b><span style="font-size: 14px; color: #4A5578;">Used GW4</span></div>
+      <a href="StoryFreeHit.dc.html" style="padding: 12px 14px; border-radius: 14px; background: #FF8A2B; color: #1A1208; text-decoration: none; display: flex; flex-direction: column;"><b>Free Hit</b><span style="font-size: 14px;">Left · plan GW18 or 19 →</span></a>
+    </div>
+    <span style="font-size: 14px; color: #4A5578;">Unused first-set chips expire at the GW19 deadline, 1 Jan 18:30 UK.</span>
+  </section>
+
+  <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">The season calendar</h2>
+      <span style="font-size: 14px; color: #4A5578;">Tap a chip to see its best window.</span>
+    </div>
+    <div role="group" aria-label="Chip" style="display: flex; gap: 6px; flex-wrap: wrap;">
+      <sc-for list="{{chips}}" as="c" hint-placeholder-count="5"><button type="button" onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="{{c.style}}">{{c.label}}</button></sc-for>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px;">
+      <sc-for list="{{gws}}" as="g" hint-placeholder-count="29">
+        <div style="{{g.s}}"><span style="font-size: 12px;">{{g.gw}}</span><span style="font: 700 11px/1.1 'Atkinson Hyperlegible Next', sans-serif;">{{g.tag}}</span></div>
+      </sc-for>
+    </div>
+    <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; color: #4A5578;">
+      <span style="display: flex; gap: 6px; align-items: center;"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: #FF8A2B;"></span>Best window</span>
+      <span style="display: flex; gap: 6px; align-items: center;"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: #DCEBFF;"></span>BGW blank, DGW double (forecast)</span>
+      <span style="display: flex; gap: 6px; align-items: center;"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: #FFE1C7;"></span>Festive run</span>
+    </div>
+  </section>
+
+  <section style="margin: 0 20px 20px; padding: 18px; border-radius: 18px; background: #0F1A3D; color: #F3F5FB; display: flex; flex-direction: column; gap: 8px;">
+    <span style="font: 700 14px/1.3 'Atkinson Hyperlegible Next', sans-serif; color: #FF9A4D;">{{sel.label}}</span>
+    <p style="margin: 0; font: 700 18px/1.4 'Plus Jakarta Sans', sans-serif;">{{sel.when}}</p>
+    <p style="margin: 0; color: #D3DAEE;">{{sel.why}}</p>
+  </section>
+
+  <section style="margin: 0 20px 20px; padding: 16px; border-radius: 16px; background: #FFE1C7; color: #4A2A0C; display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font: 800 17px/1.3 'Plus Jakarta Sans', sans-serif;">How firm is this</h2>
+    <p style="margin: 0;">The second-half blanks and doubles are forecasts from the cup schedules. They move with cup results, and the app updates this calendar as soon as a fixture is moved.</p>
+  </section>
+
+  <nav aria-label="Main" style="margin: auto 12px 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px; border-radius: 22px; background: #0F1A3D;">
+    <a href="Day.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Edition</a>
+    <a href="Squad.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Squad</a>
+    <a href="Planner.dc.html" aria-current="page" style="min-height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #1A1208; background: #FF8A2B; text-decoration: none;">Planner</a>
+    <a href="Ask.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Ask</a>
+    <a href="Alerts.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Alerts</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { chip: 'fh1' }; }
+  renderVals() {
+    const C = {
+      fh1: { label: 'Free Hit (first set)', win: [18, 19], when: 'GW18 or GW19, decided on 26 Dec', why: 'No blanks before GW19, so it is about cover for the festive run, when three deadlines fall in seven days.' },
+      wc2: { label: 'Wildcard', win: [31], when: 'Around GW31, just before the forecast doubles', why: 'Builds a squad with double-gameweek players for GW32 and GW35 or 36, then rides it into the Bench Boost.' },
+      bb2: { label: 'Bench Boost', win: [32, 35, 36], when: 'The biggest double: GW32, or GW35 or 36', why: 'All 15 players count, so it pays most when most of your squad plays twice.' },
+      fh2: { label: 'Free Hit', win: [30, 33], when: 'A blank: GW33, or GW30', why: 'Fields a full eleven in a week when many teams have no game, without wrecking your squad.' },
+      tc2: { label: 'Triple Captain', win: [32, 35, 36], when: 'A premium with two good fixtures in one double', why: 'Two games at triple points. Pick it once the doubles are confirmed and you can see the fixtures.' }
+    };
+    const pill = (on) => on ? "min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #0F1A3D; color: #FFFFFF; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;" : "min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px; background: #FFFFFF; color: #0F1A3D; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;";
+    const chips = Object.keys(C).map((id) => ({ label: C[id].label, on: this.state.chip === id, style: pill(this.state.chip === id), pick: () => this.setState({ chip: id }) }));
+    const sel = C[this.state.chip];
+    const tags = { 17: 'Xmas', 18: 'Xmas', 19: 'Xmas', 20: 'New', 30: 'BGW', 32: 'DGW', 33: 'BGW', 35: 'DGW?', 36: 'DGW?' };
+    const gws = [];
+    for (let g = 10; g <= 38; g++) {
+      const best = sel.win.includes(g);
+      const fc = [30, 32, 33, 35, 36].includes(g);
+      const fest = [17, 18, 19].includes(g);
+      const bg = best ? '#FF8A2B' : fc ? '#DCEBFF' : fest ? '#FFE1C7' : '#FFFFFF';
+      const fg = best ? '#1A1208' : fc ? '#0F3F8A' : fest ? '#7A3A05' : '#36426A';
+      gws.push({ gw: g, tag: tags[g] || '', s: 'min-height: 48px; padding: 4px 2px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; background: ' + bg + '; color: ' + fg + ';' });
+    }
+    return { chips, sel, gws };
+  }
+}
+</script>
+</body>
+</html>

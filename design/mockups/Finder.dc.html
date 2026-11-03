@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Planner: finder</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1747B8}a:hover{color:#0F2F7A}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1300px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column;">
+
+  <header style="padding: 24px 20px 14px; display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font: 800 28px/1.2 'Plus Jakarta Sans', sans-serif;">Planner</h1>
+    <p style="margin: 0; color: #36426A;">Find the best players you don't own yet.</p>
+  </header>
+
+  <nav aria-label="Planner sections" style="margin: 0 20px 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: #E4E9F4;">
+    <a href="Planner.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Transfers</a>
+    <a href="Captain.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Captain</a>
+    <a href="Chips.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Chips</a>
+    <a href="Finder.dc.html" aria-current="page" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #0F1A3D; color: #FFFFFF; text-decoration: none; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Finder</a>
+  </nav>
+
+  <section style="padding: 0 20px 12px; display: flex; flex-direction: column; gap: 10px;">
+    <span style="font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">Position</span>
+    <div role="group" aria-label="Position" style="display: flex; gap: 6px;">
+      <sc-for list="{{posOpts}}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button></sc-for>
+    </div>
+    <span style="font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">Most you can spend</span>
+    <div role="group" aria-label="Price" style="display: flex; gap: 6px;">
+      <sc-for list="{{priceOpts}}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{o.pick}}" aria-pressed="{{o.on}}" style="{{o.style}}">{{o.label}}</button></sc-for>
+    </div>
+  </section>
+
+  <section style="padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 10px;">
+    <span style="font-size: 14px; color: #4A5578;">Ranked by projected points, GW10 to GW15. Players expected to play under 60 minutes are left out.</span>
+    <sc-for list="{{results}}" as="r" hint-placeholder-count="5">
+      <a href="PlayerProfile.dc.html" style="padding: 14px; border-radius: 16px; background: #FFFFFF; color: #0F1A3D; text-decoration: none; display: flex; flex-direction: column; gap: 8px;">
+        <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+          <span style="display: flex; flex-direction: column;"><b style="font-size: 17px;">{{r.n}}</b><span style="font-size: 14px; color: #4A5578;">{{r.t}} · £{{r.c}}m · next {{r.fx}}</span></span>
+          <span style="display: flex; flex-direction: column; align-items: flex-end;"><b style="font: 800 20px/1.2 'Plus Jakarta Sans', sans-serif;">{{r.h6}}</b><span style="font-size: 14px; color: #4A5578;">6 GWs</span></span>
+        </span>
+        <span style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <span style="font-size: 14px; padding: 6px 9px; border-radius: 999px; background: #EEF1F8;">Expects {{r.xm}} mins</span>
+          <span style="font-size: 14px; padding: 6px 9px; border-radius: 999px; background: #EEF1F8;">Top 10k {{r.top}}%</span>
+          <span style="{{r.priceS}}">{{r.price}}</span>
+        </span>
+      </a>
+    </sc-for>
+    <a href="DataRoom.dc.html" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">Fixture heatmap: data room, Fixtures tab →</a>
+  </section>
+
+  <nav aria-label="Main" style="margin: auto 12px 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px; border-radius: 22px; background: #0F1A3D;">
+    <a href="Day.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Edition</a>
+    <a href="Squad.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Squad</a>
+    <a href="Planner.dc.html" aria-current="page" style="min-height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #1A1208; background: #FF8A2B; text-decoration: none;">Planner</a>
+    <a href="Ask.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Ask</a>
+    <a href="Alerts.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Alerts</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { pos: 'MID', cap: '99' }; }
+  renderVals() {
+    const F = {"DEF|5.5":[["Hill","BOU",5.5,27.9,90,7,94.4,"ips NFO ful"],["Murillo","NFO",5.5,27.1,90,0,22.4,"MCI bou CHE"],["Muharemović","LEE",5.1,26.3,90,32,5.3,"TOT che COV"],["Vuskovic","BHA",5.2,25.5,90,12,27.4,"BRE hul NEW"],["Pinnock","COV",4.5,25.3,88,0,2.4,"eve CRY lee"]],"DEF|7.0":[["Hill","BOU",5.5,27.9,90,7,94.4,"ips NFO ful"],["Murillo","NFO",5.5,27.1,90,0,22.4,"MCI bou CHE"],["Muharemović","LEE",5.1,26.3,90,32,5.3,"TOT che COV"],["Tarkowski","EVE",6.2,26.1,90,11,46.4,"COV bre LIV"],["Vuskovic","BHA",5.2,25.5,90,12,27.4,"BRE hul NEW"]],"DEF|99":[["Hill","BOU",5.5,27.9,90,7,94.4,"ips NFO ful"],["Murillo","NFO",5.5,27.1,90,0,22.4,"MCI bou CHE"],["Muharemović","LEE",5.1,26.3,90,32,5.3,"TOT che COV"],["Tarkowski","EVE",6.2,26.1,90,11,46.4,"COV bre LIV"],["Vuskovic","BHA",5.2,25.5,90,12,27.4,"BRE hul NEW"]],"MID|5.5":[["McAtee","NFO",5.5,25.1,89,0,2.4,"MCI bou CHE"],["Rudoni","COV",4.9,25.1,84,3,41.4,"eve CRY lee"],["Xhaka","SUN",5.4,24.5,90,0,-86.9,"CHE avl TOT"],["Iwobi","FUL",5.4,24.1,83,0,39.0,"NEW mci BOU"],["Mac Allister","LIV",5.4,24.0,88,0,-42.0,"cry MUN eve"]],"MID|7.0":[["Ødegaard","ARS",6.7,25.8,88,2,-30.8,"HUL new MCI"],["McAtee","NFO",5.5,25.1,89,0,2.4,"MCI bou CHE"],["Rudoni","COV",4.9,25.1,84,3,41.4,"eve CRY lee"],["Xhaka","SUN",5.4,24.5,90,0,-86.9,"CHE avl TOT"],["Dewsbury-Hall","EVE",6.6,24.5,90,7,33.0,"COV bre LIV"]],"MID|99":[["Mbeumo","MUN",7.9,28.6,90,20,-23.7,"AVL liv BRE"],["Ødegaard","ARS",6.7,25.8,88,2,-30.8,"HUL new MCI"],["Rogers","CHE",8.1,25.6,90,90,101.2,"sun LEE nfo"],["McAtee","NFO",5.5,25.1,89,0,2.4,"MCI bou CHE"],["Rudoni","COV",4.9,25.1,84,3,41.4,"eve CRY lee"]],"FWD|5.5":[["Delap","NFO",5.4,21.0,83,0,-45.7,"MCI bou CHE"],["McBurnie","HUL",5.5,20.8,90,1,23.9,"ars BHA cry"],["Emersonn","IPS",5.5,20.4,71,0,-43.8,"BOU tot AVL"],["Thomas-Asante","COV",5.0,17.1,73,0,17.0,"eve CRY lee"]],"FWD|7.0":[["N.Jackson","AVL",7.0,26.5,85,80,46.6,"mun SUN ips"],["Evanilson","BOU",6.4,25.4,87,27,54.8,"ips NFO ful"],["Gonzalo","FUL",5.9,21.8,83,3,-1.5,"NEW mci BOU"],["Delap","NFO",5.4,21.0,83,0,-45.7,"MCI bou CHE"],["Kostoulas","BHA",5.8,21.0,77,4,-1.6,"BRE hul NEW"]],"FWD|99":[["N.Jackson","AVL",7.0,26.5,85,80,46.6,"mun SUN ips"],["Evanilson","BOU",6.4,25.4,87,27,54.8,"ips NFO ful"],["Isak","LIV",9.2,25.0,67,12,20.1,"cry MUN eve"],["Thiago","BRE",7.8,24.2,90,7,50.0,"bha EVE mun"],["Gonzalo","FUL",5.9,21.8,83,3,-1.5,"NEW mci BOU"]]};
+    const pill = (on) => on ? "min-height: 42px; padding: 0 16px; border: 0; border-radius: 999px; background: #0F1A3D; color: #FFFFFF; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;" : "min-height: 42px; padding: 0 16px; border: 0; border-radius: 999px; background: #FFFFFF; color: #0F1A3D; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;";
+    const posOpts = [['DEF', 'Defenders'], ['MID', 'Midfielders'], ['FWD', 'Forwards']].map(([id, label]) => ({ label, on: this.state.pos === id, style: pill(this.state.pos === id), pick: () => this.setState({ pos: id }) }));
+    const priceOpts = [['5.5', '£5.5m'], ['7.0', '£7.0m'], ['99', 'Any']].map(([id, label]) => ({ label, on: this.state.cap === id, style: pill(this.state.cap === id), pick: () => this.setState({ cap: id }) }));
+    const tag = (bg, fg) => 'font-size: 14px; padding: 6px 9px; border-radius: 999px; background: ' + bg + '; color: ' + fg + ';';
+    const results = F[this.state.pos + '|' + this.state.cap].map(([n, t, c, h6, xm, top, pcp, fx]) => ({ n, t, c: c.toFixed(1), h6: h6.toFixed(1), xm, top, fx,
+      price: pcp >= 90 ? 'Rising soon' : pcp <= -80 ? 'Falling soon' : 'Price steady',
+      priceS: pcp >= 90 ? tag('#FFE1C7', '#7A3A05') : pcp <= -80 ? tag('#FDE3E1', '#8A1C14') : tag('#EEF1F8', '#36426A') }));
+    return { posOpts, priceOpts, results };
+  }
+}
+</script>
+</body>
+</html>

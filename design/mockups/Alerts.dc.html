@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Alerts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1000px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column;">
+
+  <header style="padding: 24px 20px 16px; display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font: 800 28px/1.2 'Plus Jakarta Sans', sans-serif;">Alerts</h1>
+    <p style="margin: 0; color: #36426A;">Prices change every night at 05:30 IST. Only players you own or plan to buy. Tap one for the profile.</p>
+  </header>
+
+  <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Progress toward the next price change</h2>
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+      <a href="PlayerProfile.dc.html" style="padding: 14px; border-radius: 16px; background: #FFFFFF; color: #0F1A3D; text-decoration: none; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+          <span style="display: flex; flex-direction: column; min-width: 0;"><span style="font: 700 17px/1.3 'Atkinson Hyperlegible Next', sans-serif;">{{r.n}}</span><span style="font-size: 14px; color: #4A5578;">{{r.why}}</span></span>
+          <span style="{{r.tag}}">{{r.when}}</span>
+        </div>
+        <div style="height: 10px; border-radius: 999px; background: #EEF1F8; overflow: hidden;" role="img" aria-label="{{r.aria}}">
+          <div style="{{r.bar}}"></div>
+        </div>
+        <span style="font-size: 14px; color: #36426A;">{{r.note}}</span>
+      </a>
+    </sc-for>
+    <span style="font-size: 14px; color: #4A5578;">Progress figures come from the FPL feed and are provisional until we have logged a few weeks of real changes.</span>
+  </section>
+
+  <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Injuries and news</h2>
+    <div style="padding: 14px 16px; border-radius: 16px; background: #DDF3E8; color: #0D5A3A;">No injury or suspension flags in your squad right now.</div>
+  </section>
+
+  <section style="padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Deadline</h2>
+    <a href="Day.dc.html" style="padding: 14px 16px; border-radius: 16px; background: #0F1A3D; color: #F3F5FB; text-decoration: none; display: flex; flex-direction: column;">
+      <span style="font: 700 18px/1.4 'Plus Jakarta Sans', sans-serif;">GW10 locks Sat 7 Nov, 00:00 IST</span>
+      <span style="font-size: 15px; color: #B8C2E0;">Final team-news check runs 2 hours before.</span>
+      <span style="margin-top: 6px; font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif; color: #FF9A4D;">Open this week's edition →</span>
+    </a>
+  </section>
+
+  <nav aria-label="Main" style="margin: auto 12px 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px; border-radius: 22px; background: #0F1A3D;">
+    <a href="Day.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Edition</a>
+    <a href="Squad.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Squad</a>
+    <a href="Planner.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Planner</a>
+    <a href="Ask.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Ask</a>
+    <a href="Alerts.dc.html" aria-current="page" style="min-height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #1A1208; background: #FF8A2B; text-decoration: none;">Alerts</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tag = (bg, fg) => "flex: none; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; padding: 7px 10px; border-radius: 999px; background: " + bg + "; color: " + fg + ";";
+    const data = [
+      { n: 'Rogers', why: 'Next in line for GW11 · £8.1m', dir: 'up', pct: 101, when: 'Rising tonight', note: 'Not in this week’s plan. Buying him now would cost a hit.' },
+      { n: 'Calafiori', why: 'You own him · the call sells him', dir: 'down', pct: 71, when: 'Building', note: 'Heading down, but not tonight. You are selling him this week anyway.' },
+      { n: 'Gabriel', why: 'In the call · £8.0m', dir: 'up', pct: 44, when: 'Building', note: 'Not tonight. Buying before the deadline is fine.' },
+      { n: 'Tavernier', why: 'In the call · £6.6m', dir: 'up', pct: 33, when: 'Building', note: 'Not tonight. Buying before the deadline is fine.' },
+      { n: 'Schade', why: 'You own him', dir: 'down', pct: 32, when: 'Building', note: 'Slow drift down. No action needed this week.' }
+    ];
+    const rows = data.map((d) => {
+      const up = d.dir === 'up';
+      const hot = d.pct >= 100 || d.when === 'Falling soon';
+      const fill = up ? '#FF8A2B' : '#8A1C14';
+      return { ...d,
+        tag: hot ? (up ? tag('#FFE1C7', '#7A3A05') : tag('#FDE3E1', '#8A1C14')) : tag('#EEF1F8', '#36426A'),
+        bar: 'height: 100%; border-radius: 999px; width: ' + Math.min(100, d.pct) + '%; background: ' + fill + ';',
+        aria: (up ? 'Rise' : 'Fall') + ' progress ' + d.pct + ' percent' };
+    });
+    return { rows };
+  }
+}
+</script>
+</body>
+</html>

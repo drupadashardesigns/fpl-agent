@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Archive</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1747B8}a:hover{color:#0F2F7A}
+a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1000px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column; gap: 20px; padding: 20px 20px 32px;">
+
+  <a href="Day.dc.html" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">← This week's edition</a>
+
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font: 800 28px/1.2 'Plus Jakarta Sans', sans-serif;">Past editions</h1>
+    <p style="margin: 0; color: #36426A;">Every edition, and how its call turned out.</p>
+  </header>
+
+  <section style="padding: 18px; border-radius: 18px; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+      <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Your season so far</h2>
+      <span style="font-size: 14px; color: #4A5578;">Overall rank</span>
+    </div>
+    <svg viewBox="0 0 310 140" width="100%" role="img" aria-label="Overall rank by gameweek: GW1 398,656, GW3 low point 926,902, GW9 98,216">
+      <line x1="10" y1="120" x2="300" y2="120" stroke="#E1E6F2" stroke-width="1"/>
+      <polyline fill="none" stroke="#0F1A3D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="10,46.3 46.25,51.5 82.5,108.5 118.75,43.7 155,45 191.25,37.6 227.5,27.5 263.75,25.9 300,11.1"/>
+      <circle cx="82.5" cy="108.5" r="4" fill="#C9D3EA"/>
+      <circle cx="300" cy="11.1" r="5" fill="#FF8A2B"/>
+      <text x="92" y="112" font-size="13" fill="#4A5578" font-family="Atkinson Hyperlegible Next, sans-serif">927k after GW3</text>
+      <text x="292" y="30" font-size="13" fill="#0F1A3D" font-weight="700" text-anchor="end" font-family="Atkinson Hyperlegible Next, sans-serif">98.2k now</text>
+      <text x="10" y="136" font-size="12" fill="#4A5578" font-family="Atkinson Hyperlegible Next, sans-serif">GW1</text>
+      <text x="300" y="136" font-size="12" fill="#4A5578" text-anchor="end" font-family="Atkinson Hyperlegible Next, sans-serif">GW9</text>
+    </svg>
+    <span style="font-size: 14px; color: #4A5578;">Higher on the chart is a better rank.</span>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 10px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Editions</h2>
+    <a href="Day.dc.html" style="padding: 16px; border-radius: 16px; background: #FFFFFF; color: #0F1A3D; text-decoration: none; display: flex; flex-direction: column; gap: 6px;">
+      <span style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+        <span style="font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; padding: 7px 10px; border-radius: 999px; background: #FFE1C7; color: #7A3A05;">This week</span>
+        <span style="font-size: 14px; color: #4A5578;">Edition 1 · GW10</span>
+      </span>
+      <span style="font: 700 19px/1.35 'Plus Jakarta Sans', sans-serif;">Two moves, Haaland captain, and the Free Hit waits.</span>
+      <span style="font-size: 15px; color: #36426A;">Graded once GW10's last match is played.</span>
+    </a>
+  </section>
+
+  <section style="padding: 16px; border-radius: 16px; background: #DDF3E8; color: #0D5A3A; display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font: 800 17px/1.3 'Plus Jakarta Sans', sans-serif;">How grading works</h2>
+    <p style="margin: 0;">The week after each edition, we check the call against what happened: points from the players brought in against the players sold, the captain's return, and whether the model's projections were close. Over a season this shows how far to trust it.</p>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

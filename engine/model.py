@@ -46,8 +46,15 @@ def _expected_half_conceded(mu: float) -> float:
     return sum((g // 2) * math.exp(-mu) * mu**g / math.factorial(g) for g in range(12))
 
 
+def played(f: dict) -> bool:
+    """A fixture counts once it has a provisional result. FPL can leave `finished`
+    false for a day or more after full time (seen with GW9), which made the model
+    treat the last gameweek as unplayed."""
+    return bool(f.get("finished") or f.get("finished_provisional"))
+
+
 def team_strength(bs: dict, fixtures: list) -> tuple[dict, dict, float]:
-    done = [f for f in fixtures if f["finished"]]
+    done = [f for f in fixtures if played(f)]
     games = defaultdict(int)
     for f in done:
         games[f["team_h"]] += 1
@@ -124,7 +131,7 @@ def fixture_points(p: dict, f: dict, xm: float, att: dict, dfn: dict, league: fl
 def project(bs: dict, fixtures: list, summaries: dict[int, dict], gw_from: int, gw_to: int) -> dict:
     """Return {"players": {id: {...}}, "teams": {...}, "league_xg": float}."""
     att, dfn, league = team_strength(bs, fixtures)
-    done = [f for f in fixtures if f["finished"]]
+    done = [f for f in fixtures if played(f)]
     last_gw = max((f["event"] for f in done), default=0)
     games = defaultdict(int)
     for f in done:

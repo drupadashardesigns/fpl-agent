@@ -48,6 +48,8 @@ data/archive/      nightly bootstrap + fixtures snapshots (GitHub Actions)
 data/runs/gwNN/    one weekly run: facts.json (editor input), projections, ownership
 editions/gwNN.json the published edition (written by the editor, read by the app)
 app/               the web app (to build)
+design/system/     design system: tokens, components, usage rules
+design/mockups/    final screen mockups, click map, parameter list
 ```
 
 ### Where things run
@@ -102,11 +104,25 @@ Starting thresholds, to tune once the backtest has a few weeks of data:
 
 ## Data sources
 
-- **Official FPL API** (primary): players with xG, xA, xGC, DefCon, set-piece order, injury news, price-change projections; fixtures; any manager's history, transfers and picks; overall standings.
-- **Understat** (planned): shot-level xG. Reachable from GitHub Actions, blocked from Claude's cloud sandbox, so fetch it in Actions.
-- **Not usable**: FBref removed its advanced stats in January 2026 after Opta ended its data deal. Old scrapers that rely on it are broken.
-- **Historical**: `vaastav/Fantasy-Premier-League` has past seasons; it stopped weekly updates after 2024/25, so our own nightly archive is the record from now on.
-- **Benchmarks**: `daniegr/OpenFPL` (MIT, XGBoost/RF ensemble, trained before DefCon existed so it needs retraining) and `sertalpbilal/FPL-Optimization-Tools` (HiGHS solver that takes a projections CSV).
+Every stat in the app shows its source and when it was last updated. If a source fails, show the last good value with its date. Never show a blank, and never fill a gap with an estimate presented as data.
+
+| Source | Status | What it fills | How |
+|---|---|---|---|
+| Official FPL API | Live | Players (xG, xA, xGC, DefCon, CBI, tackles, recoveries, ICT, BPS, set-piece order, news, price-change progress), fixtures, managers, standings | `engine/fpl_api.py` |
+| Understat | v1, build first | Shots, key passes, npxG, xGChain, xGBuildup, shot maps; team shots for and against, PPDA, deep completions | No API: parse the JSON embedded in league, team and player pages. Run in GitHub Actions (blocked from Claude's sandbox; confirm reachability from Actions in the first run) |
+| FotMob | v1, second | Chances created, big chances, dribbles attempted and completed, duels and aerial duels won, interceptions, touches in the box, dispossessed, xGOT | Unofficial match JSON, one request per finished match |
+| The Odds API | v1, third | Match odds and over/unders to calibrate team strength; EPL scorer props exist but only from US bookmakers | Official API, free plan 500 credits a month. Pull once per gameweek, never daily |
+| Sofascore | v1, last | Player touch heatmaps, season and per match | `LanusStats` (unofficial). Sofascore often blocks cloud IPs. If Actions is blocked, fall back to a local run on Drupad's Mac or a paid scraper (Apify is connected) |
+| FBref | Not usable | | Advanced stats removed January 2026 after the Opta deal ended |
+| Distance covered, sprints | No free source | | 2026/27 figures in the press come from Gradient Sports (paid). Use PPDA as the team intensity ranking. Do not show distance until a feed exists |
+| Carries, through balls | No confirmed source | | Check Sofascore's stat list during the build; if absent, remove them from the screens |
+
+Rules for the unofficial sources: one request every few seconds, cache everything, only fetch finished matches not yet stored, and keep a per-source health record in `data/sources.json` (last success, last error) that the app reads.
+
+**Player ID map.** Each source names players differently. Keep `data/id_map.json` linking FPL element ID to Understat, FotMob and Sofascore IDs. Build it once by team plus name matching, list unmatched players for manual review, top it up when new players appear.
+
+**Historical:** `vaastav/Fantasy-Premier-League` has past seasons but stopped weekly updates after 2024/25, so our nightly archive is the record from now on.
+**Benchmarks:** `daniegr/OpenFPL` (needs retraining for DefCon) and `sertalpbilal/FPL-Optimization-Tools` (HiGHS solver taking a projections CSV).
 
 ## Known gaps in the v0 model
 
@@ -116,15 +132,42 @@ Starting thresholds, to tune once the backtest has a few weeks of data:
 4. Bonus is a flat per-90 rate, not a BPS model.
 5. `picks` shows the squad at the last deadline. Transfers already made for the upcoming gameweek are invisible without login, so confirm with Drupad if he has moved early.
 6. Price-change projection fields are observed, not documented. Thresholds in `prices.py` are provisional.
+7. Fixed 3 Nov: fixtures can stay `finished: false` for a day or more after full time, which made the model treat GW9 as unplayed. `model.played()` now also accepts `finished_provisional`. The GW10 numbers in the mockups were computed before this fix, so live numbers will differ slightly.
+
+## Weekly runbook
+
+- **Nightly 07:15 IST** (GitHub Actions): FPL snapshot, then the v1 sources for newly finished matches, then projections and price alerts. Commit to `data/`.
+- **Daily 09:00 IST** (Claude scheduled task, the editor): when the next deadline is within 36 hours and no edition exists, run `python -m engine run`, read `facts.json`, write `editions/gwNN.json` following the edition contract and editorial rules, commit. Otherwise refresh price alerts only.
+- **Deadline minus 3 hours:** re-check injury news and price alerts; if a recommendation changes, update the edition and flag the change at the top.
+- **After the gameweek:** score last week's projections against actual points and append to the prediction log. The data room Model tab shows this record.
 
 ## Roadmap
 
-1. Build `app/` (edition reader, squad, planner, price alerts, ask the agent, archive).
+1. Build `app/` from the mockups in `design/` (see App design below).
 2. Write `editions/gw10.json` as the first edition, then set up the scheduled task.
-3. Prediction log and backtest: store every projection, score against actual points each week.
-4. Minutes model, then betting odds, then Understat.
-5. Multi-week solver with chip planning (second-half set: forecast Blank GW30, Double GW32, Blank GW33, Double GW35/36).
+3. Understat layer and the player ID map, then FotMob, then odds, then Sofascore heatmaps.
+4. Prediction log and backtest.
+5. Minutes model, then odds in team strength.
+6. Multi-week solver with chip planning (second-half set: forecast Blank GW30, Double GW32, Blank GW33, Double GW35/36).
 
-## App design direction
+## App design
 
-Phone first. Reads like a matchday sheet, not a dashboard: cool neutral ground, a deep pitch-green accent, a condensed display face for headlines and numbers, a clean sans for reading. Avoid the generic AI look (cream ground, elegant serif, brass accent). Headlines are scannable in under a minute; depth opens in place.
+The design is final. Build from these, do not restyle:
+
+- `design/system/`: the "AlooSoul Floodlight Day" design system. `tokens.json` holds every colour, type style, space and radius; `components/*/preview.html` show each component; `README.md` gives the usage rules. Use the tokens by name, never retype hex values.
+- `design/mockups/*.dc.html`: one file per screen, 390 wide (phone first). Each is HTML plus a small `DCLogic` class whose `renderVals()` holds the sample data and interaction state. Treat the markup and styles as the spec and the sample data as the shape of the real data. Templates use `{{value}}`, `<sc-for list= as=>` for loops and `<sc-if>` for conditions; translate these to the app's framework.
+- `design/mockups/ClickMap.dc.html`: every tap on every screen and where it goes. This is binding: no other click targets, no clashing gestures.
+- `design/mockups/Params.dc.html`: every parameter the app shows, which screen shows it, and its source.
+
+**Look:** bright cool ground (#F2F5FB), white cards, deep navy (#0F1A3D) for emphasis panels and the bottom nav, one orange accent (#FF8A2B) for the primary action and selected states. Type is Plus Jakarta Sans for display and numbers, Atkinson Hyperlegible Next for everything you read. Sentence case, generous sizes (body 16, never below 13), no condensed faces. Avoid the generic AI look (cream ground, elegant serif, brass accent).
+
+**Screens:** bottom nav of Edition, Squad, Planner, Ask, Alerts.
+- Edition (`Day.dc.html`): the weekly edition, three depths per story (headline, The read, data room teaser). Links to Archive, Planner, Data room, Alerts.
+- Squad: now / after the call; cards or a 10-gameweek points heatmap. Players open the profile.
+- Planner, four tabs: Transfers (plans plus a build-your-own), Captain (candidates with haul, blank and swing against rivals), Chips (season calendar, best window per chip), Finder (position and price filters).
+- Data room, six tabs: Stories, Players (8 metric groups), Teams (5 metric groups), Fixtures (20 x 10 heatmap), Ownership, Model.
+- Player profile, Team profile, Free Hit story, Ask, Alerts, Archive.
+
+**Placeholders:** any stat whose source is not live yet renders the "Connects in v1" box from the mockups, naming the source. It switches to real data automatically when `data/sources.json` reports that source healthy.
+
+**Hosting:** a private Claude artifact page reading the repo's `data/` and `editions/`; Ask uses the artifact's `sample` capability. Interactions must be keyboard reachable with visible focus.

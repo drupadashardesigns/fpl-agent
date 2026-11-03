@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Planner: captain</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1747B8}a:hover{color:#0F2F7A}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #1747B8;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 1500px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; display: flex; flex-direction: column;">
+
+  <header style="padding: 24px 20px 14px; display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font: 800 28px/1.2 'Plus Jakarta Sans', sans-serif;">Planner</h1>
+    <p style="margin: 0; color: #36426A;">Who gets the armband in GW10.</p>
+  </header>
+
+  <nav aria-label="Planner sections" style="margin: 0 20px 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 14px; background: #E4E9F4;">
+    <a href="Planner.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Transfers</a>
+    <a href="Captain.dc.html" aria-current="page" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #0F1A3D; color: #FFFFFF; text-decoration: none; font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Captain</a>
+    <a href="Chips.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Chips</a>
+    <a href="Finder.dc.html" style="min-height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #4A5578; text-decoration: none; font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif;">Finder</a>
+  </nav>
+
+  <section style="margin: 0 20px; padding: 20px; border-radius: 20px; background: #0F1A3D; color: #F3F5FB; display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <span style="font: 700 15px/1 'Atkinson Hyperlegible Next', sans-serif; padding: 10px 14px; border-radius: 999px; background: #FF8A2B; color: #1A1208;">Captain Haaland</span>
+      <span style="font: 500 15px/1 'Atkinson Hyperlegible Next', sans-serif; padding: 10px 14px; border-radius: 999px; background: #1B2856;">Vice Gabriel</span>
+    </div>
+    <p style="margin: 0; color: #D3DAEE;">88% of the top 10k captain Haaland, so his effective ownership there is 188%. If you go elsewhere and he scores 10, you drop about 9 points against them.</p>
+  </section>
+
+  <section style="padding: 24px 20px 8px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">Compare the options</h2>
+      <span style="font-size: 14px; color: #4A5578;">Tap one to see what happens if you captain them instead.</span>
+    </div>
+    <sc-for list="{{cands}}" as="c" hint-placeholder-count="7">
+      <button type="button" onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="{{c.style}}">
+        <span style="display: flex; justify-content: space-between; align-items: baseline; width: 100%; gap: 10px;">
+          <span style="font: 700 17px/1.3 'Atkinson Hyperlegible Next', sans-serif;">{{c.n}} <span style="font-weight: 500; color: #4A5578;">v {{c.opp}}</span></span>
+          <span style="font: 800 18px/1.2 'Plus Jakarta Sans', sans-serif;">{{c.xp}}</span>
+        </span>
+        <span style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; font-size: 14px; color: #36426A; text-align: left;">
+          <span>Haul {{c.haul}}%</span><span>Blank {{c.blank}}%</span><span>EO {{c.eo}}%</span>
+        </span>
+      </button>
+    </sc-for>
+    <span style="font-size: 14px; color: #4A5578;">Projected points from the v0 model. Haul is 10 or more, blank is 2 or fewer, from 20,000 simulated games. EO is effective ownership in the top 10k, captaincy counted twice.</span>
+  </section>
+
+  <section style="margin: 8px 20px 20px; padding: 18px; border-radius: 18px; background: #FFFFFF; display: flex; flex-direction: column; gap: 12px;">
+    <h2 style="margin: 0; font: 800 18px/1.3 'Plus Jakarta Sans', sans-serif;">{{sel.title}}</h2>
+    <sc-if value="{{sel.isHaaland}}" hint-placeholder-val="{{false}}">
+      <p style="margin: 0; color: #36426A;">You match 88% of the top 10k. You only gain or lose on Haaland against the 12% who went elsewhere.</p>
+    </sc-if>
+    <sc-if value="{{sel.isOther}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="padding: 12px 14px; border-radius: 14px; background: #DDF3E8; color: #0D5A3A;">If Haaland scores 2 and {{sel.n}} scores 10, you gain about 8 on most of the top 10k.</div>
+        <div style="padding: 12px 14px; border-radius: 14px; background: #FDE3E1; color: #8A1C14;">If Haaland scores 12 and {{sel.n}} scores 2, you lose about 10.</div>
+        <p style="margin: 0; color: #36426A;">The model has {{sel.n}} {{sel.diff}} Haaland this week. It underrates premium forwards, so treat a gap under 1.5 as a tie.</p>
+      </div>
+    </sc-if>
+    <a href="PlayerProfile.dc.html" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font: 700 15px/1.3 'Atkinson Hyperlegible Next', sans-serif;">{{sel.n}} profile →</a>
+  </section>
+
+  <nav aria-label="Main" style="margin: auto 12px 12px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 6px; border-radius: 22px; background: #0F1A3D;">
+    <a href="Day.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Edition</a>
+    <a href="Squad.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Squad</a>
+    <a href="Planner.dc.html" aria-current="page" style="min-height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font: 700 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #1A1208; background: #FF8A2B; text-decoration: none;">Planner</a>
+    <a href="Ask.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Ask</a>
+    <a href="Alerts.dc.html" style="min-height: 50px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 'Atkinson Hyperlegible Next', sans-serif; color: #C3CCE6; text-decoration: none;">Alerts</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1500}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { pick: 'Gabriel' }; }
+  renderVals() {
+    const C = [
+      ['Gabriel', 'HUL', 5.8, 13, 24, 15], ['Konsa', 'HUL', 5.2, 8, 30, 62], ['Barry', 'COV', 5.2, 15, 43, 18],
+      ['Tavernier', 'ips', 5.1, 12, 34, 68], ['Haaland', 'nfo', 4.7, 8, 43, 188], ['Van Hecke', 'lee', 4.5, 11, 36, 48], ['Palmer', 'sun', 3.9, 7, 53, 76]
+    ];
+    const base = "display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: 16px; color: #0F1A3D; min-height: 44px;";
+    const H = 4.7;
+    const cands = C.map(([n, opp, xp, haul, blank, eo]) => {
+      const on = this.state.pick === n;
+      return { n, opp, xp: xp.toFixed(1), haul, blank, eo, on, pick: () => this.setState({ pick: n }),
+        style: base + (on ? 'border: 2px solid #FF8A2B; background: #FFF1E3;' : 'border: 2px solid transparent; background: #FFFFFF;') };
+    });
+    const s = C.find((c) => c[0] === this.state.pick);
+    const d = s[2] - H;
+    const isH = s[0] === 'Haaland';
+    return { cands, sel: { n: s[0], isHaaland: isH, isOther: !isH,
+      title: isH ? 'Captaining Haaland' : 'Captaining ' + s[0] + ' instead',
+      diff: d >= 0 ? d.toFixed(1) + ' ahead of' : Math.abs(d).toFixed(1) + ' behind' } };
+  }
+}
+</script>
+</body>
+</html>

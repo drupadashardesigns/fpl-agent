@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Click map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0}
+.map{border-collapse:collapse;width:100%;font-size:15px;line-height:1.45}
+.map th{text-align:left;font-weight:700;color:#4A5578;padding:10px 14px;border-bottom:2px solid #0F1A3D}
+.map td{padding:10px 14px;border-bottom:1px solid #E1E6F2;vertical-align:top}
+.map td:first-child{font-weight:700;width:150px}
+.map td:nth-child(2){width:330px}
+</style>
+</helmet>
+<div style="width: 1200px; min-height: 2100px; box-sizing: border-box; background: #F2F5FB; color: #0F1A3D; font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 16px; line-height: 1.6; padding: 48px; display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 40px; align-items: start;">
+
+  <aside style="display: flex; flex-direction: column; gap: 16px;">
+    <h1 style="margin: 0; font: 800 34px/1.15 'Plus Jakarta Sans', sans-serif;">Click map</h1>
+    <p style="margin: 0; color: #36426A;">Every tappable thing in the app and where it goes. The build follows this exactly.</p>
+    <div style="padding: 20px; border-radius: 18px; background: #0F1A3D; color: #F3F5FB; display: flex; flex-direction: column; gap: 12px;">
+      <h2 style="margin: 0; font: 800 19px/1.3 'Plus Jakarta Sans', sans-serif;">Seven rules</h2>
+      <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <li>The bottom nav always reaches the five main screens. The current one is orange.</li>
+        <li>Any player name or player card opens that player's profile.</li>
+        <li>→ moves deeper inside the app. ↗ leaves it, to the FPL site in a new tab.</li>
+        <li>The depth switch never leaves the page. It opens layers in place.</li>
+        <li>Pages without the nav (story, profile, archive) have a back link top left, to where you came from.</li>
+        <li>One orange primary action per screen.</li>
+        <li>Nothing that looks tappable does nothing.</li>
+      </ol>
+    </div>
+    <div style="padding: 20px; border-radius: 18px; background: #FFFFFF; display: flex; flex-direction: column; gap: 8px;">
+      <h2 style="margin: 0; font: 800 19px/1.3 'Plus Jakarta Sans', sans-serif;">The three ways to go deeper</h2>
+      <p style="margin: 0;"><b>On a story:</b> depth switch, Headline → The read → Data room teaser, in place.</p>
+      <p style="margin: 0;"><b>Into the evidence:</b> the teaser's link opens that story's evidence in the data room.</p>
+      <p style="margin: 0;"><b>Into a player:</b> any name opens the profile, from anywhere.</p>
+    </div>
+  </aside>
+
+  <section style="border-radius: 18px; background: #FFFFFF; overflow: hidden;">
+    <table class="map">
+      <thead><tr><th scope="col">Screen</th><th scope="col">Tap</th><th scope="col">What happens</th></tr></thead>
+      <tbody>
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="20">
+          <tr style="{{r.band}}"><td>{{r.s}}</td><td>{{r.t}}</td><td>{{r.r}}</td></tr>
+        </sc-for>
+      </tbody>
+    </table>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":2100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const R = [
+      ['Edition', 'Past editions', 'Opens the archive'],
+      ['', 'Try it in the planner', 'Opens the planner with the call selected'],
+      ['', 'Evidence', 'Opens the data room on the Stories tab'],
+      ['', 'Depth switch on a story', 'Opens The read, then the data room teaser, in place'],
+      ['', 'Open the evidence → (in the teaser)', 'Opens that story in the data room; the Free Hit story has its own page'],
+      ['', 'Price alert strip', 'Opens Alerts'],
+      ['Squad', 'As it is now / After the call', 'Switches the squad in place'],
+      ['', 'Cards / Heatmap', 'Switches between player cards and the 10-gameweek points heatmap'],
+      ['', 'Player card or heatmap row name', 'Opens the player profile'],
+      ['Planner (all four tabs)', 'Transfers, Captain, Chips, Finder', 'Switches planner section; the bottom nav stays on Planner'],
+      ['Planner: transfers', 'A plan in the list', 'Selects it; the navy summary above updates'],
+      ['', 'Make these moves in FPL ↗', 'Opens FPL transfers in a new tab; the app never makes transfers itself'],
+      ['', 'Build my own plan', 'Opens the builder in place: pick who goes out, then who comes in; the result updates live'],
+      ['Planner: captain', 'A candidate', 'Selects them; the haul, blank and swing panel updates in place'],
+      ['', 'Name profile →', 'Opens that player’s profile'],
+      ['Planner: chips', 'A chip', 'Highlights its best window on the calendar; the navy panel explains why'],
+      ['', 'Free Hit tile', 'Opens the Free Hit story'],
+      ['Planner: finder', 'Position and price chips', 'Filters the list in place'],
+      ['', 'A player', 'Opens the player profile'],
+      ['', 'Fixture heatmap →', 'Opens the data room'],
+      ['Data room', 'Stories, Players, Teams, Fixtures, Ownership, Model', 'Switches section in place'],
+      ['', 'Story link', 'Jumps to the right section, opens the Free Hit story or the team profile, or expands all GW9 scores'],
+      ['', 'Metric group chips (players and teams)', 'Swaps the table columns in place; sorted by the group’s headline stat'],
+      ['', 'Player name in any table', 'Opens the player profile'],
+      ['', 'Team name in any table', 'Opens the team profile'],
+      ['', 'Fixtures: Goals / Clean sheets, 3 / 6 / 10 GWs', 'Recolours and re-sorts the heatmap in place'],
+      ['Player profile', 'Metric group chips', 'Swaps the number grid in place'],
+      ['', 'See him in the planner', 'Opens the planner'],
+      ['', 'Ask', 'Opens Ask'],
+      ['', '← Data room', 'Back'],
+      ['Team profile', 'Player to own', 'Opens the player profile'],
+      ['', 'Find players to buy', 'Opens the finder'],
+      ['', '← Data room', 'Back'],
+      ['Ask', 'Suggested question', 'Shows its answer from this week’s data'],
+      ['', 'Ask with an empty box', 'Inline error: Type a question first'],
+      ['', 'See the evidence →', 'Opens the data room'],
+      ['Alerts', 'Player card', 'Opens the player profile'],
+      ['', 'Deadline card', 'Opens this week’s edition'],
+      ['Free Hit story', '← Data room', 'Back'],
+      ['Archive', 'An edition', 'Opens that edition'],
+      ['', '← This week’s edition', 'Back']
+    ];
+    let band = 0;
+    return { rows: R.map(([s, t, r]) => { if (s) band++; return { s, t, r, band: band % 2 ? '' : 'background: #F7F9FD;' }; }) };
+  }
+}
+</script>
+</body>
+</html>
