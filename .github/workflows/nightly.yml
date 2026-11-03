@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: "45 1 * * *"   # 01:45 UTC, after the 00:00 UK price update
   workflow_dispatch:
-  push:  # TEMPORARY: first Understat run from the feature branch; removed before merge
-    branches: [claude/wonderful-cannon-vsib38]
 
 permissions:
   contents: write
@@ -20,19 +18,12 @@ jobs:
           python-version: "3.12"
       - name: Archive bootstrap and fixtures
         run: python -m engine snapshot
-      # Understat is blocked from Claude's sandbox, so it is fetched here.
-      # League data once, then only finished matches not already stored,
-      # one request every 3 seconds. A failure is recorded in data/sources.json
-      # and the app keeps showing the last good numbers with their date.
-      - name: TEMPORARY Understat reachability probe
-        continue-on-error: true
-        run: |
-          getent ahosts understat.com | head -4 || true
-          for u in https://understat.com/ https://understat.com/getLeagueData/EPL/2026; do
-            curl -sS -4 -o /tmp/out -m 25 -w "$u -> %{http_code} %{size_download}B %{time_total}s ip=%{remote_ip}\n" \
-              -H 'X-Requested-With: XMLHttpRequest' -A 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36' "$u" || echo "$u failed"
-            head -c 200 /tmp/out 2>/dev/null; echo
-          done
+      # League data once, then only finished matches not already stored, one
+      # request every 3 seconds. A failure is recorded in data/sources.json and
+      # the app keeps showing the last good numbers with their date.
+      # As of 3 Nov 2026 understat.com drops connections from GitHub-hosted
+      # runners (TCP timeout), so this step fails until it runs from a
+      # self-hosted runner or the data is fetched locally (see CLAUDE.md).
       - name: Understat (league + new finished matches)
         id: understat
         continue-on-error: true
