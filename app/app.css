@@ -389,3 +389,6 @@ h1[tabindex="-1"]:focus, article[tabindex="-1"]:focus { outline: none; }
 .scrollx-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
 .scrollx-chips .opt { flex: none; }
 .t-h3 { margin: 4px 0 0; font: 800 16px/1.3 var(--font-display); }
+
+/* Prediction log: grade card on a past edition */
+.glist { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }

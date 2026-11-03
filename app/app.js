@@ -9,7 +9,7 @@
 
   // ---------- state ----------
   let BASE = "";
-  let IDX, ED, D, SRC;
+  let IDX, ED, D, SRC, PL;
   const S = {
     squadView: "after", squadMode: "cards", plan: "call", build: false, bOut: null, bIn: null,
     cap: null, chip: "fh1", fPos: "MID", fCap: "99",
@@ -179,6 +179,7 @@
     return `
     <header class="ed-head gutter">
       <div class="ed-top"><span class="brand">AlooSoul</span><span class="deadline">${dl}</span></div>
+      ${ed.grading ? gradeCard(ed.grading) : ""}
       ${ed.update ? `<div class="flag" role="status"><b>Updated ${ist(ed.update.at, { weekday: "short", day: "numeric", month: "short" })}, ${ist(ed.update.at, { hour: "2-digit", minute: "2-digit", hour12: false })} IST.</b> ${esc(ed.update.text)}</div>` : ""}
       <div style="display:flex;flex-direction:column;gap:8px">
         <div class="ed-meta"><span>Gameweek ${ed.gw} · Edition ${ed.edition || 1} · ${ist(pub, { day: "numeric", month: "short" })}</span><a href="#archive">Past editions</a></div>
@@ -558,7 +559,7 @@
       body = `<section class="gutter" style="padding-bottom:20px;display:flex;flex-direction:column;gap:12px">
         <div class="card card-16" style="gap:8px"><h2 class="t-h2">What the projections use</h2><p>Team attack from total xG, team defence from xG conceded, each player's xG, xA, bonus and saves per 90, defensive contributions for the DefCon bonus, and expected minutes from recent games and injury flags. All from the official FPL data for now.</p></div>
         <div class="note-orange"><h2 class="t">Known weak spots</h2><p>No rotation model yet, no betting odds, and it underrates big hauls from premium forwards. That is why captaincy and close calls get a human check in the edition.</p></div>
-        <div class="note-green"><h2 class="t">Track record</h2><p>Starts this week. After each gameweek, every projection is scored against real points and shown here.</p></div>
+        ${trackRecord()}
         <span class="cap">Model ${esc(D.meta.model.version)} · each later week weighted ${Math.round((1 - D.meta.model.decay) * 100)}% less in plan scoring · data pulled ${pulled()}</span></section>`;
     }
     return `<header class="phead gutter" style="padding-bottom:14px"><span class="cap">GW${D.meta.gw} · data pulled ${pulledShort()}</span><h1 class="t-h1" tabindex="-1">Data room</h1><p class="lede">Every number behind this week's edition, so you can check the call yourself.</p></header>
@@ -895,6 +896,57 @@
     </div>`;
   }
 
+  // ---------- Prediction log: the edition's grade and the Model tab's track record ----------
+  function gradeCard(g) {
+    return `<section class="note-green" aria-label="How this edition turned out"><h2 class="t">How it turned out${g.final ? "" : " (provisional)"}</h2>
+      <ul class="glist">${g.lines.map((l) => `<li>${esc(l)}</li>`).join("")}</ul>
+      <span style="font-size:14px">Scored ${ist(g.scored_at, { day: "numeric", month: "short" })} against official FPL points${g.final ? "" : ", before FPL's final check, so bonus can still move"}. Plans count points of players bought minus players sold, less any hit.</span></section>`;
+  }
+  const pl = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+  const sgn = (x, d = 0) => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x).toFixed(d);
+  function errTable(title, rows, first) {
+    const R = Object.entries(rows).filter(([, v]) => v);
+    return `<div class="card card-16" style="gap:8px"><h3 class="t-h2" style="font-size:17px">${title}</h3>
+      <div class="scrollx"><table class="tbl tbl-full"><thead><tr><th scope="col" class="l">${first}</th><th scope="col">Players</th><th scope="col">Projected</th><th scope="col">Actual</th><th scope="col">Miss</th><th scope="col">Bias</th></tr></thead><tbody>
+      ${R.map(([k, v]) => `<tr><td class="l">${esc(k)}</td><td>${v.n}</td><td>${f2(v.projected)}</td><td>${f2(v.actual)}</td><td class="key">${f2(v.mae)}</td><td>${sgn(v.bias, 2)}</td></tr>`).join("")}</tbody></table></div>
+      <span class="cap">Points per player per gameweek. Miss is the average gap either way; bias above zero means the model projected too high.</span></div>`;
+  }
+  function trackRecord() {
+    const dd = (iso) => ist(iso, { day: "numeric", month: "short" });
+    if (!PL || !PL.captures || !PL.captures.length) return `<div class="note-green"><h2 class="t">Track record</h2><p>Starts with the next capture. Before each deadline every projection is stored; after the gameweek it is scored against real points and shown here.</p></div>`;
+    const pending = PL.captures.filter((c) => !c.scored);
+    const waiting = pending.length ? `<p>${pending.map((c) => `GW${c.gw}'s projections for ${c.players} players were stored on ${dd(c.captured_at)}, before the deadline on ${uk(c.deadline_utc, { weekday: "short", day: "numeric", month: "short" })}, ${uk(c.deadline_utc, { hour: "2-digit", minute: "2-digit", hour12: false })} UK.`).join(" ")} They are scored once the gameweek's last match is played.</p>` : "";
+    if (!PL.weeks.length) return `<div class="note-green"><h2 class="t">Track record</h2>${waiting}<p>Nothing is scored yet, so there is no record to show.</p></div>`;
+    const S = PL.season, last = PL.weeks[PL.weeks.length - 1];
+    const tiles = `<section class="tiles">
+      <div class="tile tile-w"><b>${f2(S.model.mae)}</b><span>Average miss per player, ${S.weeks} GW${S.weeks > 1 ? "s" : ""}</span></div>
+      <div class="tile tile-w"><b>${sgn(S.model.bias, 2)}</b><span>Bias (above zero: too high)</span></div>
+      <div class="tile tile-w"><b>${sgn(S.call.actual)}</b><span>The call, against ${sgn(S.call.projected, 1)} projected</span></div>
+      <div class="tile tile-w"><b>${S.captain.best} of ${S.captain.weeks}</b><span>Weeks the captain was the best candidate</span></div></section>`;
+    const weeks = `<div class="card card-16" style="gap:8px"><h3 class="t-h2" style="font-size:17px">Week by week</h3>
+      <div class="scrollx"><table class="tbl tbl-full"><thead><tr><th scope="col">GW</th><th scope="col">Miss</th><th scope="col">Bias</th><th scope="col" class="l">Captain</th><th scope="col">The call</th><th scope="col">You</th></tr></thead><tbody>
+      ${PL.weeks.slice().reverse().map((w) => `<tr><td>${w.gw}${w.final ? "" : "*"}</td><td class="key">${f2(w.model.mae)}</td><td>${sgn(w.model.bias, 2)}</td><td class="l">${plink(w.captain.pick, w.captain.name)} ${w.captain.actual}</td><td>${w.call ? `${sgn(w.call.actual)} <span class="sub">(${sgn(w.call.projected, 1)})</span>` : "–"}</td><td>${w.followed.points == null ? "–" : w.followed.points}</td></tr>`).join("")}
+      </tbody></table></div><span class="cap">The call is points of players bought minus players sold, less any hit, over the horizon's gameweeks played so far; projected in brackets. ${PL.weeks.some((w) => !w.final) ? "* Provisional until FPL's final check." : ""}</span></div>`;
+    const c = S.calibration;
+    const calib = c ? `<div class="card card-16" style="gap:8px"><h3 class="t-h2" style="font-size:17px">Hauls and blanks</h3>
+      ${kv([[`Hauls (${PL.rules.haul}+ points)`, `${f1(c.haul_projected)}% projected, ${f1(c.haul_actual)}% happened`], [`Blanks (${PL.rules.blank} or fewer)`, `${f1(c.blank_projected)}% projected, ${f1(c.blank_actual)}% happened`], ["Players", intl(c.n)]])}
+      <span class="cap">Average simulated chance against how often it happened, over players with projected minutes. Close numbers mean the chances can be trusted.</span></div>` : "";
+    const cp = S.captain, h = S.hits, fh = S.free_hit;
+    const dec = `<div class="card card-16" style="gap:8px"><h3 class="t-h2" style="font-size:17px">The decisions</h3>
+      ${kv([["Captain: best of the candidates", `${cp.best} of ${pl(cp.weeks, "week")}, ${cp.points} points in all`],
+        ["Captain against the top 10k's pick", `beat it ${cp.beat_template}, tied ${cp.tied_template} of ${cp.weeks}`],
+        ["Edition overrode the model's captain", cp.overrides ? `${pl(cp.overrides, "time")}, right ${cp.overrides_won}` : "Not yet"],
+        ["The call against its alternatives", `beat ${S.call.beat}, tied ${S.call.tied} of ${S.call.of}`],
+        ["Hits weighed", h.considered ? `${h.considered}, taken ${h.taken}. ${h.would_have_paid} would have paid: net ${sgn(h.net_vs_best_free)} against the best free plan` : "None"],
+        ["Holding the Free Hit", fh.weeks_held ? `${pl(fh.weeks_held, "week")}. Playing it would have scored ${sgn(fh.cost_of_holding)} against the call's eleven (projected ${sgn(fh.projected_cost, 1)})` : "No week weighed yet"]])}</div>`;
+    const miss = (xs) => `<ul class="glist">${xs.map((m) => `<li>${plink(m.id, m.name)}: ${f1(m.projected)} projected, ${m.actual} scored${m.mins === 0 ? ", did not play" : ""}</li>`).join("")}</ul>`;
+    const misses = `<div class="card card-16" style="gap:8px"><h3 class="t-h2" style="font-size:17px">Biggest misses, GW${last.gw}</h3>
+      <h4 class="t-h3">Scored far more than projected</h4>${miss(last.under)}<h4 class="t-h3">Scored far less</h4>${miss(last.over)}</div>`;
+    return `<h2 class="t-h2" style="margin-top:4px">Track record</h2>${waiting ? `<div class="note-green">${waiting}</div>` : ""}${tiles}${weeks}
+      ${errTable("By position, season", S.by_position, "Position")}${errTable("By price, season", S.by_price, "Price at the deadline")}${calib}${dec}${misses}
+      <span class="cap">Projections are frozen before each deadline and scored against official FPL points. Every player whose team played counts if he had projected minutes or played.</span>`;
+  }
+
   // ---------- Ask ----------
   const ASKS = () => {
     const gw = D.meta.gw;
@@ -957,7 +1009,8 @@
       best_unowned_by_position: best,
       price_alerts: D.alerts.map((a) => ({ name: nm(a.id), direction: a.dir, progress_pct: a.pct, likely_tonight: a.tonight })),
       chip_plan: D.chip_plan.chips.map((c) => ({ chip: c.label, when: c.when })),
-      headlines: ED.headlines.map((h) => h.title + ": " + h.dek)
+      headlines: ED.headlines.map((h) => h.title + ": " + h.dek),
+      track_record: PL && PL.season ? { note: "Projections frozen before each deadline and scored against official FPL points", season: { miss_per_player: PL.season.model.mae, bias: PL.season.model.bias, call: PL.season.call, captain: PL.season.captain, hits: PL.season.hits, free_hit: PL.season.free_hit }, weeks: PL.weeks.map((w) => ({ gw: w.gw, miss: w.model.mae, captain: w.captain.name + " " + w.captain.actual, call: w.call })) } : "Nothing scored yet"
     };
   }
   function findPlayer(name) {
@@ -1116,6 +1169,7 @@ Question: ${text}`;
       const cur = IDX.editions.find((e) => e.gw === IDX.current);
       [ED, D] = await Promise.all([getJSON(cur.file), getJSON(cur.data)]);
       SRC = await getJSON("data/sources.json").catch(() => null);
+      PL = await getJSON("data/predlog/summary.json").catch(() => null);
       trail.push(route().raw);
       render(true);
     } catch (e) {

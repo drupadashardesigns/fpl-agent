@@ -85,7 +85,8 @@ class Component extends DCLogic {
         ['Possession, xG conceded (FotMob), distance covered per match', 'Data room teams (Attack, Defence), team profile', 'fm'], ['Betting odds for goals and clean sheets', 'Model (v1)', 'v1']]],
       ['Ownership, rivals and planning', [
         ['Ownership: top 10k, near your rank, everyone', 'Data room, profile, finder', 'calc'], ['Effective ownership with captaincy', 'Captain, profile', 'calc'], ['Captaincy shares, chips played by rivals', 'Captain, data room', 'calc'], ['Rank, gap to top 10k and 50k, rank history', 'Edition, archive', 'fpl'],
-        ['Free transfers, bank, hits, transfer plans', 'Planner', 'calc'], ['Captain comparison with swing scenarios', 'Captain', 'calc'], ['Chip calendar, blanks and doubles', 'Chips', 'calc'], ['Free Hit value by gameweek', 'Free Hit story', 'calc'], ['Mini-league rivals', 'Planned', 'v1'], ['Model track record', 'Data room, model', 'calc']]]
+        ['Free transfers, bank, hits, transfer plans', 'Planner', 'calc'], ['Captain comparison with swing scenarios', 'Captain', 'calc'], ['Chip calendar, blanks and doubles', 'Chips', 'calc'], ['Free Hit value by gameweek', 'Free Hit story', 'calc'], ['Mini-league rivals', 'Planned', 'v1'], ['Model track record: average miss and bias per player, overall, by position and by price band', 'Data room, model', 'calc'],
+        ['Haul and blank chances against how often they happened', 'Data room, model', 'calc'], ['The call, captain, hits and Free Hit advice against what happened', 'Data room, model; graded edition', 'calc'], ['Edition grade: the call against actual points', 'Past edition, archive', 'calc']]]
     ];
     let live = 0, v1 = 0;
     const groups = G.map(([name, rows]) => ({ name, rows: rows.map(([p, w, k]) => { if (k === 'fpl' || k === 'calc' || k === 'fm') live++; if (k === 'v1' || k === 'us') v1++; return { p, w, src: ST[k][0], s: pill(k) }; }) }));
