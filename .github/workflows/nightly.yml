@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: "45 1 * * *"   # 01:45 UTC, after the 00:00 UK price update
   workflow_dispatch:
+  push:  # TEMPORARY: first Understat run from the feature branch; removed before merge
+    branches: [claude/wonderful-cannon-vsib38]
 
 permissions:
   contents: write
