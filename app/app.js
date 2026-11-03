@@ -53,6 +53,13 @@
   const usLabel = () => { const m = USM(); if (!m) return ""; const stale = m.status && m.status !== "healthy"; return `Source: Understat, matches to ${usDate()}${stale ? ". The latest fetch failed, so these are the last good numbers" : ""}.`; };
   const n2 = (x) => (x == null ? "–" : f2(x));
   const n1 = (x) => (x == null ? "–" : f1(x));
+  // Until the first successful fetch, Understat's boxes say it is offline, not "Connects in v1".
+  const usTitle = () => {
+    const s = SRC && SRC.sources && SRC.sources.understat;
+    if (!s || s.status === "healthy" || s.status === "pending") return "Connects in v1";
+    const since = s.offline_since || (s.last_error && s.last_error.at);
+    return since ? `Understat is offline since ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(since.slice(0, 10) + "T12:00:00Z"))}. Retrying nightly.` : "Understat is offline. Retrying nightly.";
+  };
   const mine = (id) => D.squad.ids.includes(Number(id));
   const sellsInCall = (id) => ED.call.transfers.some((t) => t.out_id === Number(id));
   const buysInCall = (id) => ED.call.transfers.some((t) => t.in_id === Number(id));
@@ -460,12 +467,12 @@
         ${rows.map((r, i) => `<tr><td>${plink(r.id)}<br><span class="sub">${r.t} ${r.pos}${mine(r.id) ? " · yours" : ""}</span></td>${g.f(r).map((v, j) => `<td class="${j === g.key ? (i < 3 ? "top3" : "key") : ""}">${v}</td>`).join("")}</tr>`).join("")}
         </tbody></table></div>${g.us ? `<span class="cap">${usLabel()} A dash means no Understat match for that player yet (see data/id_map_unmatched.json).</span>` + v1box("FotMob connects next", "Big chances created, successful dribbles and %, duels won and %, aerial duels won and %, touches in the box, interceptions, dispossessed and xG on target.") : ""}`;
       } else {
-        table = v1box("Connects in v1", "Chances created, big chances created, successful dribbles and %, duels won and %, aerial duels won and %, touches in the box, interceptions, dispossessed, xG on target, shots and shots on target.", "From Understat (shots, key passes) and FotMob (the rest). Touch heatmaps from Sofascore.");
+        table = (g.us ? v1box(usTitle(), "Shots, shots on target, key passes, non-penalty xG, xGChain and xGBuildup, per 90 and over the last four games, with shot maps on the profile.", "From Understat.") : "") + v1box("Connects in v1", "Big chances created, successful dribbles and %, duels won and %, aerial duels won and %, touches in the box, interceptions, dispossessed and xG on target.", "From FotMob. Touch heatmaps from Sofascore.");
       }
       body = `<section class="gutter" style="padding-bottom:20px;display:flex;flex-direction:column;gap:12px">
         <div role="group" aria-label="Player metrics" class="row-wrap" style="gap:6px">${Object.keys(PG).map((id) => `<button type="button" class="opt" data-act="pgroup" data-id="${id}" aria-pressed="${S.pgroup === id}">${PG[id].label}</button>`).join("")}</div>
         <p class="muted" style="font-size:15px">${esc(g.note)}</p>${table}
-        <span class="cap">${g.soon ? "Arrives when Understat and FotMob connect." : `Your squad, this week's targets and the template. Sorted by ${g.sortLabel}. Orange marks the top three. Tap a name for the full profile.`}</span></section>`;
+        <span class="cap">${g.soon ? "Understat numbers appear after its first successful fetch, FotMob's when it connects." : `Your squad, this week's targets and the template. Sorted by ${g.sortLabel}. Orange marks the top three. Tap a name for the full profile.`}</span></section>`;
     } else if (S.tab === "teams") {
       const g = TG[S.tgroup];
       const rows = Object.values(D.teams).slice().sort((a, b) => g.k(b) - g.k(a));
@@ -477,7 +484,8 @@
         </tbody></table></div>
         <span class="cap">Ranked by ${g.sortLabel}. xG figures per game, our calculation from FPL player data. Tap a team for its profile.</span>
         ${g.us && USM() ? usTeamTable(g.us) : ""}
-        ${g.soon ? `<div class="note-blue" style="padding:14px 16px;font-size:15px">${USM() ? "Shots in the box, big chances and set-piece goals connect next, from FotMob." : "Shots for and against, shots in the box, big chances, PPDA (pressing) and deep completions connect in v1 from Understat and FotMob."} Distance covered has no free source we can confirm.</div>` : ""}</section>`;
+        ${g.soon && !USM() ? v1box(usTitle(), "Understat's own xG, npxG and xG against, shots for and against, pressing (PPDA) and deep completions, season and last four.") : ""}
+        ${g.soon ? `<div class="note-blue" style="padding:14px 16px;font-size:15px">Shots in the box, big chances and set-piece goals connect in v1, from FotMob. Distance covered has no free source we can confirm.</div>` : ""}</section>`;
     } else if (S.tab === "fixtures") {
       const att = S.tick === "att";
       const G = gws();
@@ -633,7 +641,8 @@
       <div class="legend"><span><i class="sw sw-hot sw-dot" aria-hidden="true"></i>Goal</span><span><i class="sw sw-ring sw-dot" aria-hidden="true"></i>Other shot</span><span>Bigger circle, bigger chance (xG)</span></div>`;
   }
   function usPlayerCard(p) {
-    if (!USM()) return "";
+    if (!USM()) return `<section class="card card-16"><div class="phead-row" style="align-items:center"><h2 class="t-h2">Shots and chances</h2><span class="tag tag-blue tag-sm">Understat</span></div>
+      ${v1box(usTitle(), "Shots, shots on target, key passes, non-penalty xG, xGChain and xGBuildup, season, per 90 and last four games, plus his shot map.")}</section>`;
     const u = p.us;
     const head = `<div class="phead-row" style="align-items:center"><h2 class="t-h2">Shots and chances</h2><span class="tag tag-green tag-sm">Understat</span></div>`;
     if (!u || !u.s) return `<section class="card card-16">${head}<p class="muted">No Understat match for ${esc(p.n)} yet, so no numbers. Unmatched players are listed for review rather than guessed.</p></section>`;
@@ -695,7 +704,7 @@
   }
 
   function usTeamCard(t) {
-    if (!USM() || !t.us || !t.us.s) return v1box("Connects in v1", "Shots and shots conceded, shots in the box, big chances, pressing (PPDA), deep completions and set-piece goals, from Understat and FotMob.");
+    if (!USM() || !t.us || !t.us.s) return v1box(usTitle(), "Shots and shots conceded, Understat's xG and npxG for and against, pressing (PPDA) and deep completions, season and last four.") + v1box("Connects in v1", "Shots in the box, big chances and set-piece goals, from FotMob.");
     const s = t.us.s, l = t.us.l4 || {};
     const R = [["xG for", n2(s.xg_pg), n2(l.xg_pg)], ["Non-penalty xG for", n2(s.npxg_pg), n2(l.npxg_pg)], ["xG against", n2(s.xga_pg), n2(l.xga_pg)],
       ["Shots", n1(s.shots_pg), n1(l.shots_pg)], ["Shots conceded", n1(s.shots_against_pg), n1(l.shots_against_pg)],

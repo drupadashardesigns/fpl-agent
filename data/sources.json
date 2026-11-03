@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-03T09:20:14+00:00",
+  "updated_at": "2026-11-03T09:49:12+00:00",
   "sources": {
     "fpl": {
       "name": "Official FPL API",
@@ -9,13 +9,15 @@
     },
     "understat": {
       "name": "Understat",
-      "status": "error",
+      "status": "offline",
       "last_success": null,
       "last_error": {
-        "at": "2026-11-03T09:20:14+00:00",
-        "message": "getLeagueData/EPL/2026: <urlopen error timed out>"
+        "at": "2026-11-03T09:49:12+00:00",
+        "message": "getLeagueData/EPL/2026: <urlopen error [Errno 104] Connection reset by peer>"
       },
-      "fills": "shots, key passes, npxG, xGChain, xGBuildup, shot maps, PPDA, deep completions"
+      "fills": "shots, key passes, npxG, xGChain, xGBuildup, shot maps, PPDA, deep completions",
+      "offline_since": "2026-11-02",
+      "note": "Understat has been down for everyone since about 2 Nov 2026 (not a block on us). Retrying nightly."
     },
     "fotmob": {
       "name": "FotMob",

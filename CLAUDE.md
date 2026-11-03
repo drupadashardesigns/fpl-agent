@@ -42,7 +42,7 @@ engine/            Python, standard library only
   planner.py       squad state, free transfers, selling prices, transfer search, Free Hit curve
   ownership.py     samples top 10k and managers around Drupad's rank
   prices.py        price alerts from the feed's own price-change projections
-  understat.py     Understat AJAX client (runs in Actions), FPL-to-Understat ID map, derived player and team stats
+  understat.py     Understat AJAX client (nightly in Actions), FPL-to-Understat ID map, derived player and team stats
   appdata.py       builds data/runs/gwNN/app.json, the app's data bundle (offline, from files on disk)
   cli.py           python -m engine snapshot | run | appdata | understat [--offline]
 config.json        entry id, horizon, timezone
@@ -50,7 +50,8 @@ data/archive/      nightly bootstrap + fixtures snapshots (GitHub Actions); boot
 data/runs/gwNN/    one weekly run: facts.json (editor input), projections, ownership,
                    entry_history.json, history.json.gz (per-player match rows), app.json
 data/sources.json  per-source health; a source flips from "pending" to "healthy" to replace its "Connects in v1" box
-                   ("stale" = last fetch failed, app shows the last good numbers with their date)
+                   ("offline" = never fetched, app says so with `offline_since`; "stale" = last fetch
+                   failed, app shows the last good numbers with their date)
 data/understat/    league_EPL_2026.json (latest league payload), matches/<id>.json.gz (one per finished
                    match, fetched once), derived.json (stats keyed by FPL id; appdata merges it as "us")
 data/id_map.json   FPL element id -> Understat id; reviewed pairs go under "manual" and win.
@@ -64,7 +65,7 @@ design/mockups/    final screen mockups, click map, parameter list
 
 ### Where things run
 
-- **GitHub Actions, nightly** (`.github/workflows/nightly.yml`): archives the bootstrap and fixtures after the 00:00 UK price update, then tries Understat (`python -m engine understat`, allowed to fail without blocking the snapshot; currently blocked from hosted runners) and rebuilds the newest run's `app.json`. Builds the history the backtest needs.
+- **GitHub Actions, nightly** (`.github/workflows/nightly.yml`): archives the bootstrap and fixtures after the 00:00 UK price update, then tries Understat once (`python -m engine understat`, up to 3 attempts; a failure is recorded in `data/sources.json` and never fails the job) and rebuilds the newest run's `app.json`. Builds the history the backtest needs.
 - **Claude scheduled task, daily 08:39 IST** ("AlooSoul weekly editor"): if the next deadline is within 48 hours and no edition exists for it, run `python -m engine run`, write `editions/gwNN.json` from `facts.json` following the editorial rules, commit and push straight to main, and republish the app at the same artifact link. On deadline day it re-checks the edition (see the runbook). On other days, refresh price alerts only.
 - **The app** is published as a private Claude artifact: static HTML, CSS and JS with no build step, loading the edition and projections as data files. "Ask the agent" uses the artifact `sample` capability, so no API key or server is needed.
 
@@ -121,7 +122,7 @@ Every stat in the app shows its source and when it was last updated. If a source
 | Source | Status | What it fills | How |
 |---|---|---|---|
 | Official FPL API | Live | Players (xG, xA, xGC, DefCon, CBI, tackles, recoveries, ICT, BPS, set-piece order, news, price-change progress), fixtures, managers, standings | `engine/fpl_api.py` |
-| Understat | Built 3 Nov 2026, **fetch blocked** | Shots, shots on target, key passes, npxG, xGChain, xGBuildup (season, per 90, last four), shot maps; team xG, npxG, xGA, shots for and against, PPDA, deep completions (season and last four) | Since late 2025 the pages no longer embed JSON. Use the AJAX endpoints with `X-Requested-With: XMLHttpRequest` and a browser User-Agent: `getLeagueData/EPL/{season}` (teams, players, dates), `getMatchData/{id}` (shots, rosters), `getPlayerData/{id}`. Season is the start year (2026 = 2026/27, checked on every fetch). `engine/understat.py`. Reachability, 3 Nov 2026: Claude's sandbox gets connection resets, and GitHub-hosted runners time out at TCP connect to 45.90.32.72:443 (an IP block, not a header problem). Run `python -m engine understat` on Drupad's Mac and push `data/`, or register the Mac as a self-hosted runner for the nightly job. Understat's xG is its own model: never put it in a column with FPL's (Opta) xG |
+| Understat | Built 3 Nov 2026. **Offline since about 2 Nov 2026**, retrying nightly | Shots, shots on target, key passes, npxG, xGChain, xGBuildup (season, per 90, last four), shot maps; team xG, npxG, xGA, shots for and against, PPDA, deep completions (season and last four) | The pages no longer embed JSON (changed late 2025). Data comes from AJAX endpoints on `https://understat.com/`, sent with `X-Requested-With: XMLHttpRequest` and a browser User-Agent: `getLeagueData/EPL/{season}` (teams, players, dates), `getMatchData/{id}` (shots, rosters), `getPlayerData/{id}` (a player's shots and matches). Season is the start year (2026 = 2026/27, checked on every fetch). `engine/understat.py`, nightly in Actions. **Outage:** Understat has been down for everyone since about 2 Nov 2026 (GitHub runners, Apify residential proxies and a home connection all fail; other FPL projects report the same), so this is not a block on us. `sources.json` holds `status: "offline"` and `offline_since`; the app's Understat boxes say "Understat is offline since 2 Nov. Retrying nightly." until the first successful fetch flips it to healthy. Understat's xG is its own model: never put it in a column with FPL's (Opta) xG |
 | FotMob | v1, second | Chances created, big chances, dribbles attempted and completed, duels and aerial duels won, interceptions, touches in the box, dispossessed, xGOT | Unofficial match JSON, one request per finished match |
 | The Odds API | v1, third | Match odds and over/unders to calibrate team strength; EPL scorer props exist but only from US bookmakers | Official API, free plan 500 credits a month. Pull once per gameweek, never daily |
 | Sofascore | v1, last | Player touch heatmaps, season and per match | `LanusStats` (unofficial). Sofascore often blocks cloud IPs. If Actions is blocked, fall back to a local run on Drupad's Mac or a paid scraper (Apify is connected) |
@@ -148,7 +149,7 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 
 ## Weekly runbook
 
-- **Nightly 07:15 IST** (GitHub Actions): FPL snapshot, then Understat (league data once, `getMatchData` only for finished matches not yet stored, one request every 3 seconds), then rebuild `app.json`. Commit to `data/`. FotMob, odds and Sofascore join this job as they are built.
+- **Nightly 07:15 IST** (GitHub Actions): FPL snapshot, then Understat once (league data, then `getMatchData` only for finished matches not yet stored, one request every 3 seconds, up to 3 attempts; failure is recorded, never fatal), then rebuild `app.json`. Commit to `data/`. FotMob, odds and Sofascore join this job as they are built.
 - **Daily 08:39 IST** (Claude scheduled task, the editor): when the next deadline is within 48 hours and no edition exists, run `python -m engine run`, read `facts.json`, write `editions/gwNN.json` following the edition contract and editorial rules, commit and push to main, republish the app. With a Friday or Saturday deadline this lands the morning before deadline day.
 - **Deadline day** (the daily run when the deadline is under 24 hours away and the edition exists): re-check injury news (status, chance of playing, news) for the squad and every player in the call, and the price feed. If the call changes, update the edition, set its `update` field (`{"at": ISO time, "text": "what changed and why, one or two sentences"}`, shown at the top of the edition), push to main and republish. If nothing changes, leave the edition alone.
 - **Price alerts:** freshness comes from `fetched_at` inside the snapshot's `bootstrap.json`, never from the archive folder's date. Rebuild alerts only when that time is newer than `meta.prices_fetched_at` in the current `app.json`.
@@ -158,7 +159,7 @@ Rules for the unofficial sources: one request every few seconds, cache everythin
 
 1. Done 3 Nov: `app/` built from the mockups and published as a private artifact; `editions/gw10.json` written. Next: set up the scheduled task (after `engine run`, publish `app/` with `editions/`, `data/sources.json` and the run's `app.json`).
 2. Gaps the GW10 build could not fill (FPL API blocked from the sandbox; the run predates `history.json.gz`): minutes in the last four games, points by gameweek on the profile, home/away splits, and team last-four xG. The next `engine run` saves the per-player rows; team last-four splits come from diffing nightly snapshots once four weeks exist (GW13).
-3. Built 3 Nov, waiting on the first fetch: Understat client, player ID map, derived stats, and the app screens (players: Shots & chances group, profile card with shot map; teams: Attack and Defence tables, team profile). The screens keep the "Connects in v1" boxes until `data/understat/derived.json` exists. Understat blocks both Claude's sandbox and GitHub-hosted runners, so the first fetch has to run locally or on a self-hosted runner. Not used by the model: that waits for the backtest. Next: FotMob, then odds, then Sofascore heatmaps.
+3. Built 3 Nov, waiting on the first fetch: Understat client, player ID map, derived stats, and the app screens (players: Shots & chances group, profile card with shot map; teams: Attack and Defence tables, team profile). Understat is offline for everyone since about 2 Nov; the nightly job retries and the screens say so until `data/understat/derived.json` exists. When it lands: check the ID map's unmatched list and compare three players and two teams against the site. Not used by the model: that waits for the backtest. Next: FotMob, then odds, then Sofascore heatmaps.
 4. Prediction log and backtest.
 5. Minutes model, then odds in team strength.
 6. Multi-week solver with chip planning (second-half set: forecast Blank GW30, Double GW32, Blank GW33, Double GW35/36).
@@ -181,6 +182,6 @@ The design is final. Build from these, do not restyle:
 - Data room, six tabs: Stories, Players (8 metric groups), Teams (5 metric groups), Fixtures (20 x 10 heatmap), Ownership, Model.
 - Player profile, Team profile, Free Hit story, Ask, Alerts, Archive.
 
-**Placeholders:** any stat whose source is not live yet renders the "Connects in v1" box from the mockups, naming the source. It switches to real data automatically when `data/sources.json` reports that source healthy.
+**Placeholders:** any stat whose source is not live yet renders the "Connects in v1" box from the mockups, naming the source (for a source that is built but offline, the box title says so, for example "Understat is offline since 2 Nov. Retrying nightly."). It switches to real data automatically when `data/sources.json` reports that source healthy.
 
 **Hosting:** a private Claude artifact page reading the repo's `data/` and `editions/`; Ask uses the artifact's `sample` capability. Interactions must be keyboard reachable with visible focus.

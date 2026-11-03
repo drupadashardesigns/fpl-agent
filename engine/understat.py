@@ -8,8 +8,12 @@ User-Agent:
     getMatchData/{match_id}      -> {rosters, shots, tmpl}
     getPlayerData/{player_id}    -> {player, matches, shots, groups}   (not used yet)
 
-Understat blocks Claude's sandbox, so the fetch runs in GitHub Actions
-(nightly.yml). Everything else here works offline from the cache.
+The fetch runs once a night in GitHub Actions (nightly.yml), up to 3 attempts.
+Understat has been down for everyone since about 2 Nov 2026; a failed fetch is
+recorded in data/sources.json (status "offline", with "offline_since") and the
+command still exits 0, so it never fails the nightly job. The first successful
+fetch flips the source to "healthy". Everything else here works offline from
+the cache.
 
     python -m engine understat            fetch league data + new finished matches, then derive
     python -m engine understat --offline  derive only, from data/understat/ on disk
@@ -86,12 +90,15 @@ def record_health(ok: bool, detail: str, stats: dict | None = None) -> None:
     s = src["sources"].setdefault("understat", {"name": "Understat"})
     if ok:
         s.update(status="healthy", last_success=_now(), last_error=None, detail=detail)
+        s.pop("offline_since", None)
         if stats:
             s.update(stats)
     else:
-        # keep the last good data and its date; the app shows it with that date
-        s.update(status="error" if not s.get("last_success") else "stale",
+        # keep the last good data and its date; the app shows it with that date.
+        # "offline" = never fetched successfully; "stale" = last good data exists.
+        s.update(status="offline" if not s.get("last_success") else "stale",
                  last_error={"at": _now(), "message": detail[:300]})
+        s.setdefault("offline_since", _now()[:10])
     src["updated_at"] = _now()
     SOURCES.write_text(json.dumps(src, indent=2, ensure_ascii=False) + "\n")
 
@@ -438,7 +445,10 @@ def run(offline: bool = False) -> None:
             stats = fetch()
         except Exception as e:
             record_health(False, str(e))
-            raise
+            print(f"understat: fetch failed, recorded in data/sources.json: {e}")
+            if not load_league():
+                return  # nothing cached yet: the app shows the offline note
+            offline = True  # derive from the last good cache
     d = derive(bs, fx)
     if not offline:
         record_health(True, f"{d['matches']} matches to {d['data_to']}; id map {d['id_map']['pct']}%",
