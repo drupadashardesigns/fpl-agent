@@ -1,7 +1,7 @@
 {
  "note": "FPL element id -> each source's player id, one section per source. Built from team plus normalised name (engine/idmap.py). Add reviewed pairs under that source's 'manual' (FPL id -> source id); they win over the automatic match.",
  "fotmob": {
-  "built_at": "2026-11-03T10:04:37+00:00",
+  "built_at": "2026-11-04T08:05:34+00:00",
   "season": "2026/2027",
   "match_rate": {
    "matched": 454,
