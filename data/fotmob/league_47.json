@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-05T08:33:27+00:00",
+"fetched_at": "2026-11-06T08:32:14+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -1637,7 +1637,7 @@
 "shortName": "Coventry",
 "id": "8669"
 },
-"utc": "2026-11-06T20:00:00Z",
+"utc": "2026-11-06T20:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -2777,24 +2777,6 @@
 "score": null
 },
 {
-"id": 5795573,
-"round": "16",
-"home": {
-"name": "Nottingham Forest",
-"shortName": "Nottm Forest",
-"id": "10203"
-},
-"away": {
-"name": "Everton",
-"shortName": "Everton",
-"id": "8668"
-},
-"utc": "2026-12-19T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
 "id": 5795571,
 "round": "16",
 "home": {
@@ -2824,6 +2806,24 @@
 "name": "Ipswich Town",
 "shortName": "Ipswich",
 "id": "9902"
+},
+"utc": "2026-12-20T14:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795573,
+"round": "16",
+"home": {
+"name": "Nottingham Forest",
+"shortName": "Nottm Forest",
+"id": "10203"
+},
+"away": {
+"name": "Everton",
+"shortName": "Everton",
+"id": "8668"
 },
 "utc": "2026-12-20T14:00:00Z",
 "finished": false,
