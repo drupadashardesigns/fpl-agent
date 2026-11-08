@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-07T07:49:42+00:00",
+"fetched_at": "2026-11-08T08:00:18+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -1655,10 +1655,10 @@
 "shortName": "Tottenham",
 "id": "8586"
 },
-"utc": "2026-11-07T12:30:00.000Z",
-"finished": false,
+"utc": "2026-11-07T12:30:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "1 - 0"
 },
 {
 "id": 5795505,
@@ -1673,10 +1673,10 @@
 "shortName": "Hull",
 "id": "8667"
 },
-"utc": "2026-11-07T15:00:00.000Z",
-"finished": false,
+"utc": "2026-11-07T15:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "1 - 0"
 },
 {
 "id": 5795509,
@@ -1691,10 +1691,10 @@
 "shortName": "Newcastle",
 "id": "10261"
 },
-"utc": "2026-11-07T15:00:00.000Z",
-"finished": false,
+"utc": "2026-11-07T15:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "1 - 1"
 },
 {
 "id": 5795513,
@@ -1709,10 +1709,10 @@
 "shortName": "Man City",
 "id": "8456"
 },
-"utc": "2026-11-07T17:30:00.000Z",
-"finished": false,
+"utc": "2026-11-07T17:30:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "3 - 1"
 },
 {
 "id": 5795506,
@@ -1727,7 +1727,7 @@
 "shortName": "Brentford",
 "id": "9937"
 },
-"utc": "2026-11-08T14:00:00Z",
+"utc": "2026-11-08T14:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1745,7 +1745,7 @@
 "shortName": "Liverpool",
 "id": "8650"
 },
-"utc": "2026-11-08T14:00:00Z",
+"utc": "2026-11-08T14:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1763,7 +1763,7 @@
 "shortName": "Bournemouth",
 "id": "8678"
 },
-"utc": "2026-11-08T14:00:00Z",
+"utc": "2026-11-08T14:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1781,7 +1781,7 @@
 "shortName": "Chelsea",
 "id": "8455"
 },
-"utc": "2026-11-08T14:00:00Z",
+"utc": "2026-11-08T14:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1799,7 +1799,7 @@
 "shortName": "Aston Villa",
 "id": "10252"
 },
-"utc": "2026-11-08T16:30:00Z",
+"utc": "2026-11-08T16:30:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null

@@ -1,17 +1,17 @@
 {
  "note": "FPL element id -> each source's player id, one section per source. Built from team plus normalised name (engine/idmap.py). Add reviewed pairs under that source's 'manual' (FPL id -> source id); they win over the automatic match.",
  "fotmob": {
-  "built_at": "2026-11-07T07:50:21+00:00",
+  "built_at": "2026-11-08T08:01:09+00:00",
   "season": "2026/2027",
   "match_rate": {
-   "matched": 454,
-   "of": 454,
+   "matched": 456,
+   "of": 456,
    "pct": 100.0,
-   "by_name": 450,
+   "by_name": 452,
    "by_name_pct": 99.1,
    "basis": "FPL players with minutes this season",
    "by_tier": {
-    "1": 377,
+    "1": 379,
     "2": 10,
     "3": 20,
     "4": 25,
@@ -278,6 +278,7 @@
    "339": 820024,
    "340": 956161,
    "343": 717176,
+   "344": 1080983,
    "345": 935728,
    "346": 612150,
    "347": 861197,
@@ -487,6 +488,7 @@
    "642": 812982,
    "643": 672469,
    "644": 970563,
+   "645": 1574198,
    "646": 1364069,
    "647": 1329007,
    "648": 1393672,
