@@ -449,8 +449,8 @@
  ],
  "grading": {
   "gw": 10,
-  "scored_at": "2026-11-09T08:43:12+00:00",
-  "final": false,
+  "scored_at": "2026-11-10T08:52:44+00:00",
+  "final": true,
   "summary": "Call -2 against +5.0 projected, captain Haaland 2, model off by 1.9 a player.",
   "lines": [
    "The call netted -2 points over GW10 against +5.0 projected (Gabriel 8 for Calafiori 6, Tavernier 3 for Szoboszlai 7). It beat 2 of 4 alternatives.",
@@ -458,7 +458,7 @@
    "The hit option (Add Mbeumo for -4) would have netted -5 against +2 for the best free plan, so skipping it was right.",
    "Holding the Free Hit: its eleven scored 62 against 68 for the call's eleven (-6, projected +2.0), so waiting was right this week.",
    "Projections missed by 1.9 points a player on average across 363 players (too low by 0.3 on balance).",
-   "You scored 40, against an average of 25; the call's eleven with its captain would have scored 70."
+   "You scored 70, against an average of 55; the call's eleven with its captain would have scored 70."
   ],
   "call": {
    "actual": -2,
@@ -595,9 +595,9 @@
    "captain_name": "Haaland",
    "captain_followed": true,
    "chip": null,
-   "points": 40,
+   "points": 70,
    "hit": 0,
-   "rank": 58451
+   "rank": 82570
   },
   "model": {
    "all": {
