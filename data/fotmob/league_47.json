@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-19T09:32:14+00:00",
+"fetched_at": "2026-11-20T09:12:50+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -3605,55 +3605,19 @@
 "score": null
 },
 {
-"id": 5795615,
+"id": 5795619,
 "round": "21",
 "home": {
-"name": "AFC Bournemouth",
-"shortName": "Bournemouth",
-"id": "8678"
+"name": "Coventry City",
+"shortName": "Coventry",
+"id": "8669"
 },
 "away": {
-"name": "Ipswich Town",
-"shortName": "Ipswich",
-"id": "9902"
+"name": "Everton",
+"shortName": "Everton",
+"id": "8668"
 },
-"utc": "2027-01-16T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795616,
-"round": "21",
-"home": {
-"name": "Aston Villa",
-"shortName": "Aston Villa",
-"id": "10252"
-},
-"away": {
-"name": "Manchester United",
-"shortName": "Man United",
-"id": "10260"
-},
-"utc": "2027-01-16T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795617,
-"round": "21",
-"home": {
-"name": "Brentford",
-"shortName": "Brentford",
-"id": "9937"
-},
-"away": {
-"name": "Brighton & Hove Albion",
-"shortName": "Brighton",
-"id": "10204"
-},
-"utc": "2027-01-16T15:00:00Z",
+"utc": "2027-01-16T12:30:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -3670,24 +3634,6 @@
 "name": "Sunderland",
 "shortName": "Sunderland",
 "id": "8472"
-},
-"utc": "2027-01-16T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795619,
-"round": "21",
-"home": {
-"name": "Coventry City",
-"shortName": "Coventry",
-"id": "8669"
-},
-"away": {
-"name": "Everton",
-"shortName": "Everton",
-"id": "8668"
 },
 "utc": "2027-01-16T15:00:00Z",
 "finished": false,
@@ -3767,6 +3713,42 @@
 "score": null
 },
 {
+"id": 5795616,
+"round": "21",
+"home": {
+"name": "Aston Villa",
+"shortName": "Aston Villa",
+"id": "10252"
+},
+"away": {
+"name": "Manchester United",
+"shortName": "Man United",
+"id": "10260"
+},
+"utc": "2027-01-16T17:30:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795615,
+"round": "21",
+"home": {
+"name": "AFC Bournemouth",
+"shortName": "Bournemouth",
+"id": "8678"
+},
+"away": {
+"name": "Ipswich Town",
+"shortName": "Ipswich",
+"id": "9902"
+},
+"utc": "2027-01-17T14:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
 "id": 5795624,
 "round": "21",
 "home": {
@@ -3779,79 +3761,25 @@
 "shortName": "Leeds",
 "id": "8463"
 },
-"utc": "2027-01-16T15:00:00Z",
+"utc": "2027-01-17T16:30:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
 },
 {
-"id": 5795625,
-"round": "22",
+"id": 5795617,
+"round": "21",
 "home": {
-"name": "Arsenal",
-"shortName": "Arsenal",
-"id": "9825"
-},
-"away": {
-"name": "Newcastle United",
-"shortName": "Newcastle",
-"id": "10261"
-},
-"utc": "2027-01-23T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795626,
-"round": "22",
-"home": {
-"name": "Brighton & Hove Albion",
-"shortName": "Brighton",
-"id": "10204"
-},
-"away": {
-"name": "Manchester City",
-"shortName": "Man City",
-"id": "8456"
-},
-"utc": "2027-01-23T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795627,
-"round": "22",
-"home": {
-"name": "Crystal Palace",
-"shortName": "Crystal Palace",
-"id": "9826"
-},
-"away": {
-"name": "Tottenham Hotspur",
-"shortName": "Tottenham",
-"id": "8586"
-},
-"utc": "2027-01-23T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795628,
-"round": "22",
-"home": {
-"name": "Everton",
-"shortName": "Everton",
-"id": "8668"
-},
-"away": {
 "name": "Brentford",
 "shortName": "Brentford",
 "id": "9937"
 },
-"utc": "2027-01-23T15:00:00Z",
+"away": {
+"name": "Brighton & Hove Albion",
+"shortName": "Brighton",
+"id": "10204"
+},
+"utc": "2027-01-18T20:00:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -3893,37 +3821,73 @@
 "score": null
 },
 {
-"id": 5795631,
+"id": 5795625,
 "round": "22",
 "home": {
-"name": "Leeds United",
-"shortName": "Leeds",
-"id": "8463"
+"name": "Arsenal",
+"shortName": "Arsenal",
+"id": "9825"
 },
 "away": {
-"name": "Chelsea",
-"shortName": "Chelsea",
-"id": "8455"
+"name": "Newcastle United",
+"shortName": "Newcastle",
+"id": "10261"
 },
-"utc": "2027-01-23T15:00:00Z",
+"utc": "2027-01-23T17:30:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
 },
 {
-"id": 5795632,
+"id": 5795626,
 "round": "22",
 "home": {
-"name": "Manchester United",
-"shortName": "Man United",
-"id": "10260"
+"name": "Brighton & Hove Albion",
+"shortName": "Brighton",
+"id": "10204"
 },
 "away": {
-"name": "Liverpool",
-"shortName": "Liverpool",
-"id": "8650"
+"name": "Manchester City",
+"shortName": "Man City",
+"id": "8456"
 },
-"utc": "2027-01-23T15:00:00Z",
+"utc": "2027-01-23T20:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795627,
+"round": "22",
+"home": {
+"name": "Crystal Palace",
+"shortName": "Crystal Palace",
+"id": "9826"
+},
+"away": {
+"name": "Tottenham Hotspur",
+"shortName": "Tottenham",
+"id": "8586"
+},
+"utc": "2027-01-24T14:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795628,
+"round": "22",
+"home": {
+"name": "Everton",
+"shortName": "Everton",
+"id": "8668"
+},
+"away": {
+"name": "Brentford",
+"shortName": "Brentford",
+"id": "9937"
+},
+"utc": "2027-01-24T14:00:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -3941,7 +3905,7 @@
 "shortName": "Bournemouth",
 "id": "8678"
 },
-"utc": "2027-01-23T15:00:00Z",
+"utc": "2027-01-24T14:00:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -3959,115 +3923,43 @@
 "shortName": "Coventry",
 "id": "8669"
 },
-"utc": "2027-01-23T15:00:00Z",
+"utc": "2027-01-24T14:00:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
 },
 {
-"id": 5795635,
-"round": "23",
+"id": 5795632,
+"round": "22",
 "home": {
-"name": "AFC Bournemouth",
-"shortName": "Bournemouth",
-"id": "8678"
-},
-"away": {
-"name": "Fulham",
-"shortName": "Fulham",
-"id": "9879"
-},
-"utc": "2027-01-30T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795636,
-"round": "23",
-"home": {
-"name": "Aston Villa",
-"shortName": "Aston Villa",
-"id": "10252"
-},
-"away": {
-"name": "Ipswich Town",
-"shortName": "Ipswich",
-"id": "9902"
-},
-"utc": "2027-01-30T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795637,
-"round": "23",
-"home": {
-"name": "Brentford",
-"shortName": "Brentford",
-"id": "9937"
-},
-"away": {
 "name": "Manchester United",
 "shortName": "Man United",
 "id": "10260"
 },
-"utc": "2027-01-30T15:00:00Z",
+"away": {
+"name": "Liverpool",
+"shortName": "Liverpool",
+"id": "8650"
+},
+"utc": "2027-01-24T16:30:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
 },
 {
-"id": 5795638,
-"round": "23",
+"id": 5795631,
+"round": "22",
 "home": {
-"name": "Chelsea",
-"shortName": "Chelsea",
-"id": "8455"
-},
-"away": {
-"name": "Nottingham Forest",
-"shortName": "Nottm Forest",
-"id": "10203"
-},
-"utc": "2027-01-30T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795639,
-"round": "23",
-"home": {
-"name": "Coventry City",
-"shortName": "Coventry",
-"id": "8669"
-},
-"away": {
 "name": "Leeds United",
 "shortName": "Leeds",
 "id": "8463"
 },
-"utc": "2027-01-30T15:00:00Z",
-"finished": false,
-"cancelled": false,
-"score": null
-},
-{
-"id": 5795640,
-"round": "23",
-"home": {
-"name": "Hull City",
-"shortName": "Hull",
-"id": "8667"
-},
 "away": {
-"name": "Crystal Palace",
-"shortName": "Crystal Palace",
-"id": "9826"
+"name": "Chelsea",
+"shortName": "Chelsea",
+"id": "8455"
 },
-"utc": "2027-01-30T15:00:00Z",
+"utc": "2027-01-25T20:00:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -4085,23 +3977,23 @@
 "shortName": "Everton",
 "id": "8668"
 },
-"utc": "2027-01-30T15:00:00Z",
+"utc": "2027-01-30T12:30:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
 },
 {
-"id": 5795642,
+"id": 5795636,
 "round": "23",
 "home": {
-"name": "Manchester City",
-"shortName": "Man City",
-"id": "8456"
+"name": "Aston Villa",
+"shortName": "Aston Villa",
+"id": "10252"
 },
 "away": {
-"name": "Arsenal",
-"shortName": "Arsenal",
-"id": "9825"
+"name": "Ipswich Town",
+"shortName": "Ipswich",
+"id": "9902"
 },
 "utc": "2027-01-30T15:00:00Z",
 "finished": false,
@@ -4127,6 +4019,78 @@
 "score": null
 },
 {
+"id": 5795638,
+"round": "23",
+"home": {
+"name": "Chelsea",
+"shortName": "Chelsea",
+"id": "8455"
+},
+"away": {
+"name": "Nottingham Forest",
+"shortName": "Nottm Forest",
+"id": "10203"
+},
+"utc": "2027-01-30T17:30:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795635,
+"round": "23",
+"home": {
+"name": "AFC Bournemouth",
+"shortName": "Bournemouth",
+"id": "8678"
+},
+"away": {
+"name": "Fulham",
+"shortName": "Fulham",
+"id": "9879"
+},
+"utc": "2027-01-31T14:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795639,
+"round": "23",
+"home": {
+"name": "Coventry City",
+"shortName": "Coventry",
+"id": "8669"
+},
+"away": {
+"name": "Leeds United",
+"shortName": "Leeds",
+"id": "8463"
+},
+"utc": "2027-01-31T14:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795640,
+"round": "23",
+"home": {
+"name": "Hull City",
+"shortName": "Hull",
+"id": "8667"
+},
+"away": {
+"name": "Crystal Palace",
+"shortName": "Crystal Palace",
+"id": "9826"
+},
+"utc": "2027-01-31T14:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
 "id": 5795644,
 "round": "23",
 "home": {
@@ -4139,7 +4103,43 @@
 "shortName": "Sunderland",
 "id": "8472"
 },
-"utc": "2027-01-30T15:00:00Z",
+"utc": "2027-01-31T14:00:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795642,
+"round": "23",
+"home": {
+"name": "Manchester City",
+"shortName": "Man City",
+"id": "8456"
+},
+"away": {
+"name": "Arsenal",
+"shortName": "Arsenal",
+"id": "9825"
+},
+"utc": "2027-01-31T16:30:00Z",
+"finished": false,
+"cancelled": false,
+"score": null
+},
+{
+"id": 5795637,
+"round": "23",
+"home": {
+"name": "Brentford",
+"shortName": "Brentford",
+"id": "9937"
+},
+"away": {
+"name": "Manchester United",
+"shortName": "Man United",
+"id": "10260"
+},
+"utc": "2027-02-01T20:00:00Z",
 "finished": false,
 "cancelled": false,
 "score": null
