@@ -1,0 +1,392 @@
+{
+ "gw": 11,
+ "edition": 2,
+ "deadline_utc": "2026-11-21T11:00:00Z",
+ "published_at": "2026-11-20T03:14:25Z",
+ "title": "The same two moves, Haaland captain, and the Free Hit still waits.",
+ "status": {
+  "overall_rank": 82568,
+  "gap_top10k": 29,
+  "gap_top50k": 8,
+  "free_transfers": 2,
+  "bank": 2.4,
+  "chips_left": [
+   "freehit"
+  ]
+ },
+ "call": {
+  "transfers": [
+   {
+    "out": "Calafiori",
+    "out_id": 8,
+    "in": "Gabriel",
+    "in_id": 4,
+    "why": "Same Arsenal defence, but Gabriel projects 31.0 over GW11 to GW16 against 22.0, because Calafiori is expected to play about 71 minutes a game."
+   },
+   {
+    "out": "Szoboszlai",
+    "out_id": 368,
+    "in": "Tavernier",
+    "in_id": 68,
+    "why": "Szoboszlai is still expected to play only about 43 minutes a game; Tavernier projects 31.9 over the same six gameweeks, best of any midfielder."
+   }
+  ],
+  "captain": "Haaland",
+  "captain_id": 411,
+  "vice": "Van Hecke",
+  "vice_id": 112,
+  "lineup": {
+   "xi": [
+    "Raya",
+    "Van Hecke",
+    "Gabriel",
+    "Silva",
+    "Konsa",
+    "De Cuyper",
+    "Tavernier",
+    "Groß",
+    "Rogers",
+    "Haaland",
+    "Barry"
+   ],
+   "bench": [
+    "Verbruggen",
+    "Calvert-Lewin",
+    "Palmer",
+    "King"
+   ]
+  },
+  "chip": null,
+  "projected_gain": 14.1,
+  "horizon": [
+   11,
+   16
+  ],
+  "bank_after": 0.0
+ },
+ "headlines": [
+  {
+   "id": "h1",
+   "kicker": "The call",
+   "tone": "decision",
+   "title": "Gabriel and Tavernier in, for a second week",
+   "dek": "Last week's two moves are still the best free plan. The model projects them to add 14.1 points over GW11 to GW16 against no transfers, and they use your whole £2.4m bank.",
+   "read": "r1",
+   "evidence": {
+    "src": "v0 projections and the transfer planner, GW11 run",
+    "facts": [
+     {
+      "k": "Projected gain, GW11 to GW16",
+      "v": "+14.1 pts, no hit"
+     },
+     {
+      "k": "Gabriel / Calafiori, 6 GWs",
+      "v": "31.0 / 22.0"
+     },
+     {
+      "k": "Tavernier / Szoboszlai, 6 GWs",
+      "v": "31.9 / 13.6"
+     },
+     {
+      "k": "Expected minutes: Calafiori / Szoboszlai",
+      "v": "71 / 43"
+     },
+     {
+      "k": "Hill instead of Gabriel",
+      "v": "+13.8, leaves £2.5m"
+     }
+    ],
+    "action": {
+     "kind": "planner",
+     "label": "Compare the plans in the planner"
+    }
+   }
+  },
+  {
+   "id": "h2",
+   "kicker": "Gameweek 10",
+   "tone": "review",
+   "title": "70 points and a climb to 82,568",
+   "dek": "You beat the average of 55 by 15, led by Barry's 16 and Groß's 10. Your rank went from 102,267 after GW9 to 82,568, and you are now 29 points off the top 10k.",
+   "read": "r2",
+   "evidence": {
+    "src": "your FPL history, GW10 points and the prediction log",
+    "facts": [
+     {
+      "k": "Your score / average",
+      "v": "70 / 55"
+     },
+     {
+      "k": "Rank after GW9 / after GW10",
+      "v": "102,267 / 82,568"
+     },
+     {
+      "k": "Barry, Groß, Konsa",
+      "v": "16 + 10 + 8 = 34"
+     },
+     {
+      "k": "Haaland as captain",
+      "v": "2 × 2 = 4"
+     },
+     {
+      "k": "Last week's call, GW10 only",
+      "v": "-2 against +5.0 projected"
+     }
+    ],
+    "action": {
+     "kind": "gw9",
+     "label": "Show all 15 players"
+    }
+   }
+  },
+  {
+   "id": "h3",
+   "kicker": "Captain",
+   "tone": "decision",
+   "title": "Haaland captain, and the model agrees this time",
+   "dek": "Haaland at home to Fulham projects 5.8, the most in your eleven after the call. Van Hecke is vice at 5.6, at home to Ipswich.",
+   "read": null,
+   "evidence": {
+    "src": "GW11 projections, 600 sampled top 10k teams",
+    "facts": [
+     {
+      "k": "Projected GW11: Haaland / Van Hecke / Gabriel",
+      "v": "5.8 / 5.6 / 5.4"
+     },
+     {
+      "k": "Top 10k captaincy, GW10",
+      "v": "Haaland 62%, Isak 8%"
+     },
+     {
+      "k": "Haaland chance of 10+ / 2 or fewer",
+      "v": "14% / 24%"
+     },
+     {
+      "k": "Isak, not owned, GW11",
+      "v": "5.8 at home to Man Utd"
+     }
+    ],
+    "action": {
+     "kind": "captain",
+     "label": "Compare captains in the planner"
+    }
+   }
+  },
+  {
+   "id": "h4",
+   "kicker": "The template",
+   "tone": "template",
+   "title": "Palmer sits, and Jackson can wait",
+   "dek": "The model's best eleven after the call benches Palmer, who projects 4.0 at home to Leeds. Jackson is in 70% of teams near your rank, but he projects only 3.2 more than Calvert-Lewin over six gameweeks.",
+   "read": "r3",
+   "evidence": {
+    "src": "rival sample, v0 projections and the FPL price feed",
+    "facts": [
+     {
+      "k": "Palmer owned near you / projected GW11",
+      "v": "61% / 4.0"
+     },
+     {
+      "k": "De Cuyper, fifth defender, GW11",
+      "v": "4.6 at home to Hull"
+     },
+     {
+      "k": "Jackson owned: top 10k / near you",
+      "v": "77% / 70%"
+     },
+     {
+      "k": "Jackson / Calvert-Lewin, GW11 to GW16",
+      "v": "29.0 / 25.8"
+     },
+     {
+      "k": "Jackson price / Calvert-Lewin selling price",
+      "v": "£7.2m / £6.0m"
+     }
+    ],
+    "action": {
+     "kind": "players-own",
+     "label": "Compare in the players table"
+    }
+   }
+  },
+  {
+   "id": "h5",
+   "kicker": "Free Hit",
+   "tone": "chip",
+   "title": "The Free Hit still points to the festive run",
+   "dek": "GW18 and GW19 project 7.1 and 7.2 points of Free Hit gain, close to the tallest bar, GW14 at 7.8. Holding it keeps cover for three deadlines in seven days.",
+   "read": "r4",
+   "evidence": {
+    "src": "planner Free Hit curve, v0 projections",
+    "facts": [
+     {
+      "k": "Best projected weeks",
+      "v": "GW14 7.8, GW19 7.2, GW18 7.1"
+     },
+     {
+      "k": "This week, GW11",
+      "v": "4.9"
+     },
+     {
+      "k": "Festive deadlines",
+      "v": "26 Dec, 29 Dec, 1 Jan"
+     },
+     {
+      "k": "First set expires",
+      "v": "GW19, 1 Jan 18:30 UK"
+     }
+    ],
+    "action": {
+     "kind": "freehit",
+     "label": "Open the full Free Hit analysis"
+    }
+   }
+  }
+ ],
+ "reads": [
+  {
+   "id": "r1",
+   "title": "Why the same two moves",
+   "body": "You made one transfer in GW10, Schade for Rogers, so the two players the model wanted out are still here. Their problem has not changed: minutes. The model expects about 71 minutes a game from Calafiori and about 43 from Szoboszlai. Szoboszlai scored 7 in GW10, which lifted his expected minutes from 32, but he is still the lowest in your squad.\n\nGabriel projects 31.0 points over GW11 to GW16, 9.0 more than Calafiori over the same games, with a full 90 and 9.1 defensive contributions per 90. Calafiori is in 80% of teams near your rank, but our template rule only keeps a player like that when the alternative is under 2 points better over six gameweeks. Over the next four alone Gabriel projects 6.0 more and is in 14.5% of teams near your rank, which is the aggressive case in our risk framework.\n\nTavernier projects 31.9 over the six weeks, the most of any midfielder, and he is already in 61% of teams near your rank. Szoboszlai projects 13.6.\n\nThe closest alternative is Hill instead of Gabriel: 0.3 points behind, owned by 3% near your rank, and it leaves £2.5m in the bank instead of nothing. That gap is inside the model's error, so either is a sound move. The call keeps Gabriel because he is the model's pick and the money Hill frees up does not buy a better move next week (see the template story). Rolling both transfers gives up about 14 projected points.",
+   "figure": {
+    "type": "bar",
+    "title": "Projected gain over GW11 to GW16, against no transfers",
+    "data": [
+     {
+      "label": "Roll",
+      "value": 0
+     },
+     {
+      "label": "Tavernier only",
+      "value": 8.2
+     },
+     {
+      "label": "Hit plan, -4",
+      "value": 12.6
+     },
+     {
+      "label": "Hill version",
+      "value": 13.8
+     },
+     {
+      "label": "The call",
+      "value": 14.1,
+      "highlight": true
+     }
+    ]
+   },
+   "deep": "d1"
+  },
+  {
+   "id": "r2",
+   "title": "How last week's advice did",
+   "body": "These are facts from the prediction log, scored after GW10 was final.\n\nThe two recommended moves would have lost 2 points in GW10: Gabriel scored 8 to Calafiori's 6, and Tavernier scored 3 to Szoboszlai's 7. The model had projected a 5.0 point gain for that week. One week out of six says little about the plan, which is why it is still the call.\n\nThe captain was the costlier miss. The edition overrode the model's pick, Gabriel, for Haaland, under our rule to follow a captain that 70% or more of rivals pick unless the alternative projects 1.5 or more better. Haaland scored 2 and Gabriel 8, so the override cost 6 points. Barry, in your eleven, scored 16. The rule protects against Haaland hauling while you do not have the armband on him, and one blank does not prove it wrong, but the backtest is set to test it once a few more weeks are logged.\n\nThe model missed by 1.9 points a player on average across 363 players, and was too low by 0.3 on balance. It gave hauls of 10 or more a 1.5% chance on average; 4.2% of players hauled. That is the known bias toward flat projections. Holding the Free Hit was right: its eleven scored 62 against 68.",
+   "figure": null,
+   "deep": null
+  },
+  {
+   "id": "r3",
+   "title": "Two template questions that can wait",
+   "body": "After the call, the model's best eleven is a 5-3-2 with Palmer and Calvert-Lewin on the bench. Palmer projects 4.0 at home to Leeds, against 4.6 for De Cuyper, the fifth defender, and 4.8 for Barry. He is in 61% of teams near your rank, so benching him is a small risk against those managers. The gap is 0.6 points, so playing Palmer over De Cuyper is a fair choice if you prefer to match the field.\n\nJackson is the biggest template player you do not own: 77% of the sampled top 10k and 70% of teams near your rank. Over GW11 to GW16 the model projects him at 29.0, against 25.8 for Calvert-Lewin. That 3.2 point gap is not enough for a -4 this week. Even as a free transfer in GW12, his lead over GW12 to GW16 is about 2.3.\n\nHe costs £7.2m and Calvert-Lewin sells for £6.0m, so he needs £1.2m more. Palmer is the natural funding sale if you want him in GW12: Palmer projects 24.1 over the six weeks, the least of your five most expensive players. Calvert-Lewin's price is drifting down (34% of the way to a fall), so it is worth watching but not worth a hit.",
+   "figure": {
+    "type": "bar",
+    "title": "Projected points, GW11 to GW16",
+    "data": [
+     {
+      "label": "Palmer",
+      "value": 24.1
+     },
+     {
+      "label": "Calvert-Lewin",
+      "value": 25.8
+     },
+     {
+      "label": "Barry",
+      "value": 29.8
+     },
+     {
+      "label": "Jackson",
+      "value": 29.0,
+      "highlight": true
+     },
+     {
+      "label": "Haaland",
+      "value": 32.9
+     }
+    ]
+   },
+   "deep": null
+  },
+  {
+   "id": "r4",
+   "title": "Why the Free Hit still waits",
+   "body": "Your first Free Hit expires at the GW19 deadline, 1 Jan 18:30 UK. Every gameweek before then has all ten fixtures, so the chip is about fixtures and rotation cover, not rescuing a blank.\n\nThe planner now projects Free Hit gains of 4.2 to 7.8 points a week from GW11 to GW19. GW14 is still the tallest bar at 7.8, but GW19 (7.2) and GW18 (7.1) are within the model's error of it, and they fall in the festive run: deadlines on 26 Dec, 29 Dec and 1 Jan. That is when rotation is hardest to call and a Free Hit does the most to cover it. Nothing this week changes the plan.",
+   "figure": {
+    "type": "bar",
+    "title": "Projected Free Hit gain by gameweek",
+    "data": [
+     {
+      "label": "GW12",
+      "value": 6.9
+     },
+     {
+      "label": "GW14",
+      "value": 7.8
+     },
+     {
+      "label": "GW16",
+      "value": 6.3
+     },
+     {
+      "label": "GW18",
+      "value": 7.1,
+      "highlight": true
+     },
+     {
+      "label": "GW19",
+      "value": 7.2
+     }
+    ]
+   },
+   "deep": "d2"
+  }
+ ],
+ "data_room": [
+  {
+   "id": "d1",
+   "title": "The transfer search, in full",
+   "body": "## Method\n\nThe planner scores a squad by the best eleven it can field each week from GW11 to GW16, with the captain counted twice, bench points at 10% and each later week weighted 8% less. A plan's gain is that score minus the score of making no transfers, minus 4 for each transfer beyond your two free ones. It searched every one and two transfer plan against the best projected players in each position, then extended the strongest with a third. Only legal squads count: three per club, within your £2.4m bank and your selling prices.\n\n## The numbers\n\n| Plan | Gain, 6 GWs | Hit | Bank after |\n|---|---|---|---|\n| Calafiori, Szoboszlai → Gabriel, Tavernier | +14.1 | 0 | £0.0m |\n| Calafiori, Szoboszlai → Hill, Tavernier | +13.8 | 0 | £2.5m |\n| Calafiori, King → Hill, Tavernier | +13.3 | 0 | £1.3m |\n| Calafiori, Szoboszlai, King → Hill, Tavernier, Mbeumo | +12.6 | -4 | £0.1m |\n| Calafiori, Palmer → Gabriel, Tavernier | +12.6 | 0 | £3.0m |\n| Szoboszlai → Tavernier, roll one | +8.2 | 0 | £2.4m |\n\nGains are after any hit.\n\n## Alternatives considered\n\nThe best -4 plan lands 1.5 below the call, so it fails the rule that a hit must beat the best free plan by 2 points. The Hill version is 0.3 behind, which this model cannot separate from the call; it trades Gabriel's 15% ownership near your rank for Hill's 3% and keeps £2.5m. Selling Palmer instead of Szoboszlai projects 1.5 less.\n\n## How confident we are\n\nFairly. Most of the gain comes from Szoboszlai's minutes, 43 a game against Tavernier's 87, and minutes are the model's weakest input. The GW10 result, -2 for the same moves, is one week and does not change that. The call spends the whole bank: Gabriel is 23% and Tavernier 28% of the way to a rise, so neither is likely to move tonight, but if either does the plan no longer fits. The model cannot see transfers made since the GW10 deadline, so check your squad before you confirm.",
+   "figures": []
+  },
+  {
+   "id": "d2",
+   "title": "When to play your first Free Hit",
+   "intro": "Your first Free Hit expires at the GW19 deadline (1 Jan, 18:30 UK). There are no blank gameweeks before then, so its value comes from fixtures and rotation.",
+   "bottom_line": "Still GW18 or GW19. Decide on 26 Dec, with real team news.",
+   "recommended": 18,
+   "fallback": 19,
+   "body": "## Why not GW14, the tallest bar\n\nGW14 projects 7.8 against 7.1 for GW18 and 7.2 for GW19. Those gaps are under a point, less than this model can tell apart. Playing it early also leaves nothing in hand for the festive run, when GW17, GW18 and GW19 land within seven days (deadlines 26 Dec, 29 Dec and 1 Jan).\n\n## Why GW18 first\n\nGW18 and GW19 are a tie on the numbers. GW18 comes after the Boxing Day games, so you see who was rested, and it keeps GW19 as a fallback. Waiting for GW19 leaves no second chance before the chip expires.\n\n## How this was worked out\n\nFor each gameweek, the planner builds the best eleven your £101.6m budget allows, keeping money back for a cheap bench, and compares it with the best eleven from your current squad. The captain counts double in both. Projections come from the v0 model.",
+   "confidence": "Not very, and that is why the call is to wait. The v0 model has no rotation model yet, which matters most in the festive weeks. Treat any gap under 1 point as a tie. Play it early only if three or more starters are out in the same week.",
+   "figures": [
+    {
+     "type": "bar",
+     "title": "Projected gain by gameweek",
+     "source": "free_hit_curve"
+    }
+   ]
+  }
+ ],
+ "alerts": [
+  {
+   "kind": "price",
+   "player_id": 268,
+   "text": "King is likely to fall tonight at 05:30 IST. You own him and the call keeps him, so no action needed."
+  },
+  {
+   "kind": "price",
+   "player_id": 68,
+   "text": "Tavernier (28%) and Gabriel (23%) are building toward rises, not likely tonight. The call uses your whole bank, so a rise before you transfer would break it."
+  }
+ ],
+ "grading": null
+}

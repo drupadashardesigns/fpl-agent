@@ -1,6 +1,15 @@
 {
- "current": 10,
+ "current": 11,
  "editions": [
+  {
+   "gw": 11,
+   "edition": 2,
+   "title": "The same two moves, Haaland captain, and the Free Hit still waits.",
+   "published_at": "2026-11-20T03:14:25Z",
+   "file": "editions/gw11.json",
+   "data": "data/runs/gw11/app.json",
+   "graded": false
+  },
   {
    "gw": 10,
    "edition": 1,
