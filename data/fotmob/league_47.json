@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-20T09:12:50+00:00",
+"fetched_at": "2026-11-21T08:49:20+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -1817,7 +1817,7 @@
 "shortName": "Fulham",
 "id": "9879"
 },
-"utc": "2026-11-21T12:30:00Z",
+"utc": "2026-11-21T12:30:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1835,7 +1835,7 @@
 "shortName": "Nottm Forest",
 "id": "10203"
 },
-"utc": "2026-11-21T15:00:00Z",
+"utc": "2026-11-21T15:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1853,7 +1853,7 @@
 "shortName": "Sunderland",
 "id": "8472"
 },
-"utc": "2026-11-21T15:00:00Z",
+"utc": "2026-11-21T15:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1871,7 +1871,7 @@
 "shortName": "Leeds",
 "id": "8463"
 },
-"utc": "2026-11-21T15:00:00Z",
+"utc": "2026-11-21T15:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1889,7 +1889,7 @@
 "shortName": "Crystal Palace",
 "id": "9826"
 },
-"utc": "2026-11-21T15:00:00Z",
+"utc": "2026-11-21T15:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1907,7 +1907,7 @@
 "shortName": "Ipswich",
 "id": "9902"
 },
-"utc": "2026-11-21T15:00:00Z",
+"utc": "2026-11-21T15:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1925,7 +1925,7 @@
 "shortName": "Arsenal",
 "id": "9825"
 },
-"utc": "2026-11-21T17:30:00Z",
+"utc": "2026-11-21T17:30:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
