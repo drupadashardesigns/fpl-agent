@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-21T08:49:20+00:00",
+"fetched_at": "2026-11-22T08:53:06+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -1817,10 +1817,10 @@
 "shortName": "Fulham",
 "id": "9879"
 },
-"utc": "2026-11-21T12:30:00.000Z",
-"finished": false,
+"utc": "2026-11-21T12:30:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "1 - 1"
 },
 {
 "id": 5795515,
@@ -1835,10 +1835,10 @@
 "shortName": "Nottm Forest",
 "id": "10203"
 },
-"utc": "2026-11-21T15:00:00.000Z",
-"finished": false,
+"utc": "2026-11-21T15:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "2 - 0"
 },
 {
 "id": 5795516,
@@ -1853,10 +1853,10 @@
 "shortName": "Sunderland",
 "id": "8472"
 },
-"utc": "2026-11-21T15:00:00.000Z",
-"finished": false,
+"utc": "2026-11-21T15:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "0 - 0"
 },
 {
 "id": 5795518,
@@ -1871,10 +1871,10 @@
 "shortName": "Leeds",
 "id": "8463"
 },
-"utc": "2026-11-21T15:00:00.000Z",
-"finished": false,
+"utc": "2026-11-21T15:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "1 - 4"
 },
 {
 "id": 5795519,
@@ -1889,10 +1889,10 @@
 "shortName": "Crystal Palace",
 "id": "9826"
 },
-"utc": "2026-11-21T15:00:00.000Z",
-"finished": false,
+"utc": "2026-11-21T15:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "3 - 2"
 },
 {
 "id": 5795524,
@@ -1907,10 +1907,10 @@
 "shortName": "Ipswich",
 "id": "9902"
 },
-"utc": "2026-11-21T15:00:00.000Z",
-"finished": false,
+"utc": "2026-11-21T15:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "2 - 0"
 },
 {
 "id": 5795523,
@@ -1925,10 +1925,10 @@
 "shortName": "Arsenal",
 "id": "9825"
 },
-"utc": "2026-11-21T17:30:00.000Z",
-"finished": false,
+"utc": "2026-11-21T17:30:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "2 - 2"
 },
 {
 "id": 5795520,
@@ -1943,7 +1943,7 @@
 "shortName": "Brighton",
 "id": "10204"
 },
-"utc": "2026-11-22T14:00:00Z",
+"utc": "2026-11-22T14:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -1961,7 +1961,7 @@
 "shortName": "Man United",
 "id": "10260"
 },
-"utc": "2026-11-22T16:30:00Z",
+"utc": "2026-11-22T16:30:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
