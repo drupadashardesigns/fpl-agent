@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-22T08:53:06+00:00",
+"fetched_at": "2026-11-23T09:50:57+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -1943,10 +1943,10 @@
 "shortName": "Brighton",
 "id": "10204"
 },
-"utc": "2026-11-22T14:00:00.000Z",
-"finished": false,
+"utc": "2026-11-22T14:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "2 - 0"
 },
 {
 "id": 5795521,
@@ -1961,10 +1961,10 @@
 "shortName": "Man United",
 "id": "10260"
 },
-"utc": "2026-11-22T16:30:00.000Z",
-"finished": false,
+"utc": "2026-11-22T16:30:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "4 - 0"
 },
 {
 "id": 5795517,
@@ -1979,7 +1979,7 @@
 "shortName": "Everton",
 "id": "8668"
 },
-"utc": "2026-11-23T20:00:00Z",
+"utc": "2026-11-23T20:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
