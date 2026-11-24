@@ -449,22 +449,23 @@
  ],
  "grading": {
   "gw": 10,
-  "scored_at": "2026-11-23T09:51:41+00:00",
+  "scored_at": "2026-11-24T11:40:16+00:00",
   "final": true,
-  "summary": "Call -2 against +5.0 projected, captain Haaland 2, model off by 1.9 a player.",
+  "summary": "Call -3 against +9.5 projected, captain Haaland 2, model off by 1.9 a player.",
   "lines": [
-   "The call netted -2 points over GW10 against +5.0 projected (Gabriel 8 for Calafiori 6, Tavernier 3 for Szoboszlai 7). It beat 2 of 4 alternatives.",
+   "The call netted -3 points over GW10 to GW11 against +9.5 projected (Gabriel 9 for Calafiori 7, Tavernier 11 for Szoboszlai 16). It beat 2 of 4 alternatives.",
    "Captain Haaland scored 2, 6th of 6 candidates; Barry was best with 16. The edition overrode the model's pick, Gabriel, who scored 8.",
-   "The hit option (Add Mbeumo for -4) would have netted -5 against +2 for the best free plan, so skipping it was right.",
+   "The hit option (Add Mbeumo for -4) would have netted -6 against +2 for the best free plan, so skipping it was right.",
    "Holding the Free Hit: its eleven scored 62 against 68 for the call's eleven (-6, projected +2.0), so waiting was right this week.",
    "Projections missed by 1.9 points a player on average across 363 players (too low by 0.3 on balance).",
    "You scored 70, against an average of 55; the call's eleven with its captain would have scored 70."
   ],
   "call": {
-   "actual": -2,
-   "projected": 5.0,
+   "actual": -3,
+   "projected": 9.5,
    "gws": [
-    10
+    10,
+    11
    ],
    "horizon": [
     10,
@@ -479,16 +480,16 @@
      "in": 4,
      "out_name": "Calafiori",
      "in_name": "Gabriel",
-     "out_pts": 6,
-     "in_pts": 8
+     "out_pts": 7,
+     "in_pts": 9
     },
     {
      "out": 368,
      "in": 68,
      "out_name": "Szoboszlai",
      "in_name": "Tavernier",
-     "out_pts": 7,
-     "in_pts": 3
+     "out_pts": 16,
+     "in_pts": 11
     }
    ]
   },
@@ -558,7 +559,7 @@
     "id": "hit",
     "name": "Add Mbeumo for -4",
     "hits": 4,
-    "actual": -5,
+    "actual": -6,
     "best_free": 2,
     "best_free_name": "Gabriel only, roll one",
     "paid": false,

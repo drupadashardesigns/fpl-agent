@@ -388,5 +388,192 @@
    "text": "Tavernier (28%) and Gabriel (23%) are building toward rises, not likely tonight. The call uses your whole bank, so a rise before you transfer would break it."
   }
  ],
- "grading": null
+ "grading": {
+  "gw": 11,
+  "scored_at": "2026-11-24T11:40:16+00:00",
+  "final": false,
+  "summary": "Call -1 against +4.4 projected, captain Haaland 2, model off by 2.0 a player.",
+  "lines": [
+   "The call netted -1 points over GW11 against +4.4 projected (Gabriel 1 for Calafiori 1, Tavernier 8 for Szoboszlai 9). It beat 0 of 4 alternatives and tied 1.",
+   "Captain Haaland scored 2, 4th of 6 candidates; Tavernier was best with 8.",
+   "The hit option (Add Hill, Mbeumo for -4) would have netted +7 against +12 for the best free plan, so skipping it was right.",
+   "Holding the Free Hit: its eleven scored 59 against 39 for the call's eleven (+20, projected +2.4), so waiting cost 20 points this week.",
+   "Projections missed by 2.0 points a player on average across 374 players (too low by 0.3 on balance).",
+   "You scored 33, against an average of 35; the call's eleven with its captain would have scored 41."
+  ],
+  "call": {
+   "actual": -1,
+   "projected": 4.4,
+   "gws": [
+    11
+   ],
+   "horizon": [
+    11,
+    16
+   ],
+   "beat": 0,
+   "tied": 1,
+   "of": 4,
+   "transfers": [
+    {
+     "out": 8,
+     "in": 4,
+     "out_name": "Calafiori",
+     "in_name": "Gabriel",
+     "out_pts": 1,
+     "in_pts": 1
+    },
+    {
+     "out": 368,
+     "in": 68,
+     "out_name": "Szoboszlai",
+     "in_name": "Tavernier",
+     "out_pts": 9,
+     "in_pts": 8
+    }
+   ]
+  },
+  "captain": {
+   "pick": 411,
+   "name": "Haaland",
+   "actual": 2,
+   "mins": 90,
+   "projected": 5.8,
+   "best": 68,
+   "best_actual": 8,
+   "beat": 2,
+   "tied": 0,
+   "of": 5,
+   "model_pick": 411,
+   "model_actual": 2,
+   "template": 411,
+   "template_actual": 2,
+   "override": false
+  },
+  "captain_candidates": [
+   {
+    "id": 411,
+    "name": "Haaland",
+    "projected": 5.8,
+    "actual": 2,
+    "mins": 90
+   },
+   {
+    "id": 112,
+    "name": "Van Hecke",
+    "projected": 5.6,
+    "actual": 6,
+    "mins": 90
+   },
+   {
+    "id": 4,
+    "name": "Gabriel",
+    "projected": 5.36,
+    "actual": 1,
+    "mins": 90
+   },
+   {
+    "id": 68,
+    "name": "Tavernier",
+    "projected": 5.24,
+    "actual": 8,
+    "mins": 90
+   },
+   {
+    "id": 566,
+    "name": "Silva",
+    "projected": 5.04,
+    "actual": 8,
+    "mins": 90
+   },
+   {
+    "id": 31,
+    "name": "Konsa",
+    "projected": 4.88,
+    "actual": 1,
+    "mins": 90
+   }
+  ],
+  "hits": [
+   {
+    "id": "hit",
+    "name": "Add Hill, Mbeumo for -4",
+    "hits": 4,
+    "actual": 7,
+    "best_free": 12,
+    "best_free_name": "Hill instead of Gabriel",
+    "paid": false,
+    "advised": false
+   }
+  ],
+  "free_hit": {
+   "played": false,
+   "advice": "Still GW18 or GW19. Decide on 26 Dec, with real team news.",
+   "recommended_gw": 18,
+   "fh_actual": 59,
+   "xi_actual": 39,
+   "gain_actual": 20,
+   "gain_projected": 2.4
+  },
+  "team": {
+   "xi_actual": 39,
+   "captain_bonus": 2,
+   "total": 41,
+   "projected": 60.5
+  },
+  "followed": {
+   "transfers_made": [
+    {
+     "out": 109,
+     "in": 597,
+     "out_name": "Verbruggen",
+     "in_name": "Suzuki"
+    },
+    {
+     "out": 31,
+     "in": 504,
+     "out_name": "Konsa",
+     "in_name": "Vuskovic"
+    }
+   ],
+   "transfers_matched": 0,
+   "transfers_recommended": 2,
+   "captain": 115,
+   "captain_name": "De Cuyper",
+   "captain_followed": false,
+   "chip": null,
+   "points": 33,
+   "hit": 0,
+   "rank": 110662
+  },
+  "model": {
+   "all": {
+    "n": 374,
+    "mae": 2.04,
+    "bias": -0.31,
+    "rmse": 2.99,
+    "projected": 2.21,
+    "actual": 2.52,
+    "mins_mae": 23.1
+   },
+   "regulars": {
+    "n": 162,
+    "mae": 2.57,
+    "bias": 0.31,
+    "rmse": 3.23,
+    "projected": 3.56,
+    "actual": 3.25,
+    "mins_mae": 17.4
+   },
+   "calibration": {
+    "n": 348,
+    "haul_projected": 1.4,
+    "haul_actual": 4.6,
+    "blank_projected": 70.1,
+    "blank_actual": 66.4,
+    "brier_haul": 0.045,
+    "brier_blank": 0.21
+   }
+  }
+ }
 }
