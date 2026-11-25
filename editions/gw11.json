@@ -390,8 +390,8 @@
  ],
  "grading": {
   "gw": 11,
-  "scored_at": "2026-11-24T11:40:16+00:00",
-  "final": false,
+  "scored_at": "2026-11-25T10:32:01+00:00",
+  "final": true,
   "summary": "Call -1 against +4.4 projected, captain Haaland 2, model off by 2.0 a player.",
   "lines": [
    "The call netted -1 points over GW11 against +4.4 projected (Gabriel 1 for Calafiori 1, Tavernier 8 for Szoboszlai 9). It beat 0 of 4 alternatives and tied 1.",
