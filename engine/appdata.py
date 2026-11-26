@@ -266,19 +266,26 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
     peer = lambda e: round(100 * own["peers"]["own"].get(str(e), 0)) if own else None
     opts = [{**o, "outs": ids(o["outs"]), "ins": ids(o["ins"])} for o in facts["transfer_options"]]
     nm = lambda e: pl.P[e]["name"]
+    best_free = max((o for o in opts if o["hits"] == 0), key=lambda o: o["gain"], default=None)
+    if rec["hits"]:
+        lead = rec["gain"] - (best_free["gain"] if best_free else 0.0)
+        call_verdict = (f"Pays a -{rec['hits']} and still projects {lead:+.1f} against the best free plan over six "
+                        f"gameweeks, clearing the {HIT_MARGIN:g}-point bar a hit has to beat.")
+    elif sorted(call_out, key=lambda e: pl.P[e]["xmins"]) == sorted(squad, key=lambda e: pl.P[e]["xmins"])[:2]:
+        call_verdict = "Best plan that costs no hit. Sells the two players in your squad with the lowest expected minutes."
+    else:
+        call_verdict = "Best plan that costs no hit."
     plans = [{"id": "call", "name": "The call", **{k: rec[k] for k in ("gain", "hits", "bank_after")},
-              "outs": call_out, "ins": call_in,
-              "verdict": "Best plan that costs no hit. Sells the two players in your squad with the lowest expected minutes."
-              if sorted(call_out, key=lambda e: pl.P[e]["xmins"]) == sorted(squad, key=lambda e: pl.P[e]["xmins"])[:2]
-              else "Best plan that costs no hit."}]
-    hit = max((o for o in opts if o["hits"] > 0), key=lambda o: o["gain"], default=None)
+              "outs": call_out, "ins": call_in, "verdict": call_verdict}]
+    hit = None if rec["hits"] else max((o for o in opts if o["hits"] > 0), key=lambda o: o["gain"], default=None)
     if hit:
         extra = [e for e in hit["ins"] if e not in call_in]
         d = hit["gain"] - rec["gain"]
         plans.append({"id": "hit", "name": f"Add {', '.join(nm(e) for e in extra)} for -{hit['hits']}", **hit,
                       "verdict": f"Projects {d:+.1f} against the call after the -{hit['hits']}. A hit needs to beat the best "
                                  f"free plan by {HIT_MARGIN:g} points to be worth it, so this one "
-                                 f"{'does' if d >= HIT_MARGIN else 'does not'}."})
+                                 f"{'does' if d >= HIT_MARGIN else 'does not'}."
+                                 + (f" The edition skips it: {rec['override']}" if rec.get("override") else "")})
     alt = next((o for o in opts if o["hits"] == 0 and set(o["outs"]) == set(call_out) and set(o["ins"]) != set(call_in)), None)
     if alt:
         new = [e for e in alt["ins"] if e not in call_in][0]
@@ -289,11 +296,19 @@ def build(gw: int | None = None, snapshot: str | None = None) -> Path:
                                  f"more differential version."})
     singles = [evaluate([o], [i]) for o, i in zip(call_out, call_in)]
     one = max(singles, key=lambda r: r["gain"])
-    kept = [e for e in call_out if e not in one["outs"]][0]
-    plans.append({"id": "one", "name": f"{nm(one['ins'][0])} only, roll one", **one,
-                  "verdict": f"Keeps a second free transfer for GW{gw + 1}, but keeps {nm(kept)}, who expects "
-                             f"{pl.P[kept]['xmins']:.0f} minutes a game, for another week. "
-                             f"{rec['gain'] - one['gain']:.1f} behind the call."})
+    kept = next((e for e in call_out if e not in one["outs"]), None)
+    if kept is None:
+        pass  # a one-transfer call has no "one move only" version
+    elif rec["hits"] and len(call_out) - state.free_transfers == 1:
+        plans.append({"id": "one", "name": f"{nm(one['ins'][0])} only, no hit", **one,
+                      "verdict": f"The best free plan. Saves the -{rec['hits']} but keeps {nm(kept)}, who expects "
+                                 f"{pl.P[kept]['xmins']:.0f} minutes a game, for another week. "
+                                 f"{rec['gain'] - one['gain']:.1f} behind the call."})
+    else:
+        plans.append({"id": "one", "name": f"{nm(one['ins'][0])} only, roll one", **one,
+                      "verdict": f"Keeps a second free transfer for GW{gw + 1}, but keeps {nm(kept)}, who expects "
+                                 f"{pl.P[kept]['xmins']:.0f} minutes a game, for another week. "
+                                 f"{rec['gain'] - one['gain']:.1f} behind the call."})
     plans.append({"id": "roll", "name": "Roll both" if state.free_transfers == 2 else "Roll", "outs": [], "ins": [],
                   "gain": 0.0, "hits": 0, "bank_after": state.bank,
                   "verdict": f"Gives up about {rec['gain']:.0f} projected points over six gameweeks for "

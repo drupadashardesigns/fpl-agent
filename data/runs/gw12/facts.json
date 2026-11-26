@@ -1,0 +1,1049 @@
+{
+ "generated_at": "2026-11-26T03:11:47+00:00",
+ "gw": 12,
+ "deadline_utc": "2026-11-27T18:30:00Z",
+ "manager": {
+  "entry_id": 2469496,
+  "team_name": "AlooSoul",
+  "overall_rank": 110661,
+  "total_points": 735,
+  "last_gw_points": 33
+ },
+ "rank_cutoffs": {
+  "10000": 769,
+  "50000": 748,
+  "100000": 737
+ },
+ "state": {
+  "free_transfers": 1,
+  "bank": 1.2,
+  "budget": 101.6,
+  "chips_used": [
+   {
+    "name": "bboost",
+    "gw": 1
+   },
+   {
+    "name": "wildcard",
+    "gw": 3
+   },
+   {
+    "name": "3xc",
+    "gw": 4
+   }
+  ]
+ },
+ "squad": [
+  {
+   "id": 1,
+   "name": "Raya (ARS)",
+   "pos": "GK",
+   "cost": 6.2,
+   "sell": 6.1,
+   "xmins": 42.0,
+   "news": "Shoulder injury - 50% chance of playing",
+   "xp": {
+    "12": 2.08,
+    "13": 2.06,
+    "14": 2.07,
+    "15": 2.09,
+    "16": 2.14,
+    "17": 2.11,
+    "18": 2.08,
+    "19": 2.19,
+    "20": 2.12,
+    "21": 2.13
+   },
+   "own_top10k": 0.6217,
+   "own_peers": 0.5233
+  },
+  {
+   "id": 504,
+   "name": "Vuskovic (BHA)",
+   "pos": "DEF",
+   "cost": 5.3,
+   "sell": 5.3,
+   "xmins": 89.7,
+   "news": "",
+   "xp": {
+    "12": 5.02,
+    "13": 3.52,
+    "14": 3.78,
+    "15": 4.89,
+    "16": 5.1,
+    "17": 4.08,
+    "18": 4.0,
+    "19": 4.68,
+    "20": 4.14,
+    "21": 3.86
+   },
+   "own_top10k": 0.305,
+   "own_peers": 0.205
+  },
+  {
+   "id": 566,
+   "name": "Silva (BOU)",
+   "pos": "DEF",
+   "cost": 5.1,
+   "sell": 5.0,
+   "xmins": 90.0,
+   "news": "",
+   "xp": {
+    "12": 4.79,
+    "13": 4.87,
+    "14": 5.86,
+    "15": 4.36,
+    "16": 5.83,
+    "17": 4.7,
+    "18": 5.05,
+    "19": 5.6,
+    "20": 4.22,
+    "21": 5.82
+   },
+   "own_top10k": 0.3067,
+   "own_peers": 0.2167
+  },
+  {
+   "id": 115,
+   "name": "De Cuyper (BHA)",
+   "pos": "DEF",
+   "cost": 5.5,
+   "sell": 5.1,
+   "xmins": 83.4,
+   "news": "",
+   "xp": {
+    "12": 5.32,
+    "13": 3.51,
+    "14": 3.78,
+    "15": 5.12,
+    "16": 5.55,
+    "17": 4.13,
+    "18": 3.93,
+    "19": 5.17,
+    "20": 4.27,
+    "21": 3.89
+   },
+   "own_top10k": 0.7783,
+   "own_peers": 0.7967
+  },
+  {
+   "id": 8,
+   "name": "Calafiori (ARS)",
+   "pos": "DEF",
+   "cost": 5.9,
+   "sell": 5.7,
+   "xmins": 74.4,
+   "news": "",
+   "xp": {
+    "12": 3.59,
+    "13": 3.42,
+    "14": 3.49,
+    "15": 3.65,
+    "16": 4.15,
+    "17": 3.84,
+    "18": 3.59,
+    "19": 4.45,
+    "20": 3.93,
+    "21": 3.92
+   },
+   "own_top10k": 0.6817,
+   "own_peers": 0.77
+  },
+  {
+   "id": 112,
+   "name": "Van Hecke (TOT)",
+   "pos": "DEF",
+   "cost": 5.2,
+   "sell": 5.0,
+   "xmins": 90.0,
+   "news": "",
+   "xp": {
+    "12": 4.46,
+    "13": 5.14,
+    "14": 4.58,
+    "15": 4.9,
+    "16": 3.94,
+    "17": 4.53,
+    "18": 4.58,
+    "19": 3.77,
+    "20": 4.44,
+    "21": 4.92
+   },
+   "own_top10k": 0.6683,
+   "own_peers": 0.555
+  },
+  {
+   "id": 154,
+   "name": "Palmer (CHE)",
+   "pos": "MID",
+   "cost": 9.8,
+   "sell": 9.7,
+   "xmins": 88.3,
+   "news": "",
+   "xp": {
+    "12": 3.46,
+    "13": 4.57,
+    "14": 3.78,
+    "15": 3.39,
+    "16": 4.22,
+    "17": 3.73,
+    "18": 3.98,
+    "19": 4.21,
+    "20": 4.06,
+    "21": 4.1
+   },
+   "own_top10k": 0.585,
+   "own_peers": 0.5083
+  },
+  {
+   "id": 124,
+   "name": "Groß (BHA)",
+   "pos": "MID",
+   "cost": 6.3,
+   "sell": 5.9,
+   "xmins": 89.5,
+   "news": "",
+   "xp": {
+    "12": 5.35,
+    "13": 4.24,
+    "14": 4.33,
+    "15": 5.18,
+    "16": 5.73,
+    "17": 4.52,
+    "18": 4.24,
+    "19": 5.67,
+    "20": 4.71,
+    "21": 4.42
+   },
+   "own_top10k": 0.9233,
+   "own_peers": 0.8683
+  },
+  {
+   "id": 40,
+   "name": "Rogers (CHE)",
+   "pos": "MID",
+   "cost": 8.3,
+   "sell": 8.2,
+   "xmins": 89.5,
+   "news": "",
+   "xp": {
+    "12": 3.83,
+    "13": 5.15,
+    "14": 4.22,
+    "15": 3.76,
+    "16": 4.72,
+    "17": 4.13,
+    "18": 4.45,
+    "19": 4.71,
+    "20": 4.55,
+    "21": 4.58
+   },
+   "own_top10k": 0.8867,
+   "own_peers": 0.8567
+  },
+  {
+   "id": 249,
+   "name": "Barry (EVE)",
+   "pos": "FWD",
+   "cost": 5.7,
+   "sell": 5.6,
+   "xmins": 81.0,
+   "news": "",
+   "xp": {
+    "12": 4.73,
+    "13": 4.73,
+    "14": 4.97,
+    "15": 4.38,
+    "16": 4.23,
+    "17": 5.18,
+    "18": 4.68,
+    "19": 4.16,
+    "20": 5.35,
+    "21": 4.53
+   },
+   "own_top10k": 0.3217,
+   "own_peers": 0.1783
+  },
+  {
+   "id": 411,
+   "name": "Haaland (MCI)",
+   "pos": "FWD",
+   "cost": 15.8,
+   "sell": 15.6,
+   "xmins": 89.8,
+   "news": "",
+   "xp": {
+    "12": 4.43,
+    "13": 5.49,
+    "14": 5.12,
+    "15": 6.19,
+    "16": 6.04,
+    "17": 5.52,
+    "18": 5.34,
+    "19": 5.37,
+    "20": 4.9,
+    "21": 5.6
+   },
+   "own_top10k": 0.9883,
+   "own_peers": 0.9883
+  },
+  {
+   "id": 597,
+   "name": "Suzuki (AVL)",
+   "pos": "GK",
+   "cost": 5.1,
+   "sell": 5.1,
+   "xmins": 88.0,
+   "news": "",
+   "xp": {
+    "12": 3.77,
+    "13": 3.99,
+    "14": 3.97,
+    "15": 3.85,
+    "16": 3.71,
+    "17": 3.86,
+    "18": 3.71,
+    "19": 3.51,
+    "20": 3.74,
+    "21": 3.83
+   },
+   "own_top10k": 0.0233,
+   "own_peers": 0.0217
+  },
+  {
+   "id": 346,
+   "name": "Calvert-Lewin (LEE)",
+   "pos": "FWD",
+   "cost": 6.0,
+   "sell": 6.0,
+   "xmins": 88.5,
+   "news": "",
+   "xp": {
+    "12": 4.79,
+    "13": 3.99,
+    "14": 5.36,
+    "15": 4.03,
+    "16": 4.68,
+    "17": 4.46,
+    "18": 4.28,
+    "19": 4.78,
+    "20": 4.42,
+    "21": 3.9
+   },
+   "own_top10k": 0.1517,
+   "own_peers": 0.145
+  },
+  {
+   "id": 368,
+   "name": "Szoboszlai (LIV)",
+   "pos": "MID",
+   "cost": 6.7,
+   "sell": 6.7,
+   "xmins": 58.7,
+   "news": "",
+   "xp": {
+    "12": 2.9,
+    "13": 3.22,
+    "14": 2.94,
+    "15": 2.98,
+    "16": 2.95,
+    "17": 2.93,
+    "18": 2.98,
+    "19": 3.23,
+    "20": 2.91,
+    "21": 3.58
+   },
+   "own_top10k": 0.0483,
+   "own_peers": 0.0433
+  },
+  {
+   "id": 268,
+   "name": "King (FUL)",
+   "pos": "MID",
+   "cost": 5.4,
+   "sell": 5.4,
+   "xmins": 74.7,
+   "news": "",
+   "xp": {
+    "12": 3.25,
+    "13": 2.99,
+    "14": 3.21,
+    "15": 3.39,
+    "16": 3.01,
+    "17": 3.37,
+    "18": 3.06,
+    "19": 3.03,
+    "20": 3.27,
+    "21": 3.29
+   },
+   "own_top10k": 0.04,
+   "own_peers": 0.0517
+  }
+ ],
+ "lineup": {
+  "xp": 55.42999999999999,
+  "xi": [
+   "Suzuki (AVL)",
+   "De Cuyper (BHA)",
+   "Vuskovic (BHA)",
+   "Silva (BOU)",
+   "Van Hecke (TOT)",
+   "Calafiori (ARS)",
+   "Groß (BHA)",
+   "Rogers (CHE)",
+   "Calvert-Lewin (LEE)",
+   "Barry (EVE)",
+   "Haaland (MCI)"
+  ],
+  "captain": "Groß (BHA)",
+  "formation": [
+   5,
+   2,
+   3
+  ],
+  "bench": [
+   "Palmer (CHE)",
+   "King (FUL)",
+   "Szoboszlai (LIV)",
+   "Raya (ARS)"
+  ],
+  "bench_xp": 11.69
+ },
+ "transfer_options": [
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Szoboszlai (LIV)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)"
+   ],
+   "gain": 11.7,
+   "hits": 4,
+   "bank_after": 1.1
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Szoboszlai (LIV)",
+    "Raya (ARS)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "Trafford (LEE)"
+   ],
+   "gain": 11.45,
+   "hits": 8,
+   "bank_after": 2.1
+  },
+  {
+   "outs": [
+    "Raya (ARS)",
+    "King (FUL)",
+    "Calafiori (ARS)"
+   ],
+   "ins": [
+    "Trafford (LEE)",
+    "Tavernier (BOU)",
+    "Hill (BOU)"
+   ],
+   "gain": 11.34,
+   "hits": 8,
+   "bank_after": 0.8
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Szoboszlai (LIV)",
+    "Suzuki (AVL)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "Trafford (LEE)"
+   ],
+   "gain": 10.57,
+   "hits": 8,
+   "bank_after": 1.1
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Palmer (CHE)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)"
+   ],
+   "gain": 10.41,
+   "hits": 4,
+   "bank_after": 4.1
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Szoboszlai (LIV)",
+    "Raya (ARS)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "Tzolakis (HUL)"
+   ],
+   "gain": 10.38,
+   "hits": 8,
+   "bank_after": 2.5
+  },
+  {
+   "outs": [
+    "Raya (ARS)",
+    "King (FUL)",
+    "Calafiori (ARS)"
+   ],
+   "ins": [
+    "Tzolakis (HUL)",
+    "Tavernier (BOU)",
+    "Hill (BOU)"
+   ],
+   "gain": 10.28,
+   "hits": 8,
+   "bank_after": 1.2
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Szoboszlai (LIV)",
+    "King (FUL)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "E.Le Fée (SUN)"
+   ],
+   "gain": 10.16,
+   "hits": 8,
+   "bank_after": 0.8
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Palmer (CHE)",
+    "Raya (ARS)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "Trafford (LEE)"
+   ],
+   "gain": 10.15,
+   "hits": 8,
+   "bank_after": 5.1
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Szoboszlai (LIV)",
+    "King (FUL)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "Rudoni (COV)"
+   ],
+   "gain": 10.14,
+   "hits": 8,
+   "bank_after": 1.5
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Szoboszlai (LIV)",
+    "Palmer (CHE)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "Ødegaard (ARS)"
+   ],
+   "gain": 9.84,
+   "hits": 8,
+   "bank_after": 4.1
+  },
+  {
+   "outs": [
+    "Calafiori (ARS)",
+    "Palmer (CHE)",
+    "King (FUL)"
+   ],
+   "ins": [
+    "Hill (BOU)",
+    "Tavernier (BOU)",
+    "Ødegaard (ARS)"
+   ],
+   "gain": 9.74,
+   "hits": 8,
+   "bank_after": 2.8
+  },
+  {
+   "outs": [
+    "Szoboszlai (LIV)"
+   ],
+   "ins": [
+    "Tavernier (BOU)"
+   ],
+   "gain": 9.15,
+   "hits": 0,
+   "bank_after": 1.1
+  }
+ ],
+ "free_hit_curve": [
+  {
+   "gw": 12,
+   "mine": 55.4,
+   "free_hit": 60.8,
+   "gain": 5.3,
+   "team": [
+    "Trafford (LEE)",
+    "Muharemović (LEE)",
+    "De Cuyper (BHA)",
+    "Bogle (LEE)",
+    "Vuskovic (BHA)",
+    "Groß (BHA)",
+    "Tavernier (BOU)",
+    "Gibbs-White (NFO)",
+    "Ødegaard (ARS)",
+    "Isak (LIV)",
+    "Barry (EVE)"
+   ]
+  },
+  {
+   "gw": 13,
+   "mine": 54.7,
+   "free_hit": 61.3,
+   "gain": 6.7,
+   "team": [
+    "Tzolakis (HUL)",
+    "Van Hecke (TOT)",
+    "Hill (BOU)",
+    "Silva (BOU)",
+    "Murillo (NFO)",
+    "Tavernier (BOU)",
+    "Rogers (CHE)",
+    "Rudoni (COV)",
+    "Isak (LIV)",
+    "Haaland (MCI)",
+    "Barry (EVE)"
+   ]
+  },
+  {
+   "gw": 14,
+   "mine": 55.6,
+   "free_hit": 63.6,
+   "gain": 8.0,
+   "team": [
+    "Trafford (LEE)",
+    "Hill (BOU)",
+    "Silva (BOU)",
+    "Muharemović (LEE)",
+    "Bogle (LEE)",
+    "Tavernier (BOU)",
+    "B.Fernandes (MUN)",
+    "Gibbs-White (NFO)",
+    "Barry (EVE)",
+    "N.Jackson (AVL)",
+    "Haaland (MCI)"
+   ]
+  },
+  {
+   "gw": 15,
+   "mine": 56.5,
+   "free_hit": 60.6,
+   "gain": 4.1,
+   "team": [
+    "Tzolakis (HUL)",
+    "De Cuyper (BHA)",
+    "Van Hecke (TOT)",
+    "Vuskovic (BHA)",
+    "Gabriel (ARS)",
+    "Groß (BHA)",
+    "Rudoni (COV)",
+    "Ødegaard (ARS)",
+    "Tavernier (BOU)",
+    "Haaland (MCI)",
+    "Isak (LIV)"
+   ]
+  },
+  {
+   "gw": 16,
+   "mine": 60.0,
+   "free_hit": 67.3,
+   "gain": 7.3,
+   "team": [
+    "Trafford (LEE)",
+    "Hill (BOU)",
+    "Silva (BOU)",
+    "De Cuyper (BHA)",
+    "Gabriel (ARS)",
+    "Vuskovic (BHA)",
+    "Tavernier (BOU)",
+    "Groß (BHA)",
+    "E.Le Fée (SUN)",
+    "Ødegaard (ARS)",
+    "Haaland (MCI)"
+   ]
+  },
+  {
+   "gw": 17,
+   "mine": 54.5,
+   "free_hit": 59.2,
+   "gain": 4.7,
+   "team": [
+    "Trafford (LEE)",
+    "Gabriel (ARS)",
+    "Hill (BOU)",
+    "Silva (BOU)",
+    "Konsa (ARS)",
+    "Ødegaard (ARS)",
+    "Tavernier (BOU)",
+    "Gibbs-White (NFO)",
+    "Haaland (MCI)",
+    "Barry (EVE)",
+    "Isak (LIV)"
+   ]
+  },
+  {
+   "gw": 18,
+   "mine": 53.6,
+   "free_hit": 60.9,
+   "gain": 7.3,
+   "team": [
+    "Trafford (LEE)",
+    "Hill (BOU)",
+    "Silva (BOU)",
+    "Muharemović (LEE)",
+    "Gabriel (ARS)",
+    "Van Hecke (TOT)",
+    "Tavernier (BOU)",
+    "E.Le Fée (SUN)",
+    "Haaland (MCI)",
+    "Isak (LIV)",
+    "Barry (EVE)"
+   ]
+  },
+  {
+   "gw": 19,
+   "mine": 58.0,
+   "free_hit": 66.8,
+   "gain": 8.8,
+   "team": [
+    "Trafford (LEE)",
+    "Gabriel (ARS)",
+    "Hill (BOU)",
+    "Silva (BOU)",
+    "Konsa (ARS)",
+    "De Cuyper (BHA)",
+    "Tavernier (BOU)",
+    "Groß (BHA)",
+    "Ødegaard (ARS)",
+    "Isak (LIV)",
+    "Haaland (MCI)"
+   ]
+  }
+ ],
+ "price_alerts": [
+  {
+   "id": 411,
+   "name": "Haaland",
+   "owned": true,
+   "direction": "fall",
+   "when": "soon",
+   "progress": -84.9,
+   "price": 15.8
+  }
+ ],
+ "last_gw": {
+  "gw": 11,
+  "average": 35,
+  "highest": 106,
+  "most_captained": "Haaland",
+  "top_scorers": [
+   {
+    "id": 86,
+    "name": "Lewis-Potter",
+    "team": "BRE",
+    "points": 16
+   },
+   {
+    "id": 336,
+    "name": "Okafor",
+    "team": "LEE",
+    "points": 15
+   },
+   {
+    "id": 60,
+    "name": "Hill",
+    "team": "BOU",
+    "points": 14
+   },
+   {
+    "id": 366,
+    "name": "Wirtz",
+    "team": "LIV",
+    "points": 14
+   },
+   {
+    "id": 295,
+    "name": "McBurnie",
+    "team": "HUL",
+    "points": 13
+   },
+   {
+    "id": 369,
+    "name": "Ngumoha",
+    "team": "LIV",
+    "points": 13
+   },
+   {
+    "id": 601,
+    "name": "Williams-Barnett",
+    "team": "TOT",
+    "points": 13
+   },
+   {
+    "id": 211,
+    "name": "Yeremy",
+    "team": "CRY",
+    "points": 12
+   },
+   {
+    "id": 499,
+    "name": "Pedro Porro",
+    "team": "TOT",
+    "points": 11
+   },
+   {
+    "id": 529,
+    "name": "Roefs",
+    "team": "SUN",
+    "points": 11
+   }
+  ],
+  "my_players": [
+   {
+    "id": 1,
+    "name": "Raya",
+    "points": 1,
+    "multiplier": 1
+   },
+   {
+    "id": 504,
+    "name": "Vuskovic",
+    "points": 0,
+    "multiplier": 1
+   },
+   {
+    "id": 566,
+    "name": "Silva",
+    "points": 8,
+    "multiplier": 1
+   },
+   {
+    "id": 115,
+    "name": "De Cuyper",
+    "points": 1,
+    "multiplier": 2
+   },
+   {
+    "id": 8,
+    "name": "Calafiori",
+    "points": 1,
+    "multiplier": 1
+   },
+   {
+    "id": 112,
+    "name": "Van Hecke",
+    "points": 6,
+    "multiplier": 1
+   },
+   {
+    "id": 154,
+    "name": "Palmer",
+    "points": 2,
+    "multiplier": 1
+   },
+   {
+    "id": 124,
+    "name": "Groß",
+    "points": 4,
+    "multiplier": 1
+   },
+   {
+    "id": 40,
+    "name": "Rogers",
+    "points": 5,
+    "multiplier": 1
+   },
+   {
+    "id": 249,
+    "name": "Barry",
+    "points": 2,
+    "multiplier": 1
+   },
+   {
+    "id": 411,
+    "name": "Haaland",
+    "points": 2,
+    "multiplier": 1
+   },
+   {
+    "id": 597,
+    "name": "Suzuki",
+    "points": 6,
+    "multiplier": 0
+   },
+   {
+    "id": 346,
+    "name": "Calvert-Lewin",
+    "points": 9,
+    "multiplier": 0
+   },
+   {
+    "id": 368,
+    "name": "Szoboszlai",
+    "points": 9,
+    "multiplier": 0
+   },
+   {
+    "id": 268,
+    "name": "King",
+    "points": 2,
+    "multiplier": 0
+   }
+  ],
+  "chip_plays": {
+   "bboost": 276872,
+   "freehit": 56517,
+   "wildcard": 137848,
+   "3xc": 203038
+  }
+ },
+ "captaincy_top10k": [
+  [
+   0.88,
+   "Haaland (MCI)"
+  ],
+  [
+   0.0483,
+   "N.Jackson (AVL)"
+  ],
+  [
+   0.02,
+   "Isak (LIV)"
+  ],
+  [
+   0.015,
+   "De Cuyper (BHA)"
+  ],
+  [
+   0.0133,
+   "Groß (BHA)"
+  ]
+ ],
+ "template_gaps": [
+  {
+   "name": "N.Jackson (AVL)",
+   "own_top10k": 0.8033,
+   "own_peers": 0.8033,
+   "horizon_xp": 22.2
+  },
+  {
+   "name": "Tavernier (BOU)",
+   "own_top10k": 0.7717,
+   "own_peers": 0.6967,
+   "horizon_xp": 26.7
+  },
+  {
+   "name": "Konsa (ARS)",
+   "own_top10k": 0.6883,
+   "own_peers": 0.6733,
+   "horizon_xp": 21.8
+  },
+  {
+   "name": "Muharemović (LEE)",
+   "own_top10k": 0.3933,
+   "own_peers": 0.2783,
+   "horizon_xp": 23.0
+  },
+  {
+   "name": "Evanilson (BOU)",
+   "own_top10k": 0.3817,
+   "own_peers": 0.43,
+   "horizon_xp": 22.6
+  },
+  {
+   "name": "Verbruggen (BHA)",
+   "own_top10k": 0.3767,
+   "own_peers": 0.4867,
+   "horizon_xp": 18.7
+  },
+  {
+   "name": "Kinsky (TOT)",
+   "own_top10k": 0.35,
+   "own_peers": 0.3683,
+   "horizon_xp": 17.8
+  },
+  {
+   "name": "Gabriel (ARS)",
+   "own_top10k": 0.2767,
+   "own_peers": 0.1917,
+   "horizon_xp": 23.9
+  },
+  {
+   "name": "Isak (LIV)",
+   "own_top10k": 0.2717,
+   "own_peers": 0.3067,
+   "horizon_xp": 25.4
+  },
+  {
+   "name": "Manzambi (AVL)",
+   "own_top10k": 0.2683,
+   "own_peers": 0.2317,
+   "horizon_xp": 17.0
+  }
+ ],
+ "model": {
+  "version": "v0",
+  "horizon": [
+   12,
+   17
+  ],
+  "decay": 0.92
+ },
+ "recommended": {
+  "outs": [
+   "Szoboszlai (LIV)"
+  ],
+  "ins": [
+   "Tavernier (BOU)"
+  ],
+  "gain": 9.15,
+  "hits": 0,
+  "bank_after": 1.1,
+  "override": "selling Calafiori next week with the GW13 free transfer projects within 1 point of paying 4 for it now, so the hit is not worth a certain 4."
+ },
+ "model_recommended": {
+  "outs": [
+   "Calafiori (ARS)",
+   "Szoboszlai (LIV)"
+  ],
+  "ins": [
+   "Hill (BOU)",
+   "Tavernier (BOU)"
+  ],
+  "gain": 11.7,
+  "hits": 4,
+  "bank_after": 1.1
+ }
+}

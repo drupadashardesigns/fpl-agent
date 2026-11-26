@@ -1,6 +1,14 @@
 {
- "current": 11,
+ "current": 12,
  "editions": [
+  {
+   "gw": 12,
+   "edition": 3,
+   "title": "Tavernier in, no hit, Haaland captain, Hill next week.",
+   "published_at": "2026-11-26T03:15:31Z",
+   "file": "editions/gw12.json",
+   "data": "data/runs/gw12/app.json"
+  },
   {
    "gw": 11,
    "edition": 2,

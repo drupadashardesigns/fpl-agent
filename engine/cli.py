@@ -108,7 +108,12 @@ def run(entry_id: int, horizon: int, with_ownership: bool) -> Path:
     fpl_api.save_json(player_history(summaries), out / "history.json", compress=True)
 
     pl = planner.Planner(proj, nxt, min(38, nxt + horizon - 1))
-    options = pl.search(state)[:25]
+    found = pl.search(state)
+    options = found[:25]
+    # Keep the best free plan in the shortlist even when hit plans fill the top 25 (GW12: FT 1, all top plans were hits).
+    best_free = next((o for o in found if o["hits"] == 0), None)
+    if best_free is not None and best_free not in options:
+        options.append(best_free)
     first_half_end = 19 if nxt <= 19 else 38
     used = {c["name"] for c in state.chips_used if (c["event"] <= 19) == (nxt <= 19)}
     fh_curve = pl.free_hit_curve(state, nxt, first_half_end) if "freehit" not in used else []
@@ -139,7 +144,8 @@ def run(entry_id: int, horizon: int, with_ownership: bool) -> Path:
         "lineup": {k: (v if not isinstance(v, list) else [nm(e) for e in v]) if k != "captain" else nm(v)
                    for k, v in pl.best_xi(state.squad, nxt).items()},
         "transfer_options": [{"outs": [nm(e) for e in o["outs"]], "ins": [nm(e) for e in o["ins"]],
-                              "gain": o["gain"], "hits": o["hits"], "bank_after": o["bank_after"]} for o in options[:12]],
+                              "gain": o["gain"], "hits": o["hits"], "bank_after": o["bank_after"]}
+                             for o in options[:12] + ([best_free] if best_free is not None and best_free not in options[:12] else [])],
         "free_hit_curve": [{**f, "team": [nm(e) for e in f["team"]]} for f in fh_curve],
         "price_alerts": alerts,
         "last_gw": last_gw_review(bs, cur, pk),
