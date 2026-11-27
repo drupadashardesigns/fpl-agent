@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-26T10:04:21+00:00",
+"fetched_at": "2026-11-27T10:10:00+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -1997,7 +1997,7 @@
 "shortName": "Chelsea",
 "id": "8455"
 },
-"utc": "2026-11-27T20:00:00Z",
+"utc": "2026-11-27T20:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
