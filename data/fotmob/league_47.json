@@ -2,7 +2,7 @@
 "league_id": 47,
 "season": "2026/2027",
 "season_id": 36781,
-"fetched_at": "2026-11-27T10:10:00+00:00",
+"fetched_at": "2026-11-28T09:28:57+00:00",
 "matches": [
 {
 "id": 5795363,
@@ -1997,10 +1997,10 @@
 "shortName": "Chelsea",
 "id": "8455"
 },
-"utc": "2026-11-27T20:00:00.000Z",
-"finished": false,
+"utc": "2026-11-27T20:00:00Z",
+"finished": true,
 "cancelled": false,
-"score": null
+"score": "3 - 2"
 },
 {
 "id": 5795531,
@@ -2015,7 +2015,7 @@
 "shortName": "Coventry",
 "id": "8669"
 },
-"utc": "2026-11-28T15:00:00Z",
+"utc": "2026-11-28T15:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -2033,7 +2033,7 @@
 "shortName": "Brentford",
 "id": "9937"
 },
-"utc": "2026-11-28T15:00:00Z",
+"utc": "2026-11-28T15:00:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
@@ -2051,7 +2051,7 @@
 "shortName": "Aston Villa",
 "id": "10252"
 },
-"utc": "2026-11-28T17:30:00Z",
+"utc": "2026-11-28T17:30:00.000Z",
 "finished": false,
 "cancelled": false,
 "score": null
